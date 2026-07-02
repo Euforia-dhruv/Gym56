@@ -1,11 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 // Routes that require the user to be logged OUT (auth pages)
-const authOnlyRoutes = ['/login', '/signup', '/forgot-password', '/reset-password'];
+const authOnlyRoutes = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+];
 
 // Routes that require the user to be logged IN (protected pages)
-// Extend this list as new protected pages are added (e.g. /dashboard, /profile)
-const protectedRoutes: string[] = [];
+// /admin is included so unauthenticated users cannot access the admin UI.
+// Full role-based (admin-only) enforcement will be added in Sprint 2A via
+// JWT custom claims once @supabase/ssr is integrated.
+const protectedRoutes: string[] = ["/admin"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -18,18 +25,21 @@ export function middleware(request: NextRequest) {
   // inside the Supabase client on the client side.
   const hasSession = Array.from(request.cookies.getAll()).some(
     (cookie) =>
-      cookie.name.startsWith('sb-') && cookie.name.endsWith('-auth-token')
+      cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")
   );
 
   // Redirect authenticated users away from auth pages
   if (authOnlyRoutes.includes(pathname) && hasSession) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Redirect unauthenticated users away from protected pages
-  if (protectedRoutes.some((route) => pathname.startsWith(route)) && !hasSession) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirectTo', pathname);
+  if (
+    protectedRoutes.some((route) => pathname.startsWith(route)) &&
+    !hasSession
+  ) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -45,6 +55,6 @@ export const config = {
      * - favicon.ico
      * - public folder assets (png, jpg, svg, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
