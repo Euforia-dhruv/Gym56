@@ -40,7 +40,7 @@ export default function Reviews() {
     show: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.7, ease: 'easeOut' },
+      transition: { duration: 0.7 },
     },
   };
 

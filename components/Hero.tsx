@@ -16,7 +16,7 @@ export default function Hero() {
 
   const item = {
     hidden: { y: 50, opacity: 0 },
-    show: { y: 0, opacity: 1, transition: { duration: 0.8, ease: 'easeOut' } },
+    show: { y: 0, opacity: 1, transition: { duration: 0.8 } },
   };
 
   const particles = [
@@ -71,7 +71,6 @@ export default function Hero() {
             transition={{
               duration: particle.duration,
               repeat: Infinity,
-              ease: 'easeInOut',
             }}
           />
         ))}
@@ -116,13 +115,13 @@ export default function Hero() {
       <motion.div
         className="absolute bottom-10 left-1/2 -translate-x-1/2"
         animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 2, repeat: Infinity }}
       >
         <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
           <motion.div
             className="w-1.5 h-3 bg-white/60 rounded-full"
             animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 2, repeat: Infinity }}
           />
         </div>
       </motion.div>
