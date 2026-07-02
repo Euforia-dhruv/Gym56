@@ -1,7 +1,19 @@
+import Hero from '@/components/Hero';
+import TrustedSection from '@/components/TrustedSection';
+import Features from '@/components/Features';
+import Membership from '@/components/Membership';
+import Reviews from '@/components/Reviews';
+import CTA from '@/components/CTA';
+
 export default function Home() {
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <h1 className="text-4xl font-bold text-center">Welcome to Gym 56</h1>
-    </div>
+    <>
+      <Hero />
+      <TrustedSection />
+      <Features />
+      <Membership />
+      <Reviews />
+      <CTA />
+    </>
   );
 }
