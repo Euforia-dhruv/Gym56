@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User } from 'lucide-react';
-import { useAuth } from '@/lib/AuthContext';
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, User } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,23 +16,37 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close all menus on Escape key — keyboard accessibility
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setIsMobileMenuOpen(false);
+      setIsProfileMenuOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Equipment', href: '#equipment' },
-    { name: 'Exercises', href: '/exercises' },
-    { name: 'Membership', href: '#membership' },
-    { name: 'AI Coach', href: '#ai-coach' },
-    { name: 'Contact', href: '#contact' },
+    { name: "Home", href: "/" },
+    { name: "Equipment", href: "#equipment" },
+    { name: "Exercises", href: "/exercises" },
+    { name: "Membership", href: "#membership" },
+    { name: "AI Coach", href: "#ai-coach" },
+    { name: "Contact", href: "#contact" },
   ];
 
   return (
     <nav
+      aria-label="Main navigation"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'glass' : 'bg-transparent'
+        isScrolled ? "glass" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,6 +57,7 @@ export default function Navbar() {
             </span>
           </Link>
 
+          {/* Desktop nav links */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
@@ -53,8 +68,16 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+
+            {/* Desktop auth area */}
             <div className="flex items-center space-x-4">
-              {!loading && !user ? (
+              {loading ? (
+                // Skeleton prevents layout shift while auth state loads
+                <div
+                  className="w-24 h-9 rounded-full bg-white/5 animate-pulse"
+                  aria-hidden="true"
+                />
+              ) : !user ? (
                 <>
                   <Link
                     href="/login"
@@ -73,22 +96,31 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    aria-haspopup="true"
+                    aria-expanded={isProfileMenuOpen}
+                    aria-controls="profile-menu"
+                    aria-label="Account menu"
                     className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-white/20 transition-all"
                   >
-                    <User size={18} />
+                    <User size={18} aria-hidden="true" />
                     <span className="text-sm font-medium text-gray-300">
-                      {user?.email?.split('@')[0] || 'Profile'}
+                      {user?.email?.split("@")[0] || "Profile"}
                     </span>
                   </button>
+
                   <AnimatePresence>
                     {isProfileMenuOpen && (
                       <motion.div
+                        id="profile-menu"
+                        role="menu"
+                        aria-label="Account options"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
                         className="absolute right-0 mt-2 w-48 glass rounded-xl border border-white/10 overflow-hidden shadow-xl"
                       >
                         <button
+                          role="menuitem"
                           onClick={() => {
                             signOut();
                             setIsProfileMenuOpen(false);
@@ -105,20 +137,30 @@ export default function Navbar() {
             </div>
           </div>
 
+          {/* Mobile menu toggle */}
           <button
             className="md:hidden text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? (
+              <X size={24} aria-hidden="true" />
+            ) : (
+              <Menu size={24} aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden glass border-t border-white/10 overflow-hidden"
           >
@@ -133,8 +175,14 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
+
               <div className="pt-4 border-t border-white/10 space-y-3">
-                {!loading && !user ? (
+                {loading ? (
+                  <div
+                    className="w-full h-10 rounded-full bg-white/5 animate-pulse"
+                    aria-hidden="true"
+                  />
+                ) : !user ? (
                   <>
                     <Link
                       href="/login"

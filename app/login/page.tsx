@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { AuthError } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { AuthError } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -20,11 +20,14 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       if (error) throw error;
-      router.push('/');
+      router.push("/");
     } catch (err) {
-      setError(err instanceof AuthError ? err.message : 'An error occurred');
+      setError(err instanceof AuthError ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -36,14 +39,14 @@ export default function LoginPage() {
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/`,
         },
       });
       if (error) throw error;
     } catch (err) {
-      setError(err instanceof AuthError ? err.message : 'An error occurred');
+      setError(err instanceof AuthError ? err.message : "An error occurred");
       setLoading(false);
     }
   };
@@ -61,33 +64,57 @@ export default function LoginPage() {
           <p className="text-gray-400">Sign in to your Gym 56 account</p>
         </div>
 
+        {/* Error region — role="alert" announces immediately to screen readers */}
         {error && (
-          <div className="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-200 text-sm">
+          <div
+            id="login-error"
+            role="alert"
+            aria-live="assertive"
+            className="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-200 text-sm"
+          >
             {error}
           </div>
         )}
 
-        <form onSubmit={handleEmailLogin} className="space-y-6">
+        <form
+          onSubmit={handleEmailLogin}
+          aria-describedby={error ? "login-error" : undefined}
+          className="space-y-6"
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               required
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#DC2626] transition-colors"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626] focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-[#DC2626] transition-colors"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
+              Password
+            </label>
             <input
+              id="password"
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#DC2626] transition-colors"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626] focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-[#DC2626] transition-colors"
               placeholder="••••••••"
             />
           </div>
@@ -106,11 +133,11 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full py-3 bg-[#DC2626] hover:bg-[#B91C1C] disabled:opacity-50 text-white font-semibold rounded-lg transition-all duration-300"
           >
-            {loading ? 'Signing in...' : 'Sign In with Email'}
+            {loading ? "Signing in…" : "Sign In with Email"}
           </button>
         </form>
 
-        <div className="my-6 flex items-center gap-4">
+        <div className="my-6 flex items-center gap-4" aria-hidden="true">
           <div className="flex-1 h-px bg-white/10" />
           <span className="text-gray-500 text-sm">or continue with</span>
           <div className="flex-1 h-px bg-white/10" />
@@ -119,9 +146,16 @@ export default function LoginPage() {
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
+          aria-label="Sign in with Google"
           className="w-full py-3 bg-white/5 border border-white/10 hover:border-white/20 disabled:opacity-50 text-white font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
+          {/* Google logo SVG — decorative, aria-hidden */}
+          <svg
+            className="w-5 h-5"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
             <path
               fill="#4285F4"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -143,8 +177,11 @@ export default function LoginPage() {
         </button>
 
         <div className="mt-8 text-center text-gray-400 text-sm">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-[#DC2626] hover:text-[#ff4d4d] font-medium">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/signup"
+            className="text-[#DC2626] hover:text-[#ff4d4d] font-medium"
+          >
             Sign Up
           </Link>
         </div>
