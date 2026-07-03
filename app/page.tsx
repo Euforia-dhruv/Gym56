@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Hero from "@/components/Hero";
+import EquipmentCarousel from "@/components/EquipmentCarousel";
 import TrustedSection from "@/components/TrustedSection";
 import AboutSection from "@/components/AboutSection";
 import Features from "@/components/Features";
@@ -29,6 +30,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <EquipmentCarousel />
       <TrustedSection />
       <AboutSection />
       <Features />

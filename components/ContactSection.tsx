@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { Phone, MapPin, Clock, CheckCircle, AlertCircle, MessageSquare } from "lucide-react";
 import { submitContactForm } from "@/lib/actions/contact";
 
 type FormData = {
@@ -122,12 +122,25 @@ export default function ContactSection() {
                     Gujarat 382028
                   </p>
                   <a
-                    href="https://maps.app.goo.gl/your-gym-location"
+                    href="https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-[#DC2626]/10 border border-[#DC2626]/30 text-[#DC2626] rounded-full text-sm font-medium hover:bg-[#DC2626]/20 transition-colors inline-block"
                   >
                     Get Directions
+                  </a>
+                  <a
+                    href="https://www.instagram.com/gym56_gandhinagar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 text-purple-400 rounded-full text-sm font-medium hover:bg-purple-500/20 transition-colors inline-flex items-center gap-2 ml-2"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                    </svg>
+                    Instagram
                   </a>
                 </div>
               </div>
@@ -142,6 +155,43 @@ export default function ContactSection() {
                 </div>
               </div>
 
+              <div className="glass rounded-2xl p-6 flex items-start gap-4 hover:border-[#DC2626]/30 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-1">Follow Us</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <a
+                      href="https://www.instagram.com/gym56_gandhinagar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 text-purple-400 rounded-full text-sm font-medium hover:bg-purple-500/20 transition-colors inline-flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                      </svg>
+                      Instagram
+                    </a>
+                    <a
+                      href="https://jsdl.in/DT-99GFBNQ1Y5B"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full text-sm font-medium hover:bg-blue-500/20 transition-colors inline-flex items-center gap-2"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      JustDial
+                    </a>
+                  </div>
+                </div>
+              </div>
+
               <div className="glass rounded-2xl p-6 hover:border-[#DC2626]/30 transition-colors">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-[#DC2626]/10 flex items-center justify-center flex-shrink-0">
@@ -153,17 +203,17 @@ export default function ContactSection() {
                 </div>
                 <div className="space-y-2">
                   {[
-                    { day: "Monday", hours: "5:30 AM – 10:30 PM" },
-                    { day: "Tuesday", hours: "5:30 AM – 10:30 PM" },
-                    { day: "Wednesday", hours: "5:30 AM – 10:30 PM" },
-                    { day: "Thursday", hours: "5:30 AM – 10:30 PM" },
-                    { day: "Friday", hours: "5:30 AM – 10:30 PM" },
-                    { day: "Saturday", hours: "5:30 AM – 10:30 PM" },
-                    { day: "Sunday", hours: "7:00 AM – 12:00 PM" },
+                    { day: "Monday", hours: "6–10 AM, 5–10 PM" },
+                    { day: "Tuesday", hours: "6–10 AM, 5–10 PM" },
+                    { day: "Wednesday", hours: "6–10 AM, 5–10 PM" },
+                    { day: "Thursday", hours: "6–10 AM, 5–10 PM" },
+                    { day: "Friday", hours: "6–10 AM, 5–10 PM" },
+                    { day: "Saturday", hours: "6–10 AM, 5–10 PM" },
+                    { day: "Sunday", hours: "Closed" },
                   ].map((schedule, idx) => (
                     <div key={idx} className="flex justify-between items-center border-b border-white/10 pb-2 last:border-0">
                       <span className="text-gray-300 font-medium">{schedule.day}</span>
-                      <span className="text-sm text-gray-400">
+                      <span className={`text-sm ${schedule.hours === "Closed" ? "text-red-400" : "text-gray-400"}`}>
                         {schedule.hours}
                       </span>
                     </div>

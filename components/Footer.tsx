@@ -55,7 +55,7 @@ export default function Footer() {
             <div className="flex gap-4">
               {/* Instagram */}
               <a
-                href="https://www.instagram.com/gym56.gandhinagar/"
+                href="https://www.instagram.com/gym56_gandhinagar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#DC2626] hover:border-[#DC2626] transition-all"
@@ -75,7 +75,7 @@ export default function Footer() {
               </a>
               {/* Justdial */}
               <a
-                href="https://www.justdial.com/Gandhinagar-Gujarat/Gym-56-Gym-Sector-26-Gandhinagar/nbs-9924441179_BZDET?xid=R2FuZGhpbmFnYXIsIEd1amFyYXQsIEd5bQ=="
+                href="https://jsdl.in/DT-99GFBNQ1Y5B"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#DC2626] hover:border-[#DC2626] transition-all"

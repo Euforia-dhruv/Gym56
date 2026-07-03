@@ -62,8 +62,8 @@ const localBusinessSchema = {
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 23.2156,
-    longitude: 72.6369,
+    latitude: 23.2553,
+    longitude: 72.6342,
   },
   openingHoursSpecification: [
     { "@type": "OpeningHoursSpecification", dayOfWeek: "Monday", opens: "06:00", closes: "22:00" },
@@ -75,7 +75,7 @@ const localBusinessSchema = {
     { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "00:00", closes: "00:00" },
   ],
   priceRange: "₹1,500 - ₹9,000",
-  image: "https://gym56.vercel.app/og-image.png",
+  image: "https://gym56.vercel.app/gym56-logo.png",
 };
 
 const organizationSchema = {
@@ -86,6 +86,8 @@ const organizationSchema = {
   logo: "https://gym56.vercel.app/gym56-logo.png",
   sameAs: [
     "https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6",
+    "https://www.instagram.com/gym56_gandhinagar",
+    "https://jsdl.in/DT-99GFBNQ1Y5B",
   ],
 };
 
