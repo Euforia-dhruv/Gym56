@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthError } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const supabase = createSupabaseBrowserClient();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +65,6 @@ export default function LoginPage() {
           <p className="text-gray-400">Sign in to your Gym 56 account</p>
         </div>
 
-        {/* Error region — role="alert" announces immediately to screen readers */}
         {error && (
           <div
             id="login-error"
@@ -149,7 +149,6 @@ export default function LoginPage() {
           aria-label="Sign in with Google"
           className="w-full py-3 bg-white/5 border border-white/10 hover:border-white/20 disabled:opacity-50 text-white font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
         >
-          {/* Google logo SVG — decorative, aria-hidden */}
           <svg
             className="w-5 h-5"
             viewBox="0 0 24 24"

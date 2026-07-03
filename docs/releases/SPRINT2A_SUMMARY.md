@@ -1,4 +1,11 @@
 # Sprint 2A — Admin Dashboard UI Foundation
+
+> **Archive:** Historical sprint release document (July 2026).  
+> The admin dashboard foundation was completed in this sprint.  
+> All subsequent sprints built on this work. See [docs/](../) for current documentation.  
+> Historical record — preserved for reference.
+
+
 ## Implementation Summary
 
 > **Completed:** 2026-07-02  

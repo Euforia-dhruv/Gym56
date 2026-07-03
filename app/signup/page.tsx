@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuthError } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const supabase = createSupabaseBrowserClient();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +50,6 @@ export default function SignupPage() {
           <p className="text-gray-400">Start your fitness journey today</p>
         </div>
 
-        {/* Status regions — announced immediately to screen readers */}
         {error && (
           <div
             id="signup-error"

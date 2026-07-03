@@ -1,33 +1,20 @@
-'use client';
+"use client";
 
-import { useParams, notFound } from 'next/navigation';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Video, AlertTriangle, Shield, Dumbbell } from 'lucide-react';
-import { exercises } from '@/lib/siteData';
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowLeft, AlertTriangle, Shield, Dumbbell } from "lucide-react";
+import { getDifficultyColor } from "@/lib/utils";
+import type { Exercise } from "@/types";
 
-export default function ExerciseDetail() {
-  const params = useParams();
-  const slug = params.slug as string;
-  const exercise = exercises.find(ex => ex.slug === slug);
-
-  if (!exercise) {
-    notFound();
-  }
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Beginner': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'Intermediate': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'Advanced': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
-  };
-
-  const relatedExercises = exercises.filter(ex =>
-    exercise.relatedExercises.includes(ex.slug)
-  );
-
+export default function ExerciseDetail({
+  exercise,
+  instructions = [],
+  relatedExercises = [],
+}: {
+  exercise: Exercise;
+  instructions?: string[];
+  relatedExercises?: Exercise[];
+}) {
   return (
     <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -61,12 +48,12 @@ export default function ExerciseDetail() {
                 <Dumbbell className="w-6 h-6 text-[#DC2626]" aria-hidden="true" />
                 <h2 className="font-bold text-white">Equipment</h2>
               </div>
-              <p className="text-gray-300">{exercise.equipment}</p>
+              <p className="text-gray-300">{exercise.equipment_label || "Bodyweight"}</p>
             </div>
             <div className="glass rounded-2xl p-6 md:col-span-2">
               <h2 className="font-bold text-white mb-4">Target Muscles</h2>
               <div className="flex flex-wrap gap-2">
-                {exercise.targetMuscles.map((muscle, index) => (
+                {(exercise.target_muscles || []).map((muscle, index) => (
                   <span
                     key={index}
                     className="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm"
@@ -78,73 +65,65 @@ export default function ExerciseDetail() {
             </div>
           </div>
 
-          <div className="glass rounded-2xl p-8 mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <Video className="w-6 h-6 text-[#DC2626]" aria-hidden="true" />
-              <h2 className="text-2xl font-bold text-white">Demo Video</h2>
-            </div>
-            <div
-              className="aspect-video bg-white/5 rounded-xl flex items-center justify-center border border-dashed border-white/20"
-              role="img"
-              aria-label="Demo video coming soon"
-            >
-              <p className="text-gray-500">Video coming soon</p>
-            </div>
-          </div>
-
-          <div className="glass rounded-2xl p-8 mb-12">
-            <h2 className="text-2xl font-bold text-white mb-6">Instructions</h2>
-            <ol className="space-y-4">
-              {exercise.instructions.map((step, index) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex gap-4"
-                >
-                  <span
-                    className="flex-shrink-0 w-8 h-8 bg-[#DC2626] text-white rounded-full flex items-center justify-center font-bold text-sm"
-                    aria-hidden="true"
+          {instructions.length > 0 && (
+            <div className="glass rounded-2xl p-8 mb-12">
+              <h2 className="text-2xl font-bold text-white mb-6">Instructions</h2>
+              <ol className="space-y-4">
+                {instructions.map((step, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="flex gap-4"
                   >
-                    {index + 1}
-                  </span>
-                  <p className="text-gray-300 pt-1">{step}</p>
-                </motion.li>
-              ))}
-            </ol>
-          </div>
+                    <span
+                      className="flex-shrink-0 w-8 h-8 bg-[#DC2626] text-white rounded-full flex items-center justify-center font-bold text-sm"
+                      aria-hidden="true"
+                    >
+                      {index + 1}
+                    </span>
+                    <p className="text-gray-300 pt-1">{step}</p>
+                  </motion.li>
+                ))}
+              </ol>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="glass rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <AlertTriangle className="w-6 h-6 text-yellow-400" aria-hidden="true" />
-                <h2 className="text-2xl font-bold text-white">Common Mistakes</h2>
+            {exercise.common_mistakes && exercise.common_mistakes.length > 0 && (
+              <div className="glass rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <AlertTriangle className="w-6 h-6 text-yellow-400" aria-hidden="true" />
+                  <h2 className="text-2xl font-bold text-white">Common Mistakes</h2>
+                </div>
+                <ul className="space-y-3">
+                  {exercise.common_mistakes.map((mistake, index) => (
+                    <li key={index} className="flex items-start gap-3 text-gray-300">
+                      <span className="text-yellow-400 mt-1" aria-hidden="true">•</span>
+                      {mistake}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-3">
-                {exercise.commonMistakes.map((mistake, index) => (
-                  <li key={index} className="flex items-start gap-3 text-gray-300">
-                    <span className="text-yellow-400 mt-1" aria-hidden="true">•</span>
-                    {mistake}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            )}
 
-            <div className="glass rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <Shield className="w-6 h-6 text-[#DC2626]" aria-hidden="true" />
-                <h2 className="text-2xl font-bold text-white">Safety Tips</h2>
+            {exercise.safety_tips && exercise.safety_tips.length > 0 && (
+              <div className="glass rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Shield className="w-6 h-6 text-[#DC2626]" aria-hidden="true" />
+                  <h2 className="text-2xl font-bold text-white">Safety Tips</h2>
+                </div>
+                <ul className="space-y-3">
+                  {exercise.safety_tips.map((tip, index) => (
+                    <li key={index} className="flex items-start gap-3 text-gray-300">
+                      <span className="text-[#DC2626] mt-1" aria-hidden="true">•</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-3">
-                {exercise.safetyTips.map((tip, index) => (
-                  <li key={index} className="flex items-start gap-3 text-gray-300">
-                    <span className="text-[#DC2626] mt-1" aria-hidden="true">•</span>
-                    {tip}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            )}
           </div>
 
           {relatedExercises.length > 0 && (
@@ -158,7 +137,7 @@ export default function ExerciseDetail() {
                     className="glass rounded-2xl p-6 hover:border-white/20 transition-all duration-300"
                   >
                     <h3 className="text-xl font-bold text-white mb-2">{related.name}</h3>
-                    <p className="text-gray-400 text-sm mb-4">{related.equipment}</p>
+                    <p className="text-gray-400 text-sm mb-4">{related.equipment_label || "Bodyweight"}</p>
                     <Link
                       href={`/exercise/${related.slug}`}
                       className="inline-flex items-center gap-2 text-[#DC2626] font-semibold hover:text-white transition-colors duration-300"

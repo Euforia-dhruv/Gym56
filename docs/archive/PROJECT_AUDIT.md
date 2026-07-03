@@ -1,5 +1,13 @@
 # Gym56 — Production Readiness Audit
 
+> **Archive:** This was the comprehensive Sprint 1 audit (July 2026).  
+> The issues identified here were systematically addressed across Sprints 2–4:  
+> Supabase database migration, admin CMS, member dashboard, security headers,  
+> PWA support, analytics, testing, SEO, accessibility, and error handling improvements.  
+> Historical record — preserved to document the project's starting state.
+
+
+
 > **Author:** Lead Software Architect  
 > **Date:** 2026-07-02  
 > **Next.js:** 15.3.0 · **React:** 19.1.1 · **TypeScript:** 5.x strict  

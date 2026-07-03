@@ -112,7 +112,4 @@ export function truncate(text: string, maxLength: number): string {
   return text.slice(0, maxLength).trimEnd() + '…';
 }
 
-/** Pluralise a word based on count. */
-export function pluralise(count: number, singular: string, plural?: string): string {
-  return count === 1 ? singular : (plural ?? `${singular}s`);
-}
+

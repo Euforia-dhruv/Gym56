@@ -48,6 +48,14 @@ export function Table<T>({
                   col.className
                 )}
                 onClick={col.sortable && onSort ? () => onSort(String(col.key)) : undefined}
+                onKeyDown={col.sortable && onSort ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSort(String(col.key));
+                  }
+                } : undefined}
+                tabIndex={col.sortable ? 0 : undefined}
+                role={col.sortable ? 'button' : undefined}
                 aria-sort={
                   sortKey === String(col.key)
                     ? sortDir === 'asc'
@@ -61,7 +69,7 @@ export function Table<T>({
                 <span className="inline-flex items-center gap-1">
                   {col.header}
                   {col.sortable && (
-                    <span className="text-gray-600" aria-hidden="true">
+                    <span className="text-gray-400" aria-hidden="true">
                       {sortKey === String(col.key) ? (
                         sortDir === 'asc' ? (
                           <ChevronUp className="w-3 h-3" />

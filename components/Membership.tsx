@@ -2,38 +2,45 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { getActivePlans } from "@/lib/actions/memberships";
+import { formatCurrency } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
-const plans = [
-  { duration: "1 Month", price: "₹1500", savings: null },
-  { duration: "3 Months", price: "₹4000", savings: "Save ₹500" },
-  {
-    duration: "6 Months",
-    price: "₹7000",
-    savings: "Save ₹2000",
-    featured: true,
+interface Plan {
+  id: string;
+  name: string;
+  duration_months: number;
+  price_minor: number;
+  currency: string;
+  savings_label: string | null;
+  is_featured: boolean;
+}
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
   },
-  { duration: "12 Months", price: "₹9000", savings: "Save ₹9000" },
-];
+};
+
+const item = {
+  hidden: { y: 40, opacity: 0 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.7 },
+  },
+};
 
 export default function Membership() {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
+  const [plans, setPlans] = useState<Plan[]>([]);
 
-  const item = {
-    hidden: { y: 40, opacity: 0 },
-    show: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.7 },
-    },
-  };
+  useEffect(() => {
+    getActivePlans().then((data) => setPlans(data));
+  }, []);
 
   return (
     <section
@@ -63,37 +70,36 @@ export default function Membership() {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <motion.div
-              key={index}
+              key={plan.id}
               variants={item}
               whileHover={{ y: -12, scale: 1.02 }}
               transition={{ duration: 0.3 }}
               className={`relative glass rounded-2xl p-8 text-center transition-all duration-300 ${
-                plan.featured
+                plan.is_featured
                   ? "border-[#DC2626]/50 shadow-2xl shadow-[#DC2626]/20"
                   : "border-white/10 hover:border-white/20"
               }`}
             >
-              {plan.savings && (
+              {plan.savings_label && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#DC2626] text-white text-xs font-bold px-4 py-1 rounded-full">
-                  {plan.savings}
+                  {plan.savings_label}
                 </div>
               )}
               <h3 className="text-xl font-bold mb-4 text-gray-300">
-                {plan.duration}
+                {plan.name}
               </h3>
               <div className="mb-6">
                 <span className="text-5xl font-black text-white">
-                  {plan.price}
+                  {formatCurrency(plan.price_minor, plan.currency)}
                 </span>
               </div>
-              {/* Link replaces the non-functional button — preserves all existing styles */}
               <Link
                 href="/signup"
-                aria-label={`Join Now — ${plan.duration} plan at ${plan.price}`}
+                aria-label={`Join Now — ${plan.name} plan at ${formatCurrency(plan.price_minor, plan.currency)}`}
                 className={`block w-full rounded-full font-semibold transition-all duration-300 ${
-                  plan.featured
+                  plan.is_featured
                     ? "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:shadow-xl hover:shadow-[#DC2626]/40 py-4 text-lg"
                     : "border border-white/20 text-white hover:border-[#DC2626] hover:text-[#DC2626] py-3"
                 }`}

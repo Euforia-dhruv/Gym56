@@ -73,7 +73,7 @@ export function useToast() {
 function ToastRegion({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: string) => void }) {
   return (
     <div
-      aria-live="polite"
+      role="alert"
       aria-label="Notifications"
       className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 w-80 pointer-events-none"
     >
@@ -90,7 +90,6 @@ function ToastRegion({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: s
               'bg-[#1a1a1a] border border-white/10 border-l-4 shadow-glass',
               borderColors[t.variant ?? 'info']
             )}
-            role="alert"
           >
             <span className="flex-shrink-0 mt-0.5">{icons[t.variant ?? 'info']}</span>
             <div className="flex-1 min-w-0">

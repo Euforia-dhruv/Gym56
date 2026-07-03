@@ -9,20 +9,12 @@ const authOnlyRoutes = [
 ];
 
 // Routes that require the user to be logged IN (protected pages)
-// /admin is included so unauthenticated users cannot access the admin UI.
-// Full role-based (admin-only) enforcement will be added in Sprint 2A via
-// JWT custom claims once @supabase/ssr is integrated.
-const protectedRoutes: string[] = ["/admin"];
+const protectedRoutes = ["/admin", "/dashboard"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Read the Supabase session cookie.
-  // Supabase stores the session under the key:
-  //   sb-<project-ref>-auth-token  (chunked as -0, -1, etc.)
-  // We detect presence of any sb-*-auth-token cookie as a proxy for
-  // "user has an active session". Full cryptographic validation happens
-  // inside the Supabase client on the client side.
   const hasSession = Array.from(request.cookies.getAll()).some(
     (cookie) =>
       cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")
@@ -48,13 +40,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths EXCEPT:
-     * - _next/static  (static files)
-     * - _next/image   (image optimisation)
-     * - favicon.ico
-     * - public folder assets (png, jpg, svg, etc.)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

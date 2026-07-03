@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { AuthError } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -13,16 +13,12 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  // Whether the recovery session from the email link is ready
   const [sessionReady, setSessionReady] = useState(false);
   const [sessionChecked, setSessionChecked] = useState(false);
   const router = useRouter();
+  const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
-    // Supabase automatically exchanges the #access_token from the URL hash
-    // when the page loads and fires an onAuthStateChange event with
-    // event === 'PASSWORD_RECOVERY'. We listen for that to confirm a valid
-    // recovery session before showing the form.
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setSessionReady(true);
@@ -30,8 +26,6 @@ export default function ResetPasswordPage() {
       }
     });
 
-    // Also check whether the user already has a session (e.g. they refreshed
-    // the page after the token was exchanged).
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setSessionReady(true);
@@ -42,7 +36,7 @@ export default function ResetPasswordPage() {
     return () => {
       listener.subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +58,6 @@ export default function ResetPasswordPage() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       setSuccess(true);
-      // Give the user a moment to read the success message, then redirect
       setTimeout(() => router.push('/'), 2500);
     } catch (err) {
       setError(err instanceof AuthError ? err.message : 'An error occurred. Please try again.');
@@ -90,7 +83,6 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        {/* Error region — announced to screen readers as soon as it appears */}
         {error && (
           <div
             id="reset-error"
@@ -102,7 +94,6 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
-        {/* Success state */}
         {success && (
           <div
             role="status"
@@ -113,7 +104,6 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
-        {/* Invalid / direct-navigation state — session never became ready */}
         {sessionChecked && !sessionReady && !success && (
           <div className="text-center">
             <p className="text-gray-400 mb-6">
@@ -129,7 +119,6 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
-        {/* Reset form — shown only when recovery session is active */}
         {sessionReady && !success && (
           <form
             onSubmit={handleResetPassword}

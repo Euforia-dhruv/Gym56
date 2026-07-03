@@ -1,7 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { motion } from "framer-motion";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import CountUp from 'react-countup';
+import { Users, Trophy, Dumbbell, Clock } from 'lucide-react';
+
+const stats = [
+  { icon: Users, value: 200, label: 'Happy Members', suffix: '+' },
+  { icon: Trophy, value: 5, label: 'Years Experience', suffix: '+' },
+  { icon: Dumbbell, value: 12, label: 'Premium Programs', suffix: '' },
+  { icon: Clock, value: 24, label: 'Hours Support', suffix: '/7' },
+];
 
 export default function Hero() {
   const container = {
@@ -44,14 +53,14 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#DC2626]/20 rounded-full blur-3xl animate-pulse" />
           <div
             className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-red-800/10 rounded-full blur-3xl animate-pulse"
-            style={{ animationDelay: "2s" }}
+            style={{ animationDelay: '2s' }}
           />
         </div>
       </div>
@@ -88,14 +97,16 @@ export default function Hero() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
       >
         <motion.h1
           variants={item}
           className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-6"
         >
           <span className="block">FORGED STRENGTH.</span>
-          <span className="block text-[#DC2626]">BUILT DISCIPLINE.</span>
+          <span className="block bg-gradient-to-r from-white via-gray-200 to-[#DC2626] bg-clip-text text-transparent">
+            BUILT DISCIPLINE.
+          </span>
         </motion.h1>
 
         <motion.p
@@ -107,7 +118,7 @@ export default function Hero() {
 
         <motion.div
           variants={item}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
           {/* "Join Now" navigates to the signup page */}
           <Link
@@ -124,6 +135,36 @@ export default function Hero() {
           >
             Explore Gym
           </a>
+        </motion.div>
+
+        {/* Statistics Cards */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-100px' }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto"
+        >
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              variants={item}
+              whileHover={{ y: -10, transition: { duration: 0.3 } }}
+              className="glass rounded-2xl p-6 border border-white/10 hover:border-[#DC2626]/40 transition-all duration-300"
+            >
+              <stat.icon className="w-10 h-10 text-[#DC2626] mx-auto mb-3" />
+              <div className="text-3xl md:text-4xl font-black text-white mb-1">
+                <CountUp
+                  end={stat.value}
+                  duration={2.5}
+                  enableScrollSpy
+                  scrollSpyOnce
+                />
+                {stat.suffix}
+              </div>
+              <p className="text-gray-400 text-sm">{stat.label}</p>
+            </motion.div>
+          ))}
         </motion.div>
       </motion.div>
 

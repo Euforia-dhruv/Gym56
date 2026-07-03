@@ -1,0 +1,18 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="#111111" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="100" cy="100" r="85" fill="none" stroke="#DC2626" stroke-width="1" opacity="0.3"/>
+  
+  <!-- GYM Text -->
+  <text x="100" y="75" text-anchor="middle" fill="white" font-family="Arial Black, sans-serif" font-size="42" font-weight="900">GYM</text>
+  
+  <!-- 56 Text -->
+  <text x="100" y="125" text-anchor="middle" fill="#DC2626" font-family="Arial Black, sans-serif" font-size="52" font-weight="900">56</text>
+  
+  <!-- Forged Strength -->
+  <text x="100" y="165" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="1.5">FORGED STRENGTH</text>
+  
+  <!-- Decorative Lines -->
+  <line x1="30" y1="100" x2="50" y2="100" stroke="#DC2626" stroke-width="2" opacity="0.6"/>
+  <line x1="150" y1="100" x2="170" y2="100" stroke="#DC2626" stroke-width="2" opacity="0.6"/>
+</svg>

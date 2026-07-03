@@ -132,6 +132,7 @@ export function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
             onClick={() => setProfileOpen((o) => !o)}
             aria-haspopup="true"
             aria-expanded={profileOpen}
+            aria-controls="admin-profile-menu"
             aria-label="Account menu"
             className="flex items-center gap-2.5 pl-1 pr-3 py-1 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all"
           >
@@ -149,6 +150,7 @@ export function AdminHeader({ onMobileMenuOpen }: AdminHeaderProps) {
 
           {profileOpen && (
             <div
+              id="admin-profile-menu"
               role="menu"
               aria-label="Account options"
               className="absolute right-0 mt-2 w-52 rounded-xl bg-[#1a1a1a] border border-white/10 shadow-glass overflow-hidden z-50"

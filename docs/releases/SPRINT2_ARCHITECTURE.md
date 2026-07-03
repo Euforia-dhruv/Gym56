@@ -1,4 +1,11 @@
 # Gym56 — Sprint 2 Revised Architecture
+
+> **Archive:** This document was the planned architecture for Sprint 2 (July 2026).  
+> Most of the schema and architecture described here has been implemented.  
+> See [docs/ARCHITECTURE.md](../ARCHITECTURE.md) and [docs/DATABASE.md](../DATABASE.md) for the current production architecture.  
+> Historical record — preserved for reference.
+
+
 ## Production-Ready Design for 5+ Year Scalability
 
 > **Status:** Approved architecture — awaiting implementation approval per sprint milestone  

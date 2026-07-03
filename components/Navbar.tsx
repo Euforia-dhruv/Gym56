@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
@@ -52,9 +53,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex-shrink-0">
-            <span className="text-2xl font-bold tracking-tighter">
-              GYM <span className="text-[#DC2626]">56</span>
-            </span>
+            <Image
+              src="/gym56-logo.png"
+              alt="GYM 56 - Forged Strength"
+              width={80}
+              height={80}
+              className="h-14 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop nav links */}
@@ -143,6 +149,7 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMobileMenuOpen}
+            aria-haspopup="true"
             aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? (

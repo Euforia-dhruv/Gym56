@@ -1,190 +1,96 @@
 "use client";
 
 import * as React from "react";
-import { Mail, MailOpen, Clock, Phone } from "lucide-react";
+import { Mail, MailOpen, Clock, Phone, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SearchBar } from "@/components/admin/SearchBar";
 import { EmptyState } from "@/components/admin/EmptyState";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { cn, truncate } from "@/lib/utils";
-
-// ─── Mock data ────────────────────────────────────────────────────────────────
-
-type ContactMessage = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  subject: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-};
-
-const MOCK_MESSAGES: ContactMessage[] = [
-  {
-    id: "1",
-    name: "Ravi Patel",
-    email: "ravi@example.com",
-    phone: "+91 98765 33333",
-    subject: "Membership Enquiry",
-    message:
-      "Hi, I wanted to know about the 6-month membership plan. Do you offer any discounts for students? I am currently studying at Nirma University and would love to join your gym.",
-    isRead: false,
-    createdAt: "2026-07-02T09:15:00",
-  },
-  {
-    id: "2",
-    name: "Pooja Desai",
-    email: "pooja@example.com",
-    phone: null,
-    subject: "Personal Training Sessions",
-    message:
-      "Hello, I am interested in personal training. Could you please share information about your personal trainer availability and pricing? I am a beginner and need proper guidance.",
-    isRead: false,
-    createdAt: "2026-07-02T07:45:00",
-  },
-  {
-    id: "3",
-    name: "Vishal Kumar",
-    email: "vishal@example.com",
-    phone: "+91 98765 55544",
-    subject: "Equipment Feedback",
-    message:
-      "The treadmill on the ground floor (machine #3) seems to have an issue with the belt. It makes a squeaking noise after 10 minutes. Please look into it.",
-    isRead: false,
-    createdAt: "2026-07-01T17:30:00",
-  },
-  {
-    id: "4",
-    name: "Sonal Mehta",
-    email: "sonal@example.com",
-    phone: "+91 98765 66655",
-    subject: "Opening Hours",
-    message:
-      "What are your opening hours during public holidays? I could not find this information on the website. Planning to come on Independence Day.",
-    isRead: true,
-    createdAt: "2026-06-30T12:00:00",
-  },
-  {
-    id: "5",
-    name: "Tarun Joshi",
-    email: "tarun@example.com",
-    phone: null,
-    subject: "Group Classes Schedule",
-    message:
-      "Hi! Do you have Zumba or yoga classes? If yes, what is the schedule and is there an additional charge for these classes?",
-    isRead: true,
-    createdAt: "2026-06-29T10:30:00",
-  },
-];
-
-// ─── Message Item ─────────────────────────────────────────────────────────────
-
-function MessageItem({
-  message,
-  isSelected,
-  onSelect,
-}: {
-  message: ContactMessage;
-  isSelected: boolean;
-  onSelect: () => void;
-}) {
-  const date = new Date(message.createdAt);
-  const timeStr = date.toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  return (
-    <button
-      onClick={onSelect}
-      aria-pressed={isSelected}
-      className={cn(
-        "w-full text-left px-4 py-4 border-b border-white/6 transition-all duration-200",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset",
-        isSelected
-          ? "bg-accent/10 border-l-2 border-l-accent"
-          : "hover:bg-white/3",
-        !message.isRead && !isSelected && "border-l-2 border-l-blue-500"
-      )}
-    >
-      <div className="flex items-start justify-between gap-2 mb-1">
-        <div className="flex items-center gap-2 min-w-0">
-          {!message.isRead ? (
-            <Mail
-              className="w-4 h-4 text-blue-400 flex-shrink-0"
-              aria-label="Unread"
-            />
-          ) : (
-            <MailOpen
-              className="w-4 h-4 text-gray-500 flex-shrink-0"
-              aria-label="Read"
-            />
-          )}
-          <span
-            className={cn(
-              "text-sm truncate",
-              message.isRead
-                ? "text-gray-300 font-normal"
-                : "text-white font-semibold"
-            )}
-          >
-            {message.name}
-          </span>
-        </div>
-        <span className="text-xs text-gray-600 whitespace-nowrap flex-shrink-0">
-          {timeStr}
-        </span>
-      </div>
-      <p
-        className={cn(
-          "text-xs mb-1 truncate",
-          message.isRead ? "text-gray-500" : "text-gray-300 font-medium"
-        )}
-      >
-        {message.subject}
-      </p>
-      <p className="text-xs text-gray-600 truncate">
-        {truncate(message.message, 80)}
-      </p>
-    </button>
-  );
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
+import {
+  getContactMessages,
+  markAsRead,
+  markAllAsRead,
+  deleteContactMessage,
+} from "@/lib/actions/contact";
+import type { ContactSubmission } from "@/types";
 
 export default function ContactPage() {
-  const [selected, setSelected] = React.useState<ContactMessage | null>(
-    MOCK_MESSAGES[0]
-  );
-  const [messages, setMessages] = React.useState(MOCK_MESSAGES);
+  const [messages, setMessages] = React.useState<ContactSubmission[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [selected, setSelected] = React.useState<ContactSubmission | null>(null);
   const [query, setQuery] = React.useState("");
+  const [deleteConfirm, setDeleteConfirm] = React.useState<ContactSubmission | null>(null);
+  const [deleting, setDeleting] = React.useState(false);
 
-  const unreadCount = messages.filter((m) => !m.isRead).length;
+  React.useEffect(() => {
+    getContactMessages()
+      .then((data) => {
+        setMessages(data);
+        if (data.length > 0) setSelected(data[0]);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const unreadCount = messages.filter((m) => !m.is_read).length;
 
   const filtered = query
     ? messages.filter(
         (m) =>
           m.name.toLowerCase().includes(query.toLowerCase()) ||
-          m.subject.toLowerCase().includes(query.toLowerCase()) ||
+          (m.subject ?? "").toLowerCase().includes(query.toLowerCase()) ||
           m.message.toLowerCase().includes(query.toLowerCase())
       )
     : messages;
 
-  const handleSelect = (msg: ContactMessage) => {
+  const handleSelect = async (msg: ContactSubmission) => {
     setSelected(msg);
-    setMessages((prev) =>
-      prev.map((m) => (m.id === msg.id ? { ...m, isRead: true } : m))
-    );
+    if (!msg.is_read) {
+      try {
+        await markAsRead(msg.id);
+        setMessages((prev) =>
+          prev.map((m) => (m.id === msg.id ? { ...m, is_read: true } : m))
+        );
+      } catch {
+        // Silently fail
+      }
+    }
   };
 
-  const handleMarkAllRead = () => {
-    setMessages((prev) => prev.map((m) => ({ ...m, isRead: true })));
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      setMessages((prev) => prev.map((m) => ({ ...m, is_read: true })));
+    } catch {
+      // Silently fail
+    }
   };
+
+  const handleDelete = async () => {
+    if (!deleteConfirm) return;
+    setDeleting(true);
+    try {
+      await deleteContactMessage(deleteConfirm.id);
+      setMessages((prev) => prev.filter((m) => m.id !== deleteConfirm.id));
+      if (selected?.id === deleteConfirm.id) {
+        setSelected(messages.find((m) => m.id !== deleteConfirm.id) || null);
+      }
+    } finally {
+      setDeleting(false);
+      setDeleteConfirm(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 text-accent animate-spin" aria-label="Loading…" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -208,9 +114,7 @@ export default function ContactPage() {
         </div>
         <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#111] border border-white/8 text-sm">
           <MailOpen className="w-4 h-4 text-gray-500" aria-hidden="true" />
-          <span className="text-white font-semibold">
-            {messages.length - unreadCount}
-          </span>
+          <span className="text-white font-semibold">{messages.length - unreadCount}</span>
           <span className="text-gray-500">read</span>
         </div>
       </div>
@@ -226,7 +130,7 @@ export default function ContactPage() {
               placeholder="Search messages…"
             />
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto max-h-[600px]">
             {filtered.length === 0 ? (
               <EmptyState
                 icon={<Mail className="w-6 h-6" />}
@@ -249,20 +153,15 @@ export default function ContactPage() {
         <div className="flex-1 flex flex-col">
           {selected ? (
             <>
-              {/* Detail header */}
               <div className="px-6 py-5 border-b border-white/8">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h2 className="text-lg font-bold text-white">
-                      {selected.subject}
+                      {selected.subject || "(No subject)"}
                     </h2>
                     <div className="flex flex-wrap items-center gap-3 mt-1">
-                      <span className="text-sm text-gray-300">
-                        {selected.name}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {selected.email}
-                      </span>
+                      <span className="text-sm text-gray-300">{selected.name}</span>
+                      <span className="text-sm text-gray-500">{selected.email}</span>
                       {selected.phone && (
                         <span className="flex items-center gap-1 text-sm text-gray-500">
                           <Phone className="w-3.5 h-3.5" aria-hidden="true" />
@@ -272,20 +171,16 @@ export default function ContactPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    {!selected.isRead ? (
-                      <Badge variant="info" dot size="sm">
-                        Unread
-                      </Badge>
+                    {!selected.is_read ? (
+                      <Badge variant="info" dot size="sm">Unread</Badge>
                     ) : (
-                      <Badge variant="default" size="sm">
-                        Read
-                      </Badge>
+                      <Badge variant="default" size="sm">Read</Badge>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 mt-2 text-xs text-gray-600">
                   <Clock className="w-3.5 h-3.5" aria-hidden="true" />
-                  {new Date(selected.createdAt).toLocaleString("en-IN", {
+                  {new Date(selected.created_at).toLocaleString("en-IN", {
                     weekday: "long",
                     day: "2-digit",
                     month: "long",
@@ -296,29 +191,22 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Message body */}
-              <div className="flex-1 p-6">
+              <div className="flex-1 p-6 overflow-y-auto">
                 <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
                   {selected.message}
                 </p>
               </div>
 
-              {/* Reply footer (placeholder) */}
               <div className="px-6 py-4 border-t border-white/8 bg-[#0a0a0a]">
                 <p className="text-xs text-gray-600 mb-3">
                   Reply via email:{" "}
-                  <a
-                    href={`mailto:${selected.email}`}
-                    className="text-accent hover:underline"
-                  >
+                  <a href={`mailto:${selected.email}`} className="text-accent hover:underline">
                     {selected.email}
                   </a>
                 </p>
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline">
-                    <a
-                      href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
-                    >
+                    <a href={`mailto:${selected.email}?subject=Re: ${selected.subject || "Gym 56 Enquiry"}`}>
                       Reply via Email
                     </a>
                   </Button>
@@ -326,6 +214,7 @@ export default function ContactPage() {
                     size="sm"
                     variant="ghost"
                     className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    onClick={() => setDeleteConfirm(selected)}
                   >
                     Delete
                   </Button>
@@ -336,13 +225,95 @@ export default function ContactPage() {
             <div className="flex-1 flex items-center justify-center">
               <EmptyState
                 icon={<Mail className="w-8 h-8" />}
-                title="Select a message"
-                description="Choose a message from the list to view its details."
+                title={messages.length === 0 ? "No messages yet" : "Select a message"}
+                description={
+                  messages.length === 0
+                    ? "Messages from the contact form will appear here."
+                    : "Choose a message from the list to view its details."
+                }
               />
             </div>
           )}
         </div>
       </div>
+
+      {/* Delete confirmation */}
+      <ConfirmDialog
+        open={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={handleDelete}
+        title="Delete Message"
+        description={`Delete message from "${deleteConfirm?.name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        loading={deleting}
+      />
     </div>
+  );
+}
+
+// ─── Message Item Component ─────────────────────────────────────────────────
+
+function MessageItem({
+  message,
+  isSelected,
+  onSelect,
+}: {
+  message: ContactSubmission;
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  const date = new Date(message.created_at);
+  const timeStr = date.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return (
+    <button
+      onClick={onSelect}
+      aria-current={isSelected ? "true" : undefined}
+      className={cn(
+        "w-full text-left px-4 py-4 border-b border-white/6 transition-all duration-200",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset",
+        isSelected
+          ? "bg-accent/10 border-l-2 border-l-accent"
+          : "hover:bg-white/3",
+        !message.is_read && !isSelected && "border-l-2 border-l-blue-500"
+      )}
+    >
+      <div className="flex items-start justify-between gap-2 mb-1">
+        <div className="flex items-center gap-2 min-w-0">
+          {!message.is_read ? (
+            <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" aria-label="Unread" />
+          ) : (
+            <MailOpen className="w-4 h-4 text-gray-500 flex-shrink-0" aria-label="Read" />
+          )}
+          <span
+            className={cn(
+              "text-sm truncate",
+              message.is_read ? "text-gray-300 font-normal" : "text-white font-semibold"
+            )}
+          >
+            {message.name}
+          </span>
+        </div>
+        <span className="text-xs text-gray-600 whitespace-nowrap flex-shrink-0">
+          {timeStr}
+        </span>
+      </div>
+      <p
+        className={cn(
+          "text-xs mb-1 truncate",
+          message.is_read ? "text-gray-500" : "text-gray-300 font-medium"
+        )}
+      >
+        {message.subject || "(No subject)"}
+      </p>
+      <p className="text-xs text-gray-600 truncate">
+        {truncate(message.message, 80)}
+      </p>
+    </button>
   );
 }

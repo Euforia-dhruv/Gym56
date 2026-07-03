@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
-import { siteData } from '@/lib/siteData';
 
 export default function TrustedSection() {
   const container = {
@@ -32,7 +31,7 @@ export default function TrustedSection() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-            {siteData.trustedSection.title}
+            Trusted by the Community
           </h2>
         </motion.div>
 
@@ -43,7 +42,12 @@ export default function TrustedSection() {
           viewport={{ once: true, margin: '-100px' }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
         >
-          {siteData.trustedSection.cards.map((card, index) => (
+          {[
+            { icon: '⭐', title: 'Google Rating', value: 5.0, subtitle: 'Based on Google Reviews', suffix: '' },
+            { icon: '💬', title: 'Google Reviews', value: 16, subtitle: 'Happy Members', suffix: '+' },
+            { icon: '🏋️', title: 'Modern Equipment', value: 14, subtitle: 'pieces of top-tier gym equipment', suffix: '+' },
+            { icon: '📍', title: 'Location', value: 'Sector 26', subtitle: 'Gandhinagar, Gujarat', suffix: '' },
+          ].map((card, index) => (
             <motion.div
               key={index}
               variants={item}
@@ -97,12 +101,10 @@ export default function TrustedSection() {
           className="text-center"
         >
           <a
-            href={siteData.trustedSection.cta.link}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/contact"
             className="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#DC2626]/30"
           >
-            {siteData.trustedSection.cta.text}
+            Visit Us Today
           </a>
         </motion.div>
       </div>

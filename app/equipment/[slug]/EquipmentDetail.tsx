@@ -1,6 +1,5 @@
 "use client";
 
-import { useParams, notFound } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -13,47 +12,19 @@ import {
   BookOpen,
   ChevronRight,
 } from "lucide-react";
-import { equipmentList, exercises } from "@/lib/siteData";
+import { getConditionColor } from "@/lib/utils";
+import type { Equipment, Exercise } from "@/types";
 
-const getConditionColor = (condition: string): string => {
-  switch (condition) {
-    case "excellent":
-      return "bg-green-500/20 text-green-400 border-green-500/30";
-    case "good":
-      return "bg-blue-500/20 text-blue-400 border-blue-500/30";
-    case "fair":
-      return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
-    case "maintenance":
-    case "retired":
-      return "bg-red-500/20 text-red-400 border-red-500/30";
-    default:
-      return "bg-gray-500/20 text-gray-400 border-gray-500/30";
-  }
-};
+interface EquipmentDetailProps {
+  equipment: Equipment;
+  equipmentExercises: Pick<Exercise, "id" | "name" | "slug" | "category">[];
+  related: Equipment[];
+}
 
-export default function EquipmentDetail() {
-  const params = useParams();
-  const slug = params.slug as string;
-  const equipment = equipmentList.find((eq) => eq.slug === slug);
-
-  if (!equipment) {
-    notFound();
-  }
-
-  // Find exercises that use this equipment
-  const equipmentExercises = exercises.filter((ex) =>
-    equipment.exercisesUsing.includes(ex.slug)
-  );
-
-  // Find related equipment
-  const related = equipmentList.filter((eq) =>
-    equipment.relatedEquipment.includes(eq.slug)
-  );
-
+export default function EquipmentDetail({ equipment, equipmentExercises, related }: EquipmentDetailProps) {
   return (
     <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
-        {/* Back link */}
         <Link
           href="/equipment"
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group"
@@ -67,15 +38,14 @@ export default function EquipmentDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Header badges */}
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <span className="text-sm text-gray-500">{equipment.category}</span>
             <span
-              className={`px-4 py-1 text-sm font-semibold rounded-full border ${getConditionColor(equipment.condition)}`}
+              className={`px-4 py-1 text-sm font-semibold rounded-full border ${getConditionColor(equipment.condition as "excellent" | "good" | "fair" | "maintenance" | "retired")}`}
             >
               {equipment.condition.charAt(0).toUpperCase() + equipment.condition.slice(1)}
             </span>
-            {equipment.isAvailable ? (
+            {equipment.is_available ? (
               <span className="inline-flex items-center gap-1.5 text-sm text-green-400">
                 <CheckCircle className="w-4 h-4" aria-hidden="true" />
                 Available
@@ -88,12 +58,10 @@ export default function EquipmentDetail() {
             )}
           </div>
 
-          {/* Title */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8">
             {equipment.name}
           </h1>
 
-          {/* Quick info cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
             <div className="glass rounded-2xl p-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#DC2626]/10 flex items-center justify-center flex-shrink-0">
@@ -110,7 +78,7 @@ export default function EquipmentDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Location</p>
-                <p className="text-xl font-bold text-white">{equipment.location}</p>
+                <p className="text-xl font-bold text-white">{equipment.location || "Gym Floor"}</p>
               </div>
             </div>
             <div className="glass rounded-2xl p-5 flex items-center gap-4">
@@ -124,58 +92,58 @@ export default function EquipmentDetail() {
             </div>
           </div>
 
-          {/* Description */}
-          <div className="glass rounded-2xl p-8 mb-10">
-            <h2 className="text-2xl font-bold text-white mb-4">About This Equipment</h2>
-            <p className="text-gray-300 leading-relaxed text-lg">
-              {equipment.description}
-            </p>
-          </div>
-
-          {/* How to Use */}
-          <div className="glass rounded-2xl p-8 mb-10">
-            <div className="flex items-center gap-3 mb-6">
-              <BookOpen className="w-6 h-6 text-[#DC2626]" aria-hidden="true" />
-              <h2 className="text-2xl font-bold text-white">How to Use</h2>
+          {equipment.description && (
+            <div className="glass rounded-2xl p-8 mb-10">
+              <h2 className="text-2xl font-bold text-white mb-4">About This Equipment</h2>
+              <p className="text-gray-300 leading-relaxed text-lg">{equipment.description}</p>
             </div>
-            <ol className="space-y-4">
-              {equipment.howToUse.map((step, index) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.08 }}
-                  className="flex gap-4"
-                >
-                  <span
-                    className="flex-shrink-0 w-8 h-8 bg-[#DC2626] text-white rounded-full flex items-center justify-center font-bold text-sm"
-                    aria-hidden="true"
+          )}
+
+          {equipment.how_to_use && equipment.how_to_use.length > 0 && (
+            <div className="glass rounded-2xl p-8 mb-10">
+              <div className="flex items-center gap-3 mb-6">
+                <BookOpen className="w-6 h-6 text-[#DC2626]" aria-hidden="true" />
+                <h2 className="text-2xl font-bold text-white">How to Use</h2>
+              </div>
+              <ol className="space-y-4">
+                {equipment.how_to_use.map((step, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.08 }}
+                    className="flex gap-4"
                   >
-                    {index + 1}
-                  </span>
-                  <p className="text-gray-300 pt-1">{step}</p>
-                </motion.li>
-              ))}
-            </ol>
-          </div>
-
-          {/* Safety Tips */}
-          <div className="glass rounded-2xl p-8 mb-10">
-            <div className="flex items-center gap-3 mb-6">
-              <Shield className="w-6 h-6 text-yellow-400" aria-hidden="true" />
-              <h2 className="text-2xl font-bold text-white">Safety Tips</h2>
+                    <span
+                      className="flex-shrink-0 w-8 h-8 bg-[#DC2626] text-white rounded-full flex items-center justify-center font-bold text-sm"
+                      aria-hidden="true"
+                    >
+                      {index + 1}
+                    </span>
+                    <p className="text-gray-300 pt-1">{step}</p>
+                  </motion.li>
+                ))}
+              </ol>
             </div>
-            <ul className="space-y-3">
-              {equipment.safetyTips.map((tip, index) => (
-                <li key={index} className="flex items-start gap-3 text-gray-300">
-                  <span className="text-yellow-400 mt-1 flex-shrink-0" aria-hidden="true">•</span>
-                  <span>{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          )}
 
-          {/* Exercises using this equipment */}
+          {equipment.safety_tips && equipment.safety_tips.length > 0 && (
+            <div className="glass rounded-2xl p-8 mb-10">
+              <div className="flex items-center gap-3 mb-6">
+                <Shield className="w-6 h-6 text-yellow-400" aria-hidden="true" />
+                <h2 className="text-2xl font-bold text-white">Safety Tips</h2>
+              </div>
+              <ul className="space-y-3">
+                {equipment.safety_tips.map((tip, index) => (
+                  <li key={index} className="flex items-start gap-3 text-gray-300">
+                    <span className="text-yellow-400 mt-1 flex-shrink-0" aria-hidden="true">•</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {equipmentExercises.length > 0 && (
             <div className="glass rounded-2xl p-8 mb-10">
               <div className="flex items-center gap-3 mb-6">
@@ -204,7 +172,6 @@ export default function EquipmentDetail() {
             </div>
           )}
 
-          {/* Related equipment */}
           {related.length > 0 && (
             <div>
               <h2 className="text-2xl font-bold text-white mb-6">Related Equipment</h2>
@@ -217,9 +184,9 @@ export default function EquipmentDetail() {
                   >
                     <span className="text-sm text-gray-500">{eq.category}</span>
                     <h3 className="text-xl font-bold text-white mb-2 mt-1">{eq.name}</h3>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {eq.description}
-                    </p>
+                    {eq.description && (
+                      <p className="text-gray-400 text-sm mb-4 line-clamp-2">{eq.description}</p>
+                    )}
                     <Link
                       href={`/equipment/${eq.slug}`}
                       className="inline-flex items-center gap-2 text-[#DC2626] font-semibold hover:text-white transition-colors duration-300"

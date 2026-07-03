@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 import Hero from "@/components/Hero";
 import TrustedSection from "@/components/TrustedSection";
+import AboutSection from "@/components/AboutSection";
 import Features from "@/components/Features";
+import Trainers from "@/components/Trainers";
+import Transformations from "@/components/Transformations";
 import Membership from "@/components/Membership";
+import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
+import FAQ from "@/components/FAQ";
+import ContactSection from "@/components/ContactSection";
 import CTA from "@/components/CTA";
 
 export const metadata: Metadata = {
@@ -24,9 +30,15 @@ export default function Home() {
     <>
       <Hero />
       <TrustedSection />
+      <AboutSection />
       <Features />
+      <Trainers />
+      <Transformations />
       <Membership />
+      <Gallery />
       <Reviews />
+      <FAQ />
+      <ContactSection />
       <CTA />
     </>
   );

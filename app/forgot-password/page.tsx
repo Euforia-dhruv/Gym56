@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuthError } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const supabase = createSupabaseBrowserClient();
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,8 +21,6 @@ export default function ForgotPasswordPage() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        // Must point to /reset-password so the recovery token is consumed
-        // by the page that calls supabase.auth.updateUser()
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
@@ -48,7 +47,6 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        {/* Status regions — announced immediately to screen readers */}
         {error && (
           <div
             id="forgot-error"

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import ClassesClient from "./ClassesClient";
 
 export const metadata: Metadata = {
-  title: "Classes",
+  title: "Classes - Gym 56",
   description:
     "Explore fitness classes at Gym 56 in Gandhinagar. Expert-led sessions for all fitness levels — from beginners to advanced athletes.",
   openGraph: {
@@ -13,9 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function Classes() {
-  return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <h1 className="text-4xl font-bold text-center">Classes</h1>
-    </div>
-  );
+  return <ClassesClient />;
 }

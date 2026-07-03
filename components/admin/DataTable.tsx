@@ -96,7 +96,7 @@ export function DataTable<T>({
       )}
 
       {/* Results count */}
-      <p className="text-xs text-gray-500">
+      <p aria-live="polite" className="text-xs text-gray-500">
         {loading
           ? 'Loading…'
           : `${filtered.length} result${filtered.length !== 1 ? 's' : ''}${

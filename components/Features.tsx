@@ -11,6 +11,7 @@ import {
   Sun,
   Smile,
 } from 'lucide-react';
+import { staggerContainer, fadeUp } from '@/lib/animations';
 
 const features = [
   { icon: Dumbbell, title: 'Modern Equipment', description: 'State-of-the-art machines and free weights' },
@@ -24,24 +25,8 @@ const features = [
 ];
 
 export default function Features() {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { y: 30, opacity: 0 },
-    show: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.6 },
-    },
-  };
+  const container = staggerContainer;
+  const item = fadeUp;
 
   return (
     <section className="py-20 sm:py-32 bg-black">

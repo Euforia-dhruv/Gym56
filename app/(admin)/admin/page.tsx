@@ -7,120 +7,21 @@ import {
   Mail,
   IndianRupee,
   ArrowRight,
-  CheckCircle,
-  Clock,
-  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard } from "@/components/admin/StatCard";
 import { DashboardCard } from "@/components/admin/DashboardCard";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { getDashboardStats } from "@/lib/actions/members";
+import { getUnreadCount } from "@/lib/actions/contact";
+import { getActivePlans, getSubscriptionCounts } from "@/lib/actions/memberships";
+import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Gym 56 admin dashboard overview.",
 };
-
-// ─── Mock data ───────────────────────────────────────────────────────────────
-
-const stats = [
-  {
-    title: "Total Members",
-    value: "124",
-    subtitle: "Registered accounts",
-    icon: <Users className="w-6 h-6" />,
-    trend: { value: 12, label: "vs last month" },
-  },
-  {
-    title: "Equipment",
-    value: "38",
-    subtitle: "Items in inventory",
-    icon: <Dumbbell className="w-6 h-6" />,
-    trend: { value: 5, label: "2 added recently" },
-  },
-  {
-    title: "Exercises",
-    value: "47",
-    subtitle: "Published exercises",
-    icon: <BookOpen className="w-6 h-6" />,
-    trend: { value: 0, label: "No change" },
-  },
-  {
-    title: "Active Plans",
-    value: "89",
-    subtitle: "Active subscriptions",
-    icon: <CreditCard className="w-6 h-6" />,
-    trend: { value: 8, label: "vs last month" },
-  },
-  {
-    title: "Unread Messages",
-    value: "3",
-    subtitle: "Contact submissions",
-    icon: <Mail className="w-6 h-6" />,
-    trend: { value: -2, label: "vs yesterday" },
-  },
-  {
-    title: "Revenue (Month)",
-    value: "₹1.2L",
-    subtitle: "Estimated — payments coming soon",
-    icon: <IndianRupee className="w-6 h-6" />,
-    trend: { value: 18, label: "vs last month" },
-  },
-];
-
-const recentActivity = [
-  {
-    id: "1",
-    type: "member",
-    message: "New member registered: Arjun Mehta",
-    time: "5 minutes ago",
-    status: "success",
-  },
-  {
-    id: "2",
-    type: "membership",
-    message: "Priya Sharma renewed 6-month plan",
-    time: "23 minutes ago",
-    status: "success",
-  },
-  {
-    id: "3",
-    type: "contact",
-    message: "New contact message from Ravi Patel",
-    time: "1 hour ago",
-    status: "info",
-  },
-  {
-    id: "4",
-    type: "equipment",
-    message: "Treadmill #3 marked for maintenance",
-    time: "2 hours ago",
-    status: "warning",
-  },
-  {
-    id: "5",
-    type: "member",
-    message: "Sneha Kapoor membership expired",
-    time: "3 hours ago",
-    status: "error",
-  },
-  {
-    id: "6",
-    type: "membership",
-    message: "Amit Singh purchased 12-month plan",
-    time: "5 hours ago",
-    status: "success",
-  },
-];
-
-const systemStatus = [
-  { label: "Supabase Auth", status: "operational" },
-  { label: "Database", status: "operational" },
-  { label: "Storage", status: "operational" },
-  { label: "Payment Gateway", status: "not_configured" },
-  { label: "AI Coach", status: "not_configured" },
-];
 
 const quickActions = [
   {
@@ -145,42 +46,105 @@ const quickActions = [
     label: "View Messages",
     href: "/admin/contact",
     icon: Mail,
-    description: "3 unread messages",
+    description: "Unread messages",
   },
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const activityStatusIcon: Record<string, React.ReactNode> = {
-  success: (
-    <CheckCircle className="w-4 h-4 text-green-400" aria-hidden="true" />
-  ),
-  info: <Clock className="w-4 h-4 text-blue-400" aria-hidden="true" />,
-  warning: (
-    <AlertCircle className="w-4 h-4 text-yellow-400" aria-hidden="true" />
-  ),
-  error: <AlertCircle className="w-4 h-4 text-red-400" aria-hidden="true" />,
-};
-
-const systemStatusBadge: Record<
-  string,
-  { variant: "success" | "warning" | "default"; label: string }
-> = {
+const systemStatusBadge: Record<string, { variant: "success" | "warning" | "default"; label: string }> = {
   operational: { variant: "success", label: "Operational" },
   degraded: { variant: "warning", label: "Degraded" },
   not_configured: { variant: "default", label: "Not configured" },
 };
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Server Component ───────────────────────────────────────────────────────
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  let stats;
+  let unreadCount;
+  let plans;
+
+  try {
+    const [s, u, p] = await Promise.all([
+      getDashboardStats(),
+      getUnreadCount(),
+      getActivePlans(),
+    ]);
+    stats = s;
+    unreadCount = u;
+    plans = p;
+  } catch {
+    // Fallback in case of error
+    stats = {
+      totalMembers: 0,
+      totalEquipment: 0,
+      totalExercises: 0,
+      activeSubscriptions: 0,
+      unreadMessages: 0,
+    };
+    unreadCount = 0;
+    plans = [];
+  }
+
+  const planCounts: Record<string, number> = {};
+  try {
+    const counts = await getSubscriptionCounts();
+    Object.assign(planCounts, counts);
+  } catch {
+    // Fallback
+  }
+
+  const dashStats = [
+    {
+      title: "Total Members",
+      value: stats.totalMembers,
+      subtitle: "Registered accounts",
+      icon: <Users className="w-6 h-6" />,
+    },
+    {
+      title: "Equipment",
+      value: stats.totalEquipment,
+      subtitle: "Items in inventory",
+      icon: <Dumbbell className="w-6 h-6" />,
+    },
+    {
+      title: "Exercises",
+      value: stats.totalExercises,
+      subtitle: "Published exercises",
+      icon: <BookOpen className="w-6 h-6" />,
+    },
+    {
+      title: "Active Plans",
+      value: stats.activeSubscriptions,
+      subtitle: "Active subscriptions",
+      icon: <CreditCard className="w-6 h-6" />,
+    },
+    {
+      title: "Unread Messages",
+      value: unreadCount,
+      subtitle: "Contact submissions",
+      icon: <Mail className="w-6 h-6" />,
+    },
+    {
+      title: "Active Plans",
+      value: plans.length,
+      subtitle: "Membership plans",
+      icon: <IndianRupee className="w-6 h-6" />,
+    },
+  ];
+
+  const systemStatus = [
+    { label: "Supabase Auth", status: "operational" as const },
+    { label: "Database", status: "operational" as const },
+    { label: "Storage", status: "operational" as const },
+    { label: "Payment Gateway", status: "not_configured" as const },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Page heading */}
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">
-          Dashboard
-        </h1>
+        <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard</h1>
         <p className="mt-1 text-sm text-gray-400">
           Welcome back — here&apos;s what&apos;s happening at Gym 56.
         </p>
@@ -188,11 +152,9 @@ export default function AdminDashboardPage() {
 
       {/* Stat cards */}
       <section aria-labelledby="stats-heading">
-        <h2 id="stats-heading" className="sr-only">
-          Key metrics
-        </h2>
+        <h2 id="stats-heading" className="sr-only">Key metrics</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {stats.map((stat) => (
+          {dashStats.map((stat) => (
             <StatCard key={stat.title} {...stat} />
           ))}
         </div>
@@ -200,10 +162,7 @@ export default function AdminDashboardPage() {
 
       {/* Quick actions */}
       <section aria-labelledby="quick-actions-heading">
-        <h2
-          id="quick-actions-heading"
-          className="text-lg font-bold text-white mb-4"
-        >
+        <h2 id="quick-actions-heading" className="text-lg font-bold text-white mb-4">
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -220,9 +179,7 @@ export default function AdminDashboardPage() {
                 <p className="text-sm font-semibold text-white group-hover:text-accent transition-colors">
                   {action.label}
                 </p>
-                <p className="text-xs text-gray-500 truncate">
-                  {action.description}
-                </p>
+                <p className="text-xs text-gray-500 truncate">{action.description}</p>
               </div>
               <ArrowRight
                 className="w-4 h-4 text-gray-600 group-hover:text-accent ml-auto flex-shrink-0 transition-all group-hover:translate-x-1 duration-200"
@@ -233,39 +190,42 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Bottom grid: Activity + System Status */}
+      {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
         <section aria-labelledby="activity-heading" className="lg:col-span-2">
           <DashboardCard
-            title="Recent Activity"
+            title="Pricing Plans"
             action={
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/admin/members">
-                  View all{" "}
-                  <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
+                <Link href="/admin/memberships">
+                  View all <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
                 </Link>
               </Button>
             }
           >
-            <ul className="space-y-1" aria-labelledby="activity-heading">
-              {recentActivity.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center gap-3 py-2.5 px-2 rounded-xl hover:bg-white/3 transition-colors"
-                >
-                  <span className="flex-shrink-0">
-                    {activityStatusIcon[item.status]}
-                  </span>
-                  <span className="flex-1 text-sm text-gray-300 min-w-0 truncate">
-                    {item.message}
-                  </span>
-                  <span className="flex-shrink-0 text-xs text-gray-600 whitespace-nowrap">
-                    {item.time}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <div className="space-y-3 p-2">
+              {plans.length === 0 ? (
+                <p className="text-sm text-gray-500 text-center py-8">No plans created yet.</p>
+              ) : (
+                plans.map((plan) => (
+                  <div
+                    key={plan.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-white/3 border border-white/8"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-white">{plan.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {planCounts[plan.id] ?? 0} active subscriber{(planCounts[plan.id] ?? 0) !== 1 ? "s" : ""}
+                      </p>
+                    </div>
+                    <span className="text-sm font-bold text-white">
+                      {formatCurrency(plan.price_minor, plan.currency)}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
           </DashboardCard>
         </section>
 
@@ -276,10 +236,7 @@ export default function AdminDashboardPage() {
               {systemStatus.map((item) => {
                 const { variant, label } = systemStatusBadge[item.status];
                 return (
-                  <li
-                    key={item.label}
-                    className="flex items-center justify-between gap-3"
-                  >
+                  <li key={item.label} className="flex items-center justify-between gap-3">
                     <span className="text-sm text-gray-300">{item.label}</span>
                     <Badge variant={variant} dot size="sm">
                       {label}
@@ -289,52 +246,11 @@ export default function AdminDashboardPage() {
               })}
             </ul>
             <div className="mt-6 pt-4 border-t border-white/8">
-              <p className="text-xs text-gray-600 text-center">
-                All core systems operational
-              </p>
+              <p className="text-xs text-gray-600 text-center">All core systems operational</p>
             </div>
           </DashboardCard>
         </section>
       </div>
-
-      {/* Placeholder banners for upcoming features */}
-      <section aria-labelledby="upcoming-heading">
-        <h2 id="upcoming-heading" className="text-lg font-bold text-white mb-4">
-          Coming in Sprint 2
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[
-            {
-              label: "Equipment CMS",
-              desc: "Full CRUD with image upload",
-              sprint: "2A",
-            },
-            {
-              label: "Member Dashboard",
-              desc: "Profiles, subscriptions, classes",
-              sprint: "2B",
-            },
-            {
-              label: "AI Coach",
-              desc: "Context-aware fitness guidance",
-              sprint: "2E",
-            },
-          ].map((f) => (
-            <div
-              key={f.label}
-              className="flex items-start gap-3 p-4 rounded-2xl border border-dashed border-white/10 bg-white/2"
-            >
-              <span className="flex-shrink-0 text-xs font-bold text-accent bg-accent/10 px-2 py-1 rounded-lg">
-                {f.sprint}
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-white">{f.label}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{f.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

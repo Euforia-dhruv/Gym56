@@ -201,7 +201,10 @@ export function AdminSidebar({
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden"
               onClick={onMobileClose}
-              aria-hidden="true"
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onMobileClose(); } }}
+              aria-label="Close sidebar"
+              role="button"
+              tabIndex={0}
             />
             {/* Drawer */}
             <motion.aside
