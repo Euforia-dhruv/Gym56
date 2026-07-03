@@ -35,7 +35,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Equipment", href: "#equipment" },
+    { name: "Equipment", href: "/equipment" },
     { name: "Exercises", href: "/exercises" },
     { name: "Membership", href: "#membership" },
     { name: "AI Coach", href: "#ai-coach" },
