@@ -3,43 +3,23 @@
 import Features from "@/components/Features";
 import CTA from "@/components/CTA";
 import { motion } from "framer-motion";
-import { Dumbbell, Users, Heart, Zap, Activity, Star } from "lucide-react";
+import { Dumbbell, Flame, UserCheck } from "lucide-react";
 
 const services = [
   {
     icon: Dumbbell,
     title: "Strength Training",
-    description: "Build lean muscle with structured strength programs",
+    description: "Build lean muscle and increase strength with structured resistance programs",
   },
   {
-    icon: Activity,
+    icon: Flame,
     title: "Weight Loss",
-    description: "Effective fat loss strategies with expert guidance",
+    description: "Effective fat loss strategies combining cardio and resistance training with expert guidance",
   },
   {
-    icon: Users,
-    title: "Muscle Building",
-    description: "Targeted hypertrophy programs for maximum gains",
-  },
-  {
-    icon: Zap,
-    title: "Functional Training",
-    description: "Improve mobility and real-world movement patterns",
-  },
-  {
-    icon: Heart,
-    title: "Personal Guidance",
-    description: "One-on-one coaching tailored to your goals",
-  },
-  {
-    icon: Activity,
-    title: "Cardio Training",
-    description: "Boost endurance with treadmill and spin bike workouts",
-  },
-  {
-    icon: Star,
-    title: "Beginner Friendly Workouts",
-    description: "Safe, structured programs for fitness newcomers",
+    icon: UserCheck,
+    title: "Personal Training",
+    description: "One-on-one coaching tailored to your individual goals, fitness level, and schedule",
   },
 ];
 

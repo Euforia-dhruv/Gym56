@@ -2,7 +2,6 @@ const CACHE_NAME = "gym56-v1";
 const STATIC_ASSETS = [
   "/",
   "/offline",
-  "/gym56-logo.svg",
   "/gym56-logo.png",
 ];
 

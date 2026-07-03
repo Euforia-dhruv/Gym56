@@ -6,10 +6,10 @@ import CountUp from 'react-countup';
 import { Users, Trophy, Dumbbell, Clock } from 'lucide-react';
 
 const stats = [
-  { icon: Users, value: 200, label: 'Happy Members', suffix: '+' },
-  { icon: Trophy, value: 5, label: 'Years Experience', suffix: '+' },
-  { icon: Dumbbell, value: 12, label: 'Premium Programs', suffix: '' },
-  { icon: Clock, value: 24, label: 'Hours Support', suffix: '/7' },
+  { icon: Users, value: 45, label: 'Happy Members', suffix: '+' },
+  { icon: Trophy, value: 1.5, label: 'Years of Coaching', decimals: 1, suffix: '' },
+  { icon: Dumbbell, value: 3, label: 'Training Programs', suffix: '' },
+  { icon: Clock, value: 6, label: 'Days a Week', suffix: '' },
 ];
 
 export default function Hero() {
@@ -157,6 +157,7 @@ export default function Hero() {
                 <CountUp
                   end={stat.value}
                   duration={2.5}
+                  decimals={stat.decimals ?? 0}
                   enableScrollSpy
                   scrollSpyOnce
                 />

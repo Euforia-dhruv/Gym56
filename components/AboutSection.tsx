@@ -5,10 +5,10 @@ import { Dumbbell, Heart, Trophy, Zap } from 'lucide-react';
 
 export default function About() {
   const stats = [
-    { icon: Dumbbell, value: '5+', label: 'Years Experience' },
-    { icon: Trophy, value: '200+', label: 'Happy Members' },
-    { icon: Zap, value: '24/7', label: 'Access (Soon)' },
-    { icon: Heart, value: '100%', label: 'Dedication' },
+    { icon: Dumbbell, value: '14+', label: 'Equipment Types' },
+    { icon: Trophy, value: '45+', label: 'Happy Members' },
+    { icon: Heart, value: '1:1', label: 'Personal Coaching' },
+    { icon: Zap, value: '6', label: 'Days a Week' },
   ];
 
   return (

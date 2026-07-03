@@ -11,8 +11,8 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#000000",
     theme_color: "#DC2626",
     icons: [
-      { src: "/gym56-logo.svg", sizes: "any", type: "image/svg+xml" },
-      { src: "/gym56-logo.svg", sizes: "any", type: "image/svg+xml", purpose: "maskable" },
+      { src: "/gym56-logo.png", sizes: "1024x1024", type: "image/png" },
+      { src: "/gym56-logo.png", sizes: "1024x1024", type: "image/png", purpose: "maskable" },
     ],
   };
 }

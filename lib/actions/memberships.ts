@@ -67,8 +67,19 @@ export async function createMembershipPlan(input: MembershipPlanCreateInput) {
   await requireAdmin();
 
   const parsed = MembershipPlanCreateSchema.parse(input);
-  const admin = createSupabaseAdminClient();
 
+  // Check for duplicate plan name
+  const supabase = await createSupabaseServerClient();
+  const { data: existing } = await supabase
+    .from("membership_plans")
+    .select("id, name")
+    .eq("name", parsed.name)
+    .maybeSingle();
+  if (existing) {
+    throw new Error(`A plan named "${parsed.name}" already exists.`);
+  }
+
+  const admin = createSupabaseAdminClient();
   const { data, error } = await admin
     .from("membership_plans")
     .insert({

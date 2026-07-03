@@ -43,9 +43,9 @@ export default function TrustedSection() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
         >
           {[
-            { icon: '⭐', title: 'Google Rating', value: 5.0, subtitle: 'Based on Google Reviews', suffix: '' },
-            { icon: '💬', title: 'Google Reviews', value: 16, subtitle: 'Happy Members', suffix: '+' },
-            { icon: '🏋️', title: 'Modern Equipment', value: 14, subtitle: 'pieces of top-tier gym equipment', suffix: '+' },
+            { icon: '💪', title: 'Active Members', value: 45, subtitle: 'Strong & Growing Community', suffix: '+' },
+            { icon: '🏋️', title: 'Modern Equipment', value: 14, subtitle: 'Premium machines & free weights', suffix: '+' },
+            { icon: '🎯', title: 'Training Programs', value: 3, subtitle: 'Strength, Weight Loss & Personal Training', suffix: '' },
             { icon: '📍', title: 'Location', value: 'Sector 26', subtitle: 'Gandhinagar, Gujarat', suffix: '' },
           ].map((card, index) => (
             <motion.div

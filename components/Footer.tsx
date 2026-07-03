@@ -85,7 +85,7 @@ export default function Footer() {
               </a>
               {/* Google Maps */}
               <a
-                href="https://maps.app.goo.gl/your-gym-location"
+                href="https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#DC2626] hover:border-[#DC2626] transition-all"
@@ -110,8 +110,8 @@ export default function Footer() {
             <ul className="space-y-3 text-gray-400 text-sm">
               <li>2nd Floor, Yogi Mall, Behind D-Mart, Green City, Sector 26, Gandhinagar, Gujarat 382028</li>
               <li>+91 99244 41179</li>
-              <li>Mon - Sat: 5:30 AM - 10:30 PM</li>
-              <li>Sunday: 7:00 AM - 12:00 PM</li>
+              <li>Mon - Sat: 6:00 - 10:00 AM & 5:00 - 10:00 PM</li>
+              <li>Sunday: Closed</li>
             </ul>
           </div>
           <div>

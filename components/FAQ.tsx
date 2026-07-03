@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     question: 'What services do you offer?',
-    answer: 'We offer strength training, weight loss programs, muscle building, functional training, personal guidance, cardio training, and beginner-friendly workouts.',
+    answer: 'We offer three core programs: Strength Training, Weight Loss programs, and Personal Training — all guided by experienced coaches.',
   },
   {
     question: 'What equipment is available at Gym 56?',

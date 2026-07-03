@@ -24,7 +24,7 @@ export default function About() {
             About <span className="text-[#DC2626]">Gym 56</span>
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Transforming lives through fitness since 2019
+            Transforming lives through fitness in Gandhinagar
           </p>
         </div>
       </section>

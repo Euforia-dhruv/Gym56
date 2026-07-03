@@ -126,9 +126,9 @@ export default async function AdminDashboardPage() {
       icon: <Mail className="w-6 h-6" />,
     },
     {
-      title: "Active Plans",
+      title: "Pricing Plans",
       value: plans.length,
-      subtitle: "Membership plans",
+      subtitle: "Membership plans available",
       icon: <IndianRupee className="w-6 h-6" />,
     },
   ];

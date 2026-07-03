@@ -6,21 +6,21 @@ import { User, X, MessageSquare, Share2 } from 'lucide-react';
 const trainers = [
   {
     name: 'Raj Patel',
-    role: 'Head Trainer',
+    role: 'Head Coach',
     specialty: 'Strength & Conditioning',
-    bio: '10+ years experience in competitive bodybuilding and strength training.',
+    bio: 'Experienced strength coach dedicated to helping members achieve their fitness goals.',
   },
   {
     name: 'Priya Sharma',
-    role: 'Yoga & Wellness Coach',
-    specialty: 'Yoga & Mobility',
-    bio: 'Certified yoga instructor with expertise in Hatha and Vinyasa.',
+    role: 'Fitness Coach',
+    specialty: 'Weight Loss & Wellness',
+    bio: 'Passionate about guiding members through sustainable fitness transformations.',
   },
   {
     name: 'Amit Singh',
     role: 'Personal Trainer',
-    specialty: 'Fat Loss & Muscle Gain',
-    bio: 'Specializes in transformation programs with proven results.',
+    specialty: 'Strength & Mobility',
+    bio: 'Focused on delivering personalized training programs for all fitness levels.',
   },
 ];
 

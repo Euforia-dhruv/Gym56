@@ -24,25 +24,16 @@ export const metadata: Metadata = {
     description:
       "Premium fitness gym in Sector 26, Gandhinagar. Modern equipment, expert trainers, and flexible membership plans.",
     url: "https://gym56.vercel.app",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Gym 56 — Premium Fitness in Gandhinagar",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Gym 56 — Premium Fitness in Gandhinagar",
     description:
       "Premium fitness gym in Sector 26, Gandhinagar. Modern equipment, expert trainers, and flexible membership plans.",
-    images: ["/og-image.png"],
   },
   icons: {
-    icon: "/gym56-logo.svg",
-    apple: "/icon-192.png",
+    icon: "/gym56-logo.png",
+    apple: "/gym56-logo.png",
   },
   manifest: "/manifest.webmanifest",
 };
@@ -75,13 +66,13 @@ const localBusinessSchema = {
     longitude: 72.6369,
   },
   openingHoursSpecification: [
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Monday", opens: "05:30", closes: "22:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Tuesday", opens: "05:30", closes: "22:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Wednesday", opens: "05:30", closes: "22:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Thursday", opens: "05:30", closes: "22:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Friday", opens: "05:30", closes: "22:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "05:30", closes: "22:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "07:00", closes: "12:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Monday", opens: "06:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Tuesday", opens: "06:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Wednesday", opens: "06:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Thursday", opens: "06:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Friday", opens: "06:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "06:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "00:00", closes: "00:00" },
   ],
   priceRange: "₹1,500 - ₹9,000",
   image: "https://gym56.vercel.app/og-image.png",
@@ -92,9 +83,9 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Gym 56",
   url: "https://gym56.vercel.app",
-  logo: "https://gym56.vercel.app/gym56-logo.svg",
+  logo: "https://gym56.vercel.app/gym56-logo.png",
   sameAs: [
-    "https://maps.app.goo.gl/your-gym-location",
+    "https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6",
   ],
 };
 

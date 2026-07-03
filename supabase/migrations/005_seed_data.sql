@@ -15,7 +15,7 @@ VALUES
   ('3 Months', 3, 'INR', 400000, 'Save ₹500', FALSE, TRUE, 1),
   ('6 Months', 6, 'INR', 700000, 'Save ₹2000', TRUE, TRUE, 2),
   ('12 Months', 12, 'INR', 900000, 'Save ₹9000', FALSE, TRUE, 3)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (name) DO NOTHING;
 
 -- ── 2. Equipment ────────────────────────────────────────────────────────────
 
