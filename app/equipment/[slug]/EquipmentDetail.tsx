@@ -124,6 +124,7 @@ export default function EquipmentDetail({
                         selectedImage === url ? "border-[#DC2626] opacity-100" : "border-white/10 opacity-60 hover:opacity-100"
                       }`}
                     >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`${equipment.name} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     </button>
                   ))}

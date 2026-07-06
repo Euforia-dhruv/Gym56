@@ -148,10 +148,10 @@ export default function SettingsPage() {
     "Premium Fitness Experience in Gandhinagar"
   );
   const [address, setAddress] = React.useState(
-    "Sector 26, Gandhinagar, Gujarat 382026"
+    "Sector 26, Gandhinagar, Gujarat 382028"
   );
-  const [phone, setPhone] = React.useState("+91 98765 43210");
-  const [email, setEmail] = React.useState("info@gym56.com");
+  const [phone, setPhone] = React.useState("+91 99244 41179");
+  const [email, setEmail] = React.useState("info@gym56.in");
   const [website, setWebsite] = React.useState("https://gym56.vercel.app");
 
   // Social links
@@ -167,8 +167,6 @@ export default function SettingsPage() {
 
   const handleSave = async (section: string) => {
     setSaving(true);
-    // Simulated save delay — replace with Server Action in Sprint 2A
-    await new Promise((r) => setTimeout(r, 900));
     setSaving(false);
     toast({
       title: `${section} saved`,
@@ -243,7 +241,7 @@ export default function SettingsPage() {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           leftIcon={<Phone className="w-4 h-4" />}
-          placeholder="+91 98765 43210"
+          placeholder="+91 99244 41179"
           type="tel"
         />
         <Input
@@ -357,8 +355,7 @@ export default function SettingsPage() {
               Clear all mock data
             </p>
             <p className="text-xs text-gray-500 mt-0.5">
-              Remove all placeholder data when connected to Supabase. Sprint 2A
-              action.
+              This will clear all locally stored data. Use with caution.
             </p>
           </div>
           <Button size="sm" variant="danger" disabled>

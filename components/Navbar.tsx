@@ -41,6 +41,7 @@ export default function Navbar() {
     { name: "Nutrition", href: "/nutrition" },
     { name: "Tools", href: "/tools" },
     { name: "AI Coach", href: "/ai-coach" },
+    { name: "Community", href: "/community" },
     { name: "Contact", href: "#contact" },
   ];
 

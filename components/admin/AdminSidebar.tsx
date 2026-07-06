@@ -16,6 +16,12 @@ import {
   Zap,
   BookOpen,
   X,
+  BarChart3,
+  FileText,
+  Image,
+  Star,
+  HelpCircle,
+  Megaphone,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -28,12 +34,18 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { label: 'Equipment', href: '/admin/equipment', icon: Dumbbell },
-  { label: 'Exercises', href: '/admin/exercises', icon: BookOpen },
   { label: 'Members', href: '/admin/members', icon: Users },
   { label: 'Memberships', href: '/admin/memberships', icon: CreditCard },
+  { label: 'Equipment', href: '/admin/equipment', icon: Dumbbell },
+  { label: 'Exercises', href: '/admin/exercises', icon: BookOpen },
   { label: 'Contact', href: '/admin/contact', icon: Mail, badge: 3 },
   { label: 'Settings', href: '/admin/settings', icon: Settings },
+  { label: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
+  { label: 'Articles', href: '/admin/articles', icon: FileText },
+  { label: 'Gallery', href: '/admin/gallery', icon: Image },
+  { label: 'Testimonials', href: '/admin/testimonials', icon: Star },
+  { label: 'FAQs', href: '/admin/faqs', icon: HelpCircle },
+  { label: 'Announcements', href: '/admin/announcements', icon: Megaphone },
 ];
 
 interface AdminSidebarProps {

@@ -10,6 +10,32 @@ import {
 
 type ResultSetter = (r: Record<string, string | number>) => void;
 
+const ACTIVITY_FACTORS: Record<string, { label: string; factor: number }> = {
+  sedentary: { label: "Sedentary (desk job, no exercise)", factor: 1.2 },
+  light: { label: "Light (1-3 days/week)", factor: 1.375 },
+  moderate: { label: "Moderate (3-5 days/week)", factor: 1.55 },
+  active: { label: "Active (6-7 days/week)", factor: 1.725 },
+  extreme: { label: "Extreme (2x/day, physical job)", factor: 1.9 },
+};
+
+const PROTEIN_LEVELS: Record<string, { label: string; min: number; max: number }> = {
+  sedentary: { label: "Sedentary (no exercise)", min: 0.8, max: 1.0 },
+  moderate: { label: "Moderate (3-5x/week)", min: 1.4, max: 1.8 },
+  active: { label: "Active (6-7x/week)", min: 1.6, max: 2.0 },
+  athlete: { label: "Athlete / bodybuilder", min: 1.8, max: 2.2 },
+};
+
+const METS: Record<string, { label: string; met: number }> = {
+  running: { label: "Running (moderate pace)", met: 8.0 },
+  cycling: { label: "Cycling (moderate)", met: 6.0 },
+  swimming: { label: "Swimming (leisurely)", met: 5.0 },
+  walking: { label: "Walking (brisk)", met: 3.5 },
+  weights: { label: "Weightlifting", met: 4.0 },
+  hiit: { label: "HIIT / Circuit", met: 9.0 },
+  yoga: { label: "Yoga / Stretching", met: 2.5 },
+  elliptical: { label: "Elliptical", met: 5.0 },
+};
+
 function InputRow({ label, unit, value, onChange, min, max, step, error }: {
   label: string; unit: string; value: string; onChange: (v: string) => void;
   min?: number; max?: number; step?: number; error?: string;
@@ -125,9 +151,8 @@ export function BMICalculator({ onResult }: { onResult: ResultSetter }) {
     return { bmi, cat, color, minHealthy, maxHealthy, wKg, hM };
   }, [weight, height, unit, errW, errH]);
 
-  useMemo(() => {
-    if (result) onResult({ bmi: result.bmi.toFixed(1), category: result.cat, healthyRange: `${result.minHealthy.toFixed(0)}-${result.maxHealthy.toFixed(0)} kg` });
-  }, [result]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(() => { if (result) onResult({ bmi: result.bmi.toFixed(1), category: result.cat, healthyRange: `${result.minHealthy.toFixed(0)}-${result.maxHealthy.toFixed(0)} kg` }); }, [result]);
 
   return (
     <CalculatorCard title="BMI Calculator" icon={<Scale className="w-5 h-5" />} color="#3B82F6">
@@ -188,6 +213,7 @@ export function BMRCalculator({ onResult }: { onResult: ResultSetter }) {
     return { bmr, formula };
   }, [gender, age, weight, height, errA, errW, errH]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ bmr: result.bmr.toFixed(0), formula: result.formula }); }, [result]);
 
   return (
@@ -224,24 +250,17 @@ export function TDEECalculator({ onResult }: { onResult: ResultSetter }) {
   const [gender, setGender] = useState("male"); const [age, setAge] = useState(""); const [weight, setWeight] = useState(""); const [height, setHeight] = useState(""); const [activity, setActivity] = useState("moderate");
   const errA = validateNumber(age, 10, 120, "Age"); const errW = validateNumber(weight, 20, 350, "Weight"); const errH = validateNumber(height, 50, 280, "Height");
 
-  const activityFactors: Record<string, { label: string; factor: number }> = {
-    sedentary: { label: "Sedentary (desk job, no exercise)", factor: 1.2 },
-    light: { label: "Light (1-3 days/week)", factor: 1.375 },
-    moderate: { label: "Moderate (3-5 days/week)", factor: 1.55 },
-    active: { label: "Active (6-7 days/week)", factor: 1.725 },
-    extreme: { label: "Extreme (2x/day, physical job)", factor: 1.9 },
-  };
-
   const result = useMemo(() => {
     if (errA || errW || errH) return null;
     const a = parseFloat(age); const w = parseFloat(weight); const h = parseFloat(height);
     let bmr: number;
     if (gender === "male") bmr = 10 * w + 6.25 * h - 5 * a + 5;
     else bmr = 10 * w + 6.25 * h - 5 * a - 161;
-    const tdee = bmr * activityFactors[activity].factor;
+    const tdee = bmr * ACTIVITY_FACTORS[activity].factor;
     return { bmr, tdee, cut: tdee - 500, bulk: tdee + 300 };
   }, [gender, age, weight, height, activity, errA, errW, errH]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ tdee: result.tdee.toFixed(0), bmr: result.bmr.toFixed(0), cut: result.cut.toFixed(0), bulk: result.bulk.toFixed(0) }); }, [result]);
 
   return (
@@ -252,7 +271,7 @@ export function TDEECalculator({ onResult }: { onResult: ResultSetter }) {
         <InputRow label="Weight" unit="kg" value={weight} onChange={setWeight} min={20} max={350} error={errW} />
         <InputRow label="Height" unit="cm" value={height} onChange={setHeight} min={50} max={280} error={errH} />
         <div className="sm:col-span-2">
-          <SelectRow label="Activity Level" value={activity} onChange={setActivity} options={Object.entries(activityFactors).map(([k, v]) => ({ value: k, label: v.label }))} />
+          <SelectRow label="Activity Level" value={activity} onChange={setActivity} options={Object.entries(ACTIVITY_FACTORS).map(([k, v]) => ({ value: k, label: v.label }))} />
         </div>
       </div>
       {result && (
@@ -297,6 +316,7 @@ export function MacrosCalculator({ onResult }: { onResult: ResultSetter }) {
     };
   }, [calories, goal, errC]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (macros) onResult({ protein: macros.protein.g, fat: macros.fat.g, carbs: macros.carbs.g, goal }); }, [macros]);
 
   return (
@@ -333,27 +353,21 @@ export function ProteinCalculator({ onResult }: { onResult: ResultSetter }) {
   const [weight, setWeight] = useState(""); const [activity, setActivity] = useState("moderate");
   const errW = validateNumber(weight, 20, 350, "Weight");
 
-  const levels: Record<string, { label: string; min: number; max: number }> = {
-    sedentary: { label: "Sedentary (no exercise)", min: 0.8, max: 1.0 },
-    moderate: { label: "Moderate (3-5x/week)", min: 1.4, max: 1.8 },
-    active: { label: "Active (6-7x/week)", min: 1.6, max: 2.0 },
-    athlete: { label: "Athlete / bodybuilder", min: 1.8, max: 2.2 },
-  };
-
   const result = useMemo(() => {
     if (errW) return null;
     const w = parseFloat(weight);
-    const lvl = levels[activity];
+    const lvl = PROTEIN_LEVELS[activity];
     return { min: w * lvl.min, max: w * lvl.max, weight: w, level: lvl };
   }, [weight, activity, errW]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ proteinMin: result.min.toFixed(1), proteinMax: result.max.toFixed(1) }); }, [result]);
 
   return (
     <CalculatorCard title="Protein Calculator" icon={<Drumstick className="w-5 h-5" />} color="#8B5CF6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <InputRow label="Weight" unit="kg" value={weight} onChange={setWeight} min={20} max={350} error={errW} />
-        <SelectRow label="Activity Level" value={activity} onChange={setActivity} options={Object.entries(levels).map(([k, v]) => ({ value: k, label: v.label }))} />
+          <SelectRow label="Activity Level" value={activity} onChange={setActivity} options={Object.entries(PROTEIN_LEVELS).map(([k, v]) => ({ value: k, label: v.label }))} />
       </div>
       {result && (
         <div className="mt-6 space-y-4">
@@ -392,6 +406,7 @@ export function WaterCalculator({ onResult }: { onResult: ResultSetter }) {
     return { base, activityExtra, total, climateFactor };
   }, [weight, activity, climate, errW]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ water: result.total.toFixed(1), base: result.base.toFixed(1) }); }, [result]);
 
   return (
@@ -437,6 +452,7 @@ export function CaloriesCalculator({ onResult }: { onResult: ResultSetter }) {
     };
   }, [tdee, errT]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ maintain: result.maintain.toFixed(0), cut: result.cut.toFixed(0), bulk: result.bulk.toFixed(0) }); }, [result]);
 
   return (
@@ -481,6 +497,7 @@ export function OneRepMaxCalculator({ onResult }: { onResult: ResultSetter }) {
     return { weight: w, reps: r, epley, brzycki, lombardi, avg };
   }, [weight, reps, errW, errR]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ oneRepMax: result.avg.toFixed(1), epley: result.epley.toFixed(1) }); }, [result]);
 
   return (
@@ -526,6 +543,7 @@ export function WilksCalculator({ onResult }: { onResult: ResultSetter }) {
     return { wilks: t * coeff, coefficient: coeff };
   }, [gender, bw, total, errBw, errT]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ wilks: result.wilks.toFixed(2), coefficient: result.coefficient.toFixed(4) }); }, [result]);
 
   return (
@@ -568,6 +586,7 @@ export function DOTSCalculator({ onResult }: { onResult: ResultSetter }) {
     return { dots, approx: t / Math.pow(w, 2 / 3) * 100 };
   }, [gender, bw, total, errBw, errT]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ dots: result.dots.toFixed(1) }); }, [result]);
 
   return (
@@ -609,9 +628,8 @@ export function PlateCalculator({ onResult }: { onResult: ResultSetter }) {
     return { error: null, plates: result, remainder: r };
   }, [target, bar, errT]);
 
-  useMemo(() => {
-    if (plates && !plates.error) onResult({ platesPerSide: plates.plates.map((p) => `${p.count}x${p.plate}kg`).join(", ") });
-  }, [plates]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(() => { if (plates && !plates.error) onResult({ platesPerSide: plates.plates.map((p) => `${p.count}x${p.plate}kg`).join(", ") }); }, [plates]);
 
   return (
     <CalculatorCard title="Plate Calculator" icon={<Calculator className="w-5 h-5" />} color="#6366F1">
@@ -676,6 +694,7 @@ export function BodyFatCalculator({ onResult }: { onResult: ResultSetter }) {
     return { bf, cat };
   }, [gender, neck, waist, hip, height, errN, errW, errHt]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ bodyFat: result.bf.toFixed(1), category: result.cat }); }, [result]);
 
   return (
@@ -717,6 +736,7 @@ export function LeanBodyMassCalculator({ onResult }: { onResult: ResultSetter })
     return { lbm, fat, weight: w };
   }, [weight, bf, errW, errBf]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ leanMass: result.lbm.toFixed(1), fatMass: result.fat.toFixed(1) }); }, [result]);
 
   return (
@@ -760,6 +780,7 @@ export function FFMICalculator({ onResult }: { onResult: ResultSetter }) {
     return { ffmi, adjusted, cat };
   }, [height, lbm, errH, errL]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ ffmi: result.ffmi.toFixed(1), adjusted: result.adjusted.toFixed(1) }); }, [result]);
 
   return (
@@ -807,6 +828,7 @@ export function IdealWeightCalculator({ onResult }: { onResult: ResultSetter }) 
     return { devine, robinson, miller, hamwi, avg };
   }, [gender, height, errH]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ idealWeight: result.avg.toFixed(1) }); }, [result]);
 
   return (
@@ -854,6 +876,7 @@ export function WaistHeightRatioCalculator({ onResult }: { onResult: ResultSette
     return { whtr, risk, color };
   }, [waist, height, errWa, errH]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ whtr: result.whtr.toFixed(3), risk: result.risk }); }, [result]);
 
   return (
@@ -902,9 +925,8 @@ export function HeartRateZonesCalculator({ onResult }: { onResult: ResultSetter 
     };
   }, [age, restHr, errA]);
 
-  useMemo(() => {
-    if (zones) onResult({ maxHr: zones.max, zone2: `${zones.zones[1].min}-${zones.zones[1].max}` });
-  }, [zones]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(() => { if (zones) onResult({ maxHr: zones.max, zone2: `${zones.zones[1].min}-${zones.zones[1].max}` }); }, [zones]);
 
   return (
     <CalculatorCard title="Heart Rate Zones" icon={<Heart className="w-5 h-5" />} color="#DC2626">
@@ -956,6 +978,7 @@ export function PaceCalculator({ onResult }: { onResult: ResultSetter }) {
     return { km: d, timeMin: totalMin, paceMin, paceM, paceS, speed, paceString: `${paceM}:${paceS.toString().padStart(2, "0")} min/km` };
   }, [distance, timeM, timeS, errD]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ pace: result.paceString, speed: result.speed.toFixed(1) }); }, [result]);
 
   return (
@@ -987,17 +1010,6 @@ export function CaloriesBurnedCalculator({ onResult }: { onResult: ResultSetter 
   const [weight, setWeight] = useState(""); const [activity, setActivity] = useState("running"); const [duration, setDuration] = useState("30");
   const errW = validateNumber(weight, 10, 350, "Weight"); const errD = validateNumber(duration, 1, 600, "Duration");
 
-  const METS: Record<string, { label: string; met: number }> = {
-    running: { label: "Running (moderate pace)", met: 8.0 },
-    cycling: { label: "Cycling (moderate)", met: 6.0 },
-    swimming: { label: "Swimming (leisurely)", met: 5.0 },
-    walking: { label: "Walking (brisk)", met: 3.5 },
-    weights: { label: "Weightlifting", met: 4.0 },
-    hiit: { label: "HIIT / Circuit", met: 9.0 },
-    yoga: { label: "Yoga / Stretching", met: 2.5 },
-    elliptical: { label: "Elliptical", met: 5.0 },
-  };
-
   const result = useMemo(() => {
     if (errW || errD) return null;
     const w = parseFloat(weight); const d = parseFloat(duration);
@@ -1006,6 +1018,7 @@ export function CaloriesBurnedCalculator({ onResult }: { onResult: ResultSetter 
     return { cal, met, duration: d, weight: w };
   }, [weight, activity, duration, errW, errD]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ caloriesBurned: result.cal.toFixed(0) }); }, [result]);
 
   return (
@@ -1058,6 +1071,7 @@ export function VO2MaxCalculator({ onResult }: { onResult: ResultSetter }) {
     return { vo2, fitness };
   }, [gender, age, restHr, method, errA, errRh]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { if (result) onResult({ vo2max: result.vo2.toFixed(1), fitness: result.fitness }); }, [result]);
 
   return (

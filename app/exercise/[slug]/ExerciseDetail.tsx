@@ -114,6 +114,7 @@ export default function ExerciseDetail({
           {/* Media Section */}
           {mediaUrl && (
             <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-white/10 bg-gray-900 group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={mediaUrl}
                 alt={exercise.name}

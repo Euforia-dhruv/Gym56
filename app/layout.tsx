@@ -91,6 +91,29 @@ const organizationSchema = {
   ],
 };
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Gym 56",
+  url: "https://gym56.vercel.app",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://gym56.vercel.app/exercises?search={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://gym56.vercel.app" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -101,6 +124,8 @@ export default function RootLayout({
       <body className="antialiased min-h-screen flex flex-col">
         <JsonLd data={localBusinessSchema} />
         <JsonLd data={organizationSchema} />
+        <JsonLd data={websiteSchema} />
+        <JsonLd data={breadcrumbSchema} />
         <Analytics />
         <script
           dangerouslySetInnerHTML={{

@@ -164,6 +164,7 @@ export function EquipmentClient({ initialEquipment }: { initialEquipment: Equipm
               >
                 {eq.primary_image_url && (
                   <div className="aspect-video rounded-xl overflow-hidden mb-4 bg-gray-900">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={eq.primary_image_url}
                       alt={eq.name}

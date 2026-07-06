@@ -1,13 +1,24 @@
 import React from "react";
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { getMyProfile } from "@/lib/actions/member-profile";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 
-// The (admin) route group shares the AdminLayout shell (sidebar + header).
-// Route protection (admin role check via JWT claim) will be enforced in
-// Sprint 2A when the Supabase SSR client is integrated into middleware.
-export default function AdminGroupLayout({
+export default async function AdminGroupLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  const profile = await getMyProfile();
+
+  if (profile.role !== "admin") redirect("/");
+
   return <AdminLayout>{children}</AdminLayout>;
 }

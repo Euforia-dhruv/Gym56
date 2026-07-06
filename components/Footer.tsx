@@ -104,6 +104,7 @@ export default function Footer() {
               <li><Link href="/nutrition" className="text-gray-400 hover:text-white transition-colors">Nutrition</Link></li>
               <li><Link href="/tools" className="text-gray-400 hover:text-white transition-colors">Tools</Link></li>
               <li><Link href="/ai-coach" className="text-gray-400 hover:text-white transition-colors">AI Coach</Link></li>
+              <li><Link href="/community" className="text-gray-400 hover:text-white transition-colors">Community</Link></li>
               <li><Link href="/classes" className="text-gray-400 hover:text-white transition-colors">Classes</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
             </ul>
