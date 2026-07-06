@@ -22,8 +22,17 @@ export interface ExerciseFormProps {
     equipment_label: string;
     difficulty: string;
     target_muscles: string;
+    secondary_muscles: string;
     common_mistakes: string;
     safety_tips: string;
+    breathing: string;
+    variations: string;
+    alternatives: string;
+    progressions: string;
+    regressions: string;
+    beginner_tips: string;
+    gif_url: string | null;
+    thumbnail_url: string | null;
     is_published: boolean;
   }) => Promise<void>;
   onImageUpload?: (formData: FormData) => Promise<{ publicUrl: string }>;
@@ -58,6 +67,27 @@ export function ExerciseForm({
     exercise?.safety_tips?.join(", ") ?? ""
   );
   const [isPublished, setIsPublished] = React.useState(exercise?.is_published ?? false);
+  const [secondaryMuscles, setSecondaryMuscles] = React.useState(
+    exercise?.secondary_muscles?.join(", ") ?? ""
+  );
+  const [breathing, setBreathing] = React.useState(exercise?.breathing ?? "");
+  const [variations, setVariations] = React.useState(
+    exercise?.variations?.join(", ") ?? ""
+  );
+  const [alternatives, setAlternatives] = React.useState(
+    exercise?.alternatives?.join(", ") ?? ""
+  );
+  const [progressions, setProgressions] = React.useState(
+    exercise?.progressions?.join(", ") ?? ""
+  );
+  const [regressions, setRegressions] = React.useState(
+    exercise?.regressions?.join(", ") ?? ""
+  );
+  const [beginnerTips, setBeginnerTips] = React.useState(
+    exercise?.beginner_tips?.join(", ") ?? ""
+  );
+  const [gifUrl, setGifUrl] = React.useState(exercise?.gif_url ?? "");
+  const [thumbnailUrl, setThumbnailUrl] = React.useState(exercise?.thumbnail_url ?? "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,8 +107,17 @@ export function ExerciseForm({
         equipment_label: equipmentLabel.trim(),
         difficulty,
         target_muscles: targetMuscles.trim(),
+        secondary_muscles: secondaryMuscles.trim(),
         common_mistakes: commonMistakes.trim(),
         safety_tips: safetyTips.trim(),
+        breathing: breathing.trim(),
+        variations: variations.trim(),
+        alternatives: alternatives.trim(),
+        progressions: progressions.trim(),
+        regressions: regressions.trim(),
+        beginner_tips: beginnerTips.trim(),
+        gif_url: gifUrl.trim() || null,
+        thumbnail_url: thumbnailUrl.trim() || null,
         is_published: isPublished,
       });
       toast({
@@ -166,6 +205,69 @@ export function ExerciseForm({
         placeholder="Always use a spotter, Start with light weight"
         rows={2}
       />
+      <Textarea
+        label="Secondary Muscles (comma-separated)"
+        value={secondaryMuscles}
+        onChange={(e) => setSecondaryMuscles(e.target.value)}
+        placeholder="Triceps, Rear Delts"
+        rows={2}
+      />
+      <Textarea
+        label="Breathing Instructions"
+        value={breathing}
+        onChange={(e) => setBreathing(e.target.value)}
+        placeholder="Exhale on the exertion, inhale on the release"
+        rows={2}
+      />
+      <Textarea
+        label="Variations (comma-separated)"
+        value={variations}
+        onChange={(e) => setVariations(e.target.value)}
+        placeholder="Incline Barbell Bench Press, Decline Barbell Bench Press"
+        rows={2}
+      />
+      <Textarea
+        label="Alternatives (comma-separated)"
+        value={alternatives}
+        onChange={(e) => setAlternatives(e.target.value)}
+        placeholder="Dumbbell Bench Press, Machine Chest Press"
+        rows={2}
+      />
+      <Textarea
+        label="Progressions (comma-separated)"
+        value={progressions}
+        onChange={(e) => setProgressions(e.target.value)}
+        placeholder="Add weight, Increase reps, Pause at bottom"
+        rows={2}
+      />
+      <Textarea
+        label="Regressions (comma-separated)"
+        value={regressions}
+        onChange={(e) => setRegressions(e.target.value)}
+        placeholder="Reduce weight, Use spotter, Partial range of motion"
+        rows={2}
+      />
+      <Textarea
+        label="Beginner Tips (comma-separated)"
+        value={beginnerTips}
+        onChange={(e) => setBeginnerTips(e.target.value)}
+        placeholder="Start with bodyweight, Focus on form first"
+        rows={2}
+      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Input
+          label="GIF URL"
+          value={gifUrl}
+          onChange={(e) => setGifUrl(e.target.value)}
+          placeholder="https://example.com/exercise.gif"
+        />
+        <Input
+          label="Thumbnail URL"
+          value={thumbnailUrl}
+          onChange={(e) => setThumbnailUrl(e.target.value)}
+          placeholder="https://example.com/thumb.jpg"
+        />
+      </div>
 
       <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
         <input

@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+const commaArray = z
+  .string()
+  .transform((s) =>
+    s
+      .split(",")
+      .map((m) => m.trim())
+      .filter(Boolean)
+  )
+  .optional()
+  .default([]);
+
 // ─── Equipment ───────────────────────────────────────────────────────────────
 
 export const EquipmentCreateSchema = z.object({
@@ -19,6 +30,11 @@ export const EquipmentCreateSchema = z.object({
     .enum(["excellent", "good", "fair", "maintenance", "retired"])
     .default("good"),
   location: z.string().max(200).optional().default(""),
+  difficulty: z.enum(["Beginner", "Intermediate", "Advanced", "All Levels"]).optional().default("All Levels"),
+  muscles_trained: commaArray,
+  common_mistakes: commaArray,
+  maintenance_tips: commaArray,
+  instructions: commaArray,
   is_available: z.boolean().default(true),
   is_published: z.boolean().default(false),
 });
@@ -47,39 +63,21 @@ export const ExerciseCreateSchema = z.object({
     "Abs",
   ]),
   muscle_group: z.string().max(200).optional().default(""),
+  secondary_muscles: commaArray,
   equipment_id: z.string().uuid().optional().nullable().default(null),
   equipment_label: z.string().max(200).optional().default(""),
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
-  target_muscles: z
-    .string()
-    .transform((s) =>
-      s
-        .split(",")
-        .map((m) => m.trim())
-        .filter(Boolean)
-    )
-    .optional()
-    .default([]),
-  common_mistakes: z
-    .string()
-    .transform((s) =>
-      s
-        .split(",")
-        .map((m) => m.trim())
-        .filter(Boolean)
-    )
-    .optional()
-    .default([]),
-  safety_tips: z
-    .string()
-    .transform((s) =>
-      s
-        .split(",")
-        .map((m) => m.trim())
-        .filter(Boolean)
-    )
-    .optional()
-    .default([]),
+  target_muscles: commaArray,
+  common_mistakes: commaArray,
+  safety_tips: commaArray,
+  breathing: z.string().max(2000).optional().default(""),
+  variations: commaArray,
+  alternatives: commaArray,
+  progressions: commaArray,
+  regressions: commaArray,
+  beginner_tips: commaArray,
+  gif_url: z.string().url().optional().nullable().default(null),
+  thumbnail_url: z.string().url().optional().nullable().default(null),
   is_published: z.boolean().default(false),
 });
 

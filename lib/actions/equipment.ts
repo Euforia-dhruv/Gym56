@@ -107,6 +107,11 @@ export async function createEquipment(input: EquipmentCreateInput) {
       location: parsed.location || null,
       is_available: parsed.is_available,
       is_published: parsed.is_published,
+      difficulty: parsed.difficulty || 'All Levels',
+      muscles_trained: parsed.muscles_trained ?? [],
+      common_mistakes: parsed.common_mistakes ?? [],
+      maintenance_tips: parsed.maintenance_tips ?? [],
+      instructions: parsed.instructions ?? [],
       created_by: user.id,
       updated_by: user.id,
     })
@@ -144,6 +149,11 @@ export async function updateEquipment(input: EquipmentUpdateInput) {
   if (parsed.location !== undefined) updateData.location = parsed.location || null;
   if (parsed.is_available !== undefined) updateData.is_available = parsed.is_available;
   if (parsed.is_published !== undefined) updateData.is_published = parsed.is_published;
+  if (parsed.difficulty !== undefined) updateData.difficulty = parsed.difficulty;
+  if (parsed.muscles_trained !== undefined) updateData.muscles_trained = parsed.muscles_trained;
+  if (parsed.common_mistakes !== undefined) updateData.common_mistakes = parsed.common_mistakes;
+  if (parsed.maintenance_tips !== undefined) updateData.maintenance_tips = parsed.maintenance_tips;
+  if (parsed.instructions !== undefined) updateData.instructions = parsed.instructions;
 
   const { data, error } = await admin
     .from("equipment")

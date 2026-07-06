@@ -103,6 +103,15 @@ export async function createExercise(input: ExerciseCreateInput) {
       common_mistakes: parsed.common_mistakes,
       safety_tips: parsed.safety_tips,
       is_published: parsed.is_published,
+      secondary_muscles: parsed.secondary_muscles ?? [],
+      breathing: parsed.breathing || null,
+      variations: parsed.variations ?? [],
+      alternatives: parsed.alternatives ?? [],
+      progressions: parsed.progressions ?? [],
+      regressions: parsed.regressions ?? [],
+      beginner_tips: parsed.beginner_tips ?? [],
+      gif_url: parsed.gif_url ?? null,
+      thumbnail_url: parsed.thumbnail_url ?? null,
       created_by: user.id,
       updated_by: user.id,
     })
@@ -142,6 +151,15 @@ export async function updateExercise(input: ExerciseUpdateInput) {
   if (parsed.common_mistakes !== undefined) updateData.common_mistakes = parsed.common_mistakes;
   if (parsed.safety_tips !== undefined) updateData.safety_tips = parsed.safety_tips;
   if (parsed.is_published !== undefined) updateData.is_published = parsed.is_published;
+  if (parsed.secondary_muscles !== undefined) updateData.secondary_muscles = parsed.secondary_muscles;
+  if (parsed.breathing !== undefined) updateData.breathing = parsed.breathing || null;
+  if (parsed.variations !== undefined) updateData.variations = parsed.variations;
+  if (parsed.alternatives !== undefined) updateData.alternatives = parsed.alternatives;
+  if (parsed.progressions !== undefined) updateData.progressions = parsed.progressions;
+  if (parsed.regressions !== undefined) updateData.regressions = parsed.regressions;
+  if (parsed.beginner_tips !== undefined) updateData.beginner_tips = parsed.beginner_tips;
+  if (parsed.gif_url !== undefined) updateData.gif_url = parsed.gif_url ?? null;
+  if (parsed.thumbnail_url !== undefined) updateData.thumbnail_url = parsed.thumbnail_url ?? null;
 
   const { data, error } = await admin
     .from("exercises")

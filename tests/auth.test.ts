@@ -61,9 +61,14 @@ describe("Authentication", () => {
         quantity: 1,
         condition: "excellent",
         location: "",
+        difficulty: "All Levels",
+        muscles_trained: "",
+        common_mistakes: "",
+        maintenance_tips: "",
+        instructions: "",
         is_available: true,
         is_published: false,
-      })
+      } as unknown as Parameters<typeof createEquipment>[0])
     ).rejects.toThrow("Forbidden");
   });
 });

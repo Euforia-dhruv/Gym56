@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getEquipmentBySlug, getPublishedEquipment, getRelatedEquipment } from "@/lib/actions/equipment";
+import { getEquipmentBySlug, getPublishedEquipment, getRelatedEquipment, getEquipmentImages } from "@/lib/actions/equipment";
 import { getExercisesByEquipment } from "@/lib/actions/exercises";
 import EquipmentDetail from "./EquipmentDetail";
 import JsonLd from "@/components/JsonLd";
@@ -56,9 +56,10 @@ export default async function EquipmentDetailPage({
     const equipment = await getEquipmentBySlug(slug);
     if (!equipment) notFound();
 
-    const [equipmentExercises, related] = await Promise.all([
+    const [equipmentExercises, related, images] = await Promise.all([
       getExercisesByEquipment(equipment.id).catch(() => []),
       getRelatedEquipment(equipment.id).catch(() => []),
+      getEquipmentImages(equipment.id).catch(() => []),
     ]);
 
     const equipmentSchema = {
@@ -88,6 +89,7 @@ export default async function EquipmentDetailPage({
           equipment={equipment}
           equipmentExercises={equipmentExercises}
           related={related}
+          images={images}
         />
       </>
     );
