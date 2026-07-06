@@ -11,6 +11,7 @@ import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
 import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
+import LocationSection from "@/components/LocationSection";
 import CTA from "@/components/CTA";
 
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ export default function Home() {
       <Gallery />
       <Reviews />
       <FAQ />
+      <LocationSection />
       <ContactSection />
       <CTA />
     </>
