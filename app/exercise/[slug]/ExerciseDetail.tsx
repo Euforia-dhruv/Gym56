@@ -6,6 +6,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   AlertTriangle,
   Shield,
   Dumbbell,
@@ -81,8 +83,11 @@ export default function ExerciseDetail({
   const [imageError, setImageError] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const imageArray = exercise.images || [];
-  const hasImages = imageArray.length > 0 || !!exercise.primary_image_url;
-  const imageUrl = exercise.primary_image_url || (imageArray.length > 0 ? `${EXERCISE_IMAGE_BASE}/${imageArray[galleryIndex]}` : null);
+  const useGallery = imageArray.length > 0;
+  const hasImages = useGallery || !!exercise.primary_image_url;
+  const imageUrl = useGallery
+    ? `${EXERCISE_IMAGE_BASE}/${imageArray[galleryIndex]}`
+    : exercise.primary_image_url;
   const hasBreathing = exercise.breathing && exercise.breathing.length > 0;
   const hasVariations = exercise.variations && exercise.variations.length > 0;
   const hasAlternatives = exercise.alternatives && exercise.alternatives.length > 0;
@@ -180,18 +185,44 @@ export default function ExerciseDetail({
                   />
                 )}
                 {imageArray.length > 1 && (
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-                    {imageArray.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => { setGalleryIndex(i); setImageLoaded(false); setImageError(false); }}
-                        className={`w-2.5 h-2.5 rounded-full transition-all ${
-                          i === galleryIndex ? "bg-[#DC2626] w-6" : "bg-white/40 hover:bg-white/60"
-                        }`}
-                        aria-label={`View image ${i + 1}`}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <button
+                      onClick={() => {
+                        const prev = galleryIndex === 0 ? imageArray.length - 1 : galleryIndex - 1;
+                        setGalleryIndex(prev);
+                        setImageLoaded(false);
+                        setImageError(false);
+                      }}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-white" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        const next = galleryIndex === imageArray.length - 1 ? 0 : galleryIndex + 1;
+                        setGalleryIndex(next);
+                        setImageLoaded(false);
+                        setImageError(false);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="w-5 h-5 text-white" />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                      {imageArray.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => { setGalleryIndex(i); setImageLoaded(false); setImageError(false); }}
+                          className={`w-2.5 h-2.5 rounded-full transition-all ${
+                            i === galleryIndex ? "bg-[#DC2626] w-6" : "bg-white/40 hover:bg-white/60"
+                          }`}
+                          aria-label={`View image ${i + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
                 )}
               </>
             ) : (

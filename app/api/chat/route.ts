@@ -317,7 +317,9 @@ export async function POST(req: Request) {
       });
 
       return result.toTextStreamResponse();
-    } catch {
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("[Gym56 Chat] streamText error:", msg);
       return new Response(
         JSON.stringify({ error: "AI provider unavailable. Try again later." }),
         { status: 503, headers: { "Content-Type": "application/json" } }

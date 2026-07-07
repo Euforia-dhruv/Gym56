@@ -22,14 +22,14 @@ export async function createSupabaseServerClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // setAll is called from a Server Component where cookies are
-            // read-only. The middleware handles session refresh instead.
-          }
+          cookiesToSet.forEach(({ name, value, options }) => {
+            try {
+              cookieStore.set(name, value, options);
+            } catch {
+              // Server Component cookies are read-only.
+              // The middleware handles session refresh instead.
+            }
+          });
         },
       },
     }
