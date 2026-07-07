@@ -53,18 +53,16 @@ function seedGallery(): GalleryItem[] {
     "Free Weights Area",
     "Yoga Studio",
     "Group Class Session",
-    "Locker Room",
     "Personal Training",
     "Supplement Store",
   ];
-  const categories = ["Facility", "Equipment", "Equipment", "Classes", "Classes", "Facility", "Members", "Facility"];
+  const categories = ["Facility", "Equipment", "Equipment", "Classes", "Classes", "Members", "Facility"];
   const descriptions = [
     "Our spacious main gym floor with state-of-the-art equipment.",
     "Dedicated cardio zone with treadmills, cycles, and rowing machines.",
     "Fully stocked free weights area with dumbbells up to 50 kg.",
     "Serene yoga studio for group classes and personal practice.",
     "Energetic group class session with our certified instructors.",
-    "Clean and modern locker room facilities with showers and lockers.",
     "One-on-one personal training sessions with experienced trainers.",
     "Well-stocked supplement store for all your fitness nutrition needs.",
   ];

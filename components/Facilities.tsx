@@ -1,12 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
-import { Wind, Music, Car, ShowerHead, Weight, HeartPulse } from "lucide-react";
+import { Wind, Music, Car, Weight, HeartPulse } from "lucide-react";
 
 const facilities = [
   { icon: Wind, title: "Air Conditioned", desc: "Stay cool during intense workouts." },
   { icon: Music, title: "Sound System", desc: "High-quality audio to keep you pumped." },
   { icon: Car, title: "Parking", desc: "Ample parking space for members." },
-  { icon: ShowerHead, title: "Locker Rooms", desc: "Clean changing rooms with lockers." },
+
   { icon: Weight, title: "Cardio Zone", desc: "Treadmills, cycles, and more." },
   { icon: HeartPulse, title: "Recovery Area", desc: "Stretching and cool-down space." },
 ];
