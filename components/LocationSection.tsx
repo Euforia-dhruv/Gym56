@@ -1,12 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, Navigation, Star } from 'lucide-react';
-import type { Map } from 'leaflet';
-
-const GYM_LAT = 23.255305;
-const GYM_LNG = 72.634158;
 
 const hours = [
   { label: 'Monday - Saturday', times: '6:00 AM – 10:00 AM\n5:00 PM – 10:00 PM' },
@@ -50,54 +45,6 @@ const buttons = [
 ];
 
 export default function LocationSection() {
-  const mapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = mapRef.current;
-    if (!el) return;
-
-    let map: Map | null = null;
-    let destroyed = false;
-
-    (async () => {
-      const L = await import('leaflet');
-
-      if (destroyed) return;
-
-      const icon = L.divIcon({
-        html: `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42" fill="none">
-          <path d="M15 0C6.72 0 0 6.72 0 15C0 26.25 15 42 15 42C15 42 30 26.25 30 15C30 6.72 23.28 0 15 0Z" fill="#DC2626"/>
-          <circle cx="15" cy="15" r="6" fill="white"/>
-        </svg>`,
-        className: '',
-        iconSize: [30, 42],
-        iconAnchor: [15, 42],
-        popupAnchor: [0, -42],
-      });
-
-      map = L.map(el, {
-        center: [GYM_LAT, GYM_LNG],
-        zoom: 17,
-        zoomControl: false,
-        scrollWheelZoom: false,
-      });
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
-      }).addTo(map);
-
-      L.marker([GYM_LAT, GYM_LNG], { icon })
-        .addTo(map)
-        .bindPopup('<b>GYM 56</b><br/>Green City, Sector 26, Gandhinagar')
-        .openPopup();
-    })();
-
-    return () => {
-      destroyed = true;
-      if (map) map.remove();
-    };
-  }, []);
 
   return (
     <section className="py-20 sm:py-32 bg-gradient-to-b from-black to-gray-950">
@@ -207,10 +154,16 @@ export default function LocationSection() {
               className="relative w-full rounded-[24px] overflow-hidden border border-[#DC2626]/30 bg-black/60 shadow-2xl shadow-[#DC2626]/10 group hover:scale-[1.02] transition-all duration-500"
             >
               <div className="absolute -inset-4 bg-[#DC2626]/5 blur-3xl rounded-[32px] opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
-              <div
-                ref={mapRef}
-                className="relative z-10 w-full rounded-[24px]"
-                style={{ minHeight: '400px' }}
+              <iframe
+                title="Gym 56 Location"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3665.6642970753187!2d72.6390286!3d23.2553001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2d0061ed69ab%3A0x70866159496d731e!2sGYM%2056!5e0!3m2!1sen!2sin!4v1783443796832!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: '400px' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="relative z-10 rounded-[24px]"
               />
             </div>
           </motion.div>
