@@ -6,7 +6,6 @@ import ScrollToTop from "@/components/ScrollToTop";
 import JsonLd from "@/components/JsonLd";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
-import FloatingChat from "@/components/FloatingChat";
 import { AuthProvider } from "@/lib/AuthContext";
 
 export const metadata: Metadata = {
@@ -140,7 +139,6 @@ export default function RootLayout({
           <ScrollToTop />
         </AuthProvider>
         <CookieConsent />
-        <FloatingChat />
       </body>
     </html>
   );

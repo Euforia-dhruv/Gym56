@@ -48,6 +48,8 @@ export interface Exercise {
   equipment_id: string | null;
   equipment_label: string | null;
   difficulty: "Beginner" | "Intermediate" | "Advanced";
+  force?: "push" | "pull" | "static" | null;
+  mechanic?: "compound" | "isolation" | null;
   target_muscles: string[];
   secondary_muscles: string[];
   pro_tips: string[];

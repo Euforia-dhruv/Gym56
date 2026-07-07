@@ -22,6 +22,7 @@ import {
   Info,
   Share2,
   Zap,
+  Activity,
 } from "lucide-react";
 import { getDifficultyColor } from "@/lib/utils";
 import type { Exercise } from "@/types";
@@ -233,7 +234,7 @@ export default function ExerciseDetail({
           </div>
 
           {/* Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
             <div className="glass rounded-xl p-4 flex items-center gap-3">
               <Dumbbell className="w-5 h-5 text-[#DC2626] flex-shrink-0" />
               <div>
@@ -266,6 +267,28 @@ export default function ExerciseDetail({
               </div>
             </div>
           </div>
+          {exercise.force || exercise.mechanic ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+              {exercise.force && (
+                <div className="glass rounded-xl p-4 flex items-center gap-3">
+                  <Activity className="w-5 h-5 text-[#DC2626] flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">Force Type</p>
+                    <p className="text-sm text-white font-medium capitalize">{exercise.force}</p>
+                  </div>
+                </div>
+              )}
+              {exercise.mechanic && (
+                <div className="glass rounded-xl p-4 flex items-center gap-3">
+                  <Zap className="w-5 h-5 text-[#DC2626] flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">Mechanics</p>
+                    <p className="text-sm text-white font-medium capitalize">{exercise.mechanic}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
 
           <div className="space-y-6 mb-12">
             {/* Target Muscles (detailed) */}
