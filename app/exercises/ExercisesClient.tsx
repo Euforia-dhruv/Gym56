@@ -20,7 +20,7 @@ const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced"] as const;
 const FAVORITES_KEY = "gym56_favorite_exercises";
 const RECENT_KEY = "gym56_recent_exercises";
 
-const EXERCISE_IMAGE_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises";
+const EXERCISE_IMAGE_BASE = "/exercises";
 
 interface ExerciseData {
   id: string;

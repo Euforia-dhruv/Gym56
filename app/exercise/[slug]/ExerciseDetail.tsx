@@ -66,7 +66,7 @@ function ListSection({ items, empty }: { items: string[]; empty?: string }) {
   );
 }
 
-const EXERCISE_IMAGE_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises";
+const EXERCISE_IMAGE_BASE = "/exercises";
 
 export default function ExerciseDetail({
   exercise,

@@ -90,8 +90,6 @@ export function getExercisesFromDb(): Exercise[] {
       cachedExercises = [];
       return [];
     }
-    const IMAGEKIT_BASE = "https://ik.imagekit.io/yuhonas";
-
     cachedExercises = rawData
       .filter((ex) => ex.name && ex.instructions && ex.instructions.length > 0)
       .map((ex, index) => {
@@ -109,7 +107,7 @@ export function getExercisesFromDb(): Exercise[] {
 
         const imageUrl =
           ex.images && ex.images.length > 0
-            ? `${IMAGEKIT_BASE}/${ex.images[0]}`
+            ? `/exercises/${ex.images[0]}`
             : null;
 
         return {
