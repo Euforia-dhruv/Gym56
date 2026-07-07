@@ -10,7 +10,7 @@ import {
   type ExerciseCreateInput,
   type ExerciseUpdateInput,
 } from "@/types/api";
-import { getSeedExerciseBySlug, getSeedRelatedExercises, getSeedExerciseSteps, getSeedExercisesByEquipment } from "@/lib/data/exercises-seed";
+import { getSeedExerciseBySlug, getSeedRelatedExercises, getSeedExerciseSteps } from "@/lib/data/exercises-seed";
 import { getExercisesFromDb, getDbExerciseBySlug, getDbExercisesByEquipment } from "@/lib/data/exercise-loader";
 import { slugify } from "@/lib/utils";
 import type { Exercise } from "@/types";
@@ -56,49 +56,12 @@ export async function getExerciseById(id: string) {
 }
 
 export async function getPublishedExercises() {
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("exercises")
-      .select("*, equipment:equipment_id(name, slug)")
-      .eq("is_published", true)
-      .is("deleted_at", null)
-      .order("sort_order", { ascending: true });
-    if (error) throw new Error(error.message);
-    if (data && data.length > 0) {
-      const dbExercises = getExercisesFromDb();
-      const dbMap = new Map(dbExercises.map((ex) => [ex.slug, ex]));
-      return data.map((ex) => {
-        const dbEx = dbMap.get(ex.slug);
-        if (dbEx && dbEx.images?.length) {
-          return {
-            ...ex,
-            images: dbEx.images,
-            primary_image_url: `https://ik.imagekit.io/yuhonas/${dbEx.images[0]}`,
-          };
-        }
-        return ex;
-      });
-    }
-  } catch {}
-  return getExercisesFromDb();
+  const all = getExercisesFromDb();
+  return all.filter((ex) => ex.images?.length);
 }
 
-export async function getExercisesByEquipment(equipmentId: string) {
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("exercises")
-      .select("*, equipment:equipment_id(name, slug)")
-      .eq("equipment_id", equipmentId)
-      .eq("is_published", true)
-      .is("deleted_at", null);
-    if (error) throw new Error(error.message);
-    if (data && data.length > 0) return data;
-    return getDbExercisesByEquipment(equipmentId);
-  } catch {
-    return getSeedExercisesByEquipment(equipmentId);
-  }
+export async function getExercisesByEquipment(_equipmentId: string) {
+  return getDbExercisesByEquipment(_equipmentId).filter((ex) => ex.images?.length);
 }
 
 // ─── Create ─────────────────────────────────────────────────────────────────
@@ -284,32 +247,9 @@ export async function uploadExerciseImage(
 // ─── Get exercise by slug ──────────────────────────────────────────────────
 
 export async function getExerciseBySlug(slug: string) {
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("exercises")
-      .select("*, equipment:equipment_id(name, slug)")
-      .eq("slug", slug)
-      .eq("is_published", true)
-      .is("deleted_at", null)
-      .single();
-    if (error) throw new Error(error.message);
-    if (data) {
-      const dbEx = getDbExerciseBySlug(slug);
-      if (dbEx && dbEx.images?.length) {
-        return {
-          ...data,
-          images: dbEx.images,
-          primary_image_url: `https://ik.imagekit.io/yuhonas/${dbEx.images[0]}`,
-        };
-      }
-      return data;
-    }
-  } catch {
-    const dbEx = getDbExerciseBySlug(slug);
-    if (dbEx) return dbEx;
-    return getSeedExerciseBySlug(slug) || null;
-  }
+  const dbEx = getDbExerciseBySlug(slug);
+  if (dbEx?.images?.length) return dbEx;
+  return getSeedExerciseBySlug(slug) || null;
 }
 
 // ─── Related exercises ────────────────────────────────────────────────────

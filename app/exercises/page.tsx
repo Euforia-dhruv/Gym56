@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getPublishedExercises } from "@/lib/actions/exercises";
+import type { Exercise } from "@/types";
 import ExercisesClient from "./ExercisesClient";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ExerciseLibraryPage() {
-  let exercises;
+  let exercises: Exercise[];
   try {
     exercises = await getPublishedExercises();
   } catch {
