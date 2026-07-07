@@ -15,12 +15,12 @@ const stats = [
 ];
 
 const equipmentImages = [
-  { src: '/hero/barbell.png', top: '10%', right: '4%', width: 150, height: 100 },
-  { src: '/hero/bench.png', top: '58%', right: '3%', width: 160, height: 100 },
-  { src: '/hero/cycle.png', top: '28%', right: '1%', width: 130, height: 150 },
-  { src: '/hero/dumbell.png', top: '68%', left: '4%', width: 100, height: 100 },
-  { src: '/hero/rope.png', top: '12%', left: '3%', width: 100, height: 120 },
-  { src: '/hero/treadmill.png', top: '38%', left: '2%', width: 120, height: 140 },
+  { src: '/hero/barbell.png', top: '8%', right: '3%', width: 200, height: 140 },
+  { src: '/hero/bench.png', top: '55%', right: '2%', width: 220, height: 140 },
+  { src: '/hero/cycle.png', top: '24%', right: '1%', width: 180, height: 200 },
+  { src: '/hero/dumbell.png', top: '65%', left: '3%', width: 150, height: 150 },
+  { src: '/hero/rope.png', top: '10%', left: '2%', width: 140, height: 170 },
+  { src: '/hero/treadmill.png', top: '34%', left: '1%', width: 170, height: 200 },
 ];
 
 export default function Hero() {
@@ -79,12 +79,21 @@ export default function Hero() {
                 ease: 'easeInOut',
               }}
             >
+              {eq.src.includes('rope') && (
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    filter: 'blur(30px)',
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
+                  }}
+                />
+              )}
               <Image
                 src={eq.src}
                 alt="Equipment"
                 width={eq.width}
                 height={eq.height}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain relative z-[1]"
                 style={{ filter: 'drop-shadow(0 0 20px rgba(220,38,38,0.3))' }}
               />
             </motion.div>
