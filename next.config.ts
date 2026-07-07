@@ -9,6 +9,23 @@ const nextConfig: NextConfig = {
         hostname: "vuewhwzhcfkatjuzqpxg.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        pathname: "/wrkout/**",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      {
+        protocol: "https",
+        hostname: "static.exercisedb.dev",
+      },
     ],
   },
   async headers() {

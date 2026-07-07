@@ -16,8 +16,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Cardio Zone",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1954523182522-379d4bfcf8c6?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/treadmill.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Quadriceps",
@@ -80,8 +79,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Cardio Zone",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1532298229545-e1a6a3e6f43c?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/stationary-bike.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Quadriceps",
@@ -147,8 +145,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Cardio Zone",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1571907483246-3d0b3e5fda1d?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/elliptical-trainer.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Quadriceps",
@@ -216,8 +213,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Cardio Zone",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1532386238399-f6e6b5b4cf3b?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/rowing-machine.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Quadriceps",
@@ -289,8 +285,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Cardio Zone",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1540496900333-6db48f3b2efb?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/stair-climber.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Glutes",
@@ -352,8 +347,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Free Weights Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1526506118089-9b0db7c3f0b3?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/bench-press.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Pectoralis Major",
@@ -414,8 +408,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Free Weights Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1534438327276-14d53047d9c6?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/squat-rack.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Quadriceps",
@@ -477,8 +470,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Free Weights Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1534367610401-9f5b6814e3d0?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/deadlift-platform.jpg",
       difficulty: "Advanced",
       muscles_trained: [
         "Hamstrings",
@@ -540,8 +532,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1544033527-b192b1e0692a?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/cable-crossover-machine.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Pectoralis Major",
@@ -607,8 +598,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1571019613454-1cb233b41a5c?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/lat-pulldown-machine.jpg",
       difficulty: "Beginner",
       muscles_trained: [
         "Latissimus Dorsi",
@@ -672,8 +662,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1518610114239-f23dfc3d776e?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/leg-press-machine.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Quadriceps",
@@ -737,8 +726,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1536922246286-3d6970c3b8b7?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/smith-machine.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Quadriceps",
@@ -800,8 +788,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Free Weights Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1638531420846-0f81d6d5b9f0?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/dumbbell-set.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Biceps Brachii",
@@ -863,8 +850,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Free Weights Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1534438327276-14d53047d9c6?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/barbell-set.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Quadriceps",
@@ -933,8 +919,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Free Weights Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1581007506601-6909e1b2a5d4?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/kettlebell-set.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Glutes",
@@ -997,8 +982,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Functional Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1598282782916-7054be7d0c30?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/medicine-balls.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Core",
@@ -1060,8 +1044,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Functional Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1534256952147-3cc1b7d7c5a0?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/battle-ropes.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Shoulders",
@@ -1123,8 +1106,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Functional Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1517836357463-4f7b0c7b9d5a?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/resistance-bands-set.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Glutes",
@@ -1186,8 +1168,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Stretching Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1601925261896-7f2b5a8e0d4a?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/yoga-mats.jpg",
       difficulty: "All Levels",
       muscles_trained: ["Core", "Full Body Stretching"],
       secondary_muscles: [],
@@ -1244,8 +1225,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Stretching Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1571019613454-1cb233b41a5c?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/foam-rollers.jpg",
       difficulty: "All Levels",
       muscles_trained: [
         "Full Body Recovery",
@@ -1307,8 +1287,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Bodyweight Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1534256952147-3cc1b7d7c5b0?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/pull-up-station.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Latissimus Dorsi",
@@ -1370,8 +1349,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1544033527-b192b1e0692b?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/preacher-curl-bench.jpg",
       difficulty: "Beginner",
       muscles_trained: [
         "Biceps Brachii",
@@ -1434,8 +1412,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1518610114239-f23dfc3d776f?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/hack-squat-machine.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Quadriceps",
@@ -1496,8 +1473,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Machine Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1571019613454-1cb233b41a5d?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/pec-deck-machine.jpg",
       difficulty: "Beginner",
       muscles_trained: [
         "Pectoralis Major",
@@ -1561,8 +1537,7 @@ export function getSeedEquipment(): Equipment[] {
       location: "Functional Area",
       is_available: true,
       is_published: true,
-      primary_image_url:
-        "https://images.unsplash.com/photo-1598282782916-7054be7d0c31?w=800&auto=format&fit=crop",
+      primary_image_url: "/images/equipment/trx-suspension-trainer.jpg",
       difficulty: "Intermediate",
       muscles_trained: [
         "Core",
