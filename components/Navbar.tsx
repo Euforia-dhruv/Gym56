@@ -40,7 +40,9 @@ export default function Navbar() {
     { name: "About", href: "/#about" },
     { name: "Equipment", href: "/equipment" },
     { name: "Exercises", href: "/exercises" },
-    { name: "Services", href: "/#services" },
+    { name: "Nutrition", href: "/nutrition" },
+    { name: "Tools", href: "/tools" },
+    { name: "AI Coach", href: "/ai-coach" },
     { name: "Contact", href: "/#contact" },
   ];
 

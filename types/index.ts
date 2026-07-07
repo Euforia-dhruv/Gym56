@@ -59,6 +59,7 @@ export interface Exercise {
   progressions: string[];
   regressions: string[];
   beginner_tips: string[];
+  instructions: string[];
   primary_image_url: string | null;
   gif_url: string | null;
   thumbnail_url: string | null;

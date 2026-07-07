@@ -2,18 +2,20 @@ import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "AI Coach - Gym 56",
+  title: "AI Coach - Premium Fitness Assistant - Gym 56",
   description:
-    "Get personalized fitness advice from Gym 56's AI Coach. Ask about workouts, nutrition, exercise form, and more. Powered by GPT-4o-mini.",
+    "Get expert-level workout plans, nutrition guidance, and fitness advice from Gym 56's premium AI Coach. Workout generation, beginner guidance, fat loss plans, muscle gain programs, and more.",
   openGraph: {
-    title: "AI Coach — Gym 56",
-    description: "Get personalized fitness advice from Gym 56's AI Coach. Ask about workouts, nutrition, and exercise form.",
+    title: "AI Coach — Premium Fitness Assistant — Gym 56",
+    description:
+      "Expert-level workout plans, nutrition guidance, and personalized fitness advice powered by Gym 56's premium AI.",
     url: "https://gym56.vercel.app/ai-coach",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Coach — Gym 56",
-    description: "Get personalized fitness advice from Gym 56's AI Coach. Ask about workouts, nutrition, and exercise form.",
+    title: "AI Coach — Premium Fitness Assistant — Gym 56",
+    description:
+      "Expert-level workout plans, nutrition guidance, and personalized fitness advice powered by Gym 56's premium AI.",
   },
 };
 

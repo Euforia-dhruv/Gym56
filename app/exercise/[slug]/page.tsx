@@ -116,31 +116,36 @@ export default async function ExerciseDetailPage({
     );
   } catch {
     const { getSeedExerciseBySlug } = await import("@/lib/data/exercises-seed");
-    const seedExercise = getSeedExerciseBySlug(slug);
-    if (!seedExercise) notFound();
+    const found = getSeedExerciseBySlug(slug);
+    const { getDbExerciseBySlug } = await import("@/lib/data/exercise-loader");
+    const fallbackExercise = found || getDbExerciseBySlug(slug);
+
+    if (!fallbackExercise) notFound();
 
     const { getSeedExerciseSteps, getSeedExercises } = await import("@/lib/data/exercises-seed");
-    const seedSteps = getSeedExerciseSteps(seedExercise.id);
+    const seedSteps = getSeedExerciseSteps(fallbackExercise.id);
     const allSeed = getSeedExercises();
-    const seedRelated = allSeed.filter((e) => e.id !== seedExercise.id && e.category === seedExercise.category).slice(0, 4);
+    const seedRelated = allSeed.filter((e) => e.id !== fallbackExercise.id && e.category === fallbackExercise.category).slice(0, 4);
 
-    const instructions = seedSteps.map((s) => s.description);
+    const instructions = seedSteps.length > 0
+      ? seedSteps.map((s) => s.description)
+      : fallbackExercise.instructions;
 
     const exerciseSchema = {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      name: seedExercise.name,
-      description: `Learn how to perform the ${seedExercise.name} with proper form.`,
-      difficulty: seedExercise.difficulty,
-      category: seedExercise.category,
-      ...(seedSteps.length > 0 && {
-        step: seedSteps.map((s) => ({
+      name: fallbackExercise.name,
+      description: `Learn how to perform the ${fallbackExercise.name} with proper form.`,
+      difficulty: fallbackExercise.difficulty,
+      category: fallbackExercise.category,
+      ...(instructions.length > 0 && {
+        step: instructions.map((text: string, i: number) => ({
           "@type": "HowToStep",
-          position: s.step_number,
-          text: s.description,
+          position: i + 1,
+          text,
         })),
       }),
-      ...(seedExercise.primary_image_url && { image: seedExercise.primary_image_url }),
+      ...(fallbackExercise.primary_image_url && { image: fallbackExercise.primary_image_url }),
     };
 
     const breadcrumbSchema = {
@@ -149,7 +154,7 @@ export default async function ExerciseDetailPage({
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
         { "@type": "ListItem", position: 2, name: "Exercises", item: `${SITE_URL}/exercises` },
-        { "@type": "ListItem", position: 3, name: seedExercise.name },
+        { "@type": "ListItem", position: 3, name: fallbackExercise.name },
       ],
     };
 
@@ -158,7 +163,7 @@ export default async function ExerciseDetailPage({
         <JsonLd data={exerciseSchema} />
         <JsonLd data={breadcrumbSchema} />
         <ExerciseDetail
-          exercise={seedExercise}
+          exercise={fallbackExercise}
           instructions={instructions}
           relatedExercises={seedRelated}
         />

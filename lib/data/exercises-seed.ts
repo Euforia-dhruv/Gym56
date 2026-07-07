@@ -261,6 +261,7 @@ const EXERCISES: Exercise[] = [
       "Drive through your heels to maintain stability.",
       "Touch the bar to your sternum for full range of motion."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/barbell-bench-press.gif",
     thumbnail_url: "/images/exercises/chest.jpg",
@@ -320,6 +321,7 @@ const EXERCISES: Exercise[] = [
       "Drive the dumbbells in an arc toward each other at the top.",
       "Pause briefly at the bottom stretch."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/incline-dumbbell-press.gif",
     thumbnail_url: "/images/exercises/chest.jpg",
@@ -379,6 +381,7 @@ const EXERCISES: Exercise[] = [
       "Explode up during the concentric phase.",
       "Pause at the bottom for 1-2 seconds."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/push-ups.gif",
     thumbnail_url: "/images/exercises/chest.jpg",
@@ -438,6 +441,7 @@ const EXERCISES: Exercise[] = [
       "Hold the squeeze at the top for 1-2 seconds.",
       "Flare the elbows slightly less to protect the shoulders."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/dumbbell-flyes.gif",
     thumbnail_url: "/images/exercises/chest.jpg",
@@ -497,6 +501,7 @@ const EXERCISES: Exercise[] = [
       "Arch your upper back slightly for better stability.",
       "Drive the bar toward your sternum."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/decline-bench-press.gif",
     thumbnail_url: "/images/exercises/chest.jpg",
@@ -556,6 +561,7 @@ const EXERCISES: Exercise[] = [
       "Pull the bar to your belly button, not your chest.",
       "Use a hook grip for heavier loads."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/bent-over-row.gif",
     thumbnail_url: "/images/exercises/back.jpg",
@@ -615,6 +621,7 @@ const EXERCISES: Exercise[] = [
       "Pull your elbows down and back, not just forward.",
       "Pause at the top for a hard squeeze."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/pull-ups.gif",
     thumbnail_url: "/images/exercises/back.jpg",
@@ -674,6 +681,7 @@ const EXERCISES: Exercise[] = [
       "Imagine you are pulling your elbows down to your hips.",
       "Pause at the bottom and squeeze your lats."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/lat-pulldown.gif",
     thumbnail_url: "/images/exercises/back.jpg",
@@ -733,6 +741,7 @@ const EXERCISES: Exercise[] = [
       "Hold the squeeze for 1-2 seconds at full contraction.",
       "Keep your elbows close to your body."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/seated-cable-row.gif",
     thumbnail_url: "/images/exercises/back.jpg",
@@ -793,6 +802,7 @@ const EXERCISES: Exercise[] = [
       "Pull the slack out of the bar before lifting.",
       "Use your lats to keep the bar close to your body."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/deadlift.gif",
     thumbnail_url: "/images/exercises/back.jpg",
@@ -852,6 +862,7 @@ const EXERCISES: Exercise[] = [
       "Press the bar slightly behind your head for a better bar path.",
       "Brace your core before each rep."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/overhead-shoulder-press.gif",
     thumbnail_url: "/images/exercises/shoulders.jpg",
@@ -911,6 +922,7 @@ const EXERCISES: Exercise[] = [
       "Pause for 1-2 seconds at the top of the movement.",
       "Keep the pinky finger slightly higher than the thumb."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/lateral-raises.gif",
     thumbnail_url: "/images/exercises/shoulders.jpg",
@@ -970,6 +982,7 @@ const EXERCISES: Exercise[] = [
       "Pause at the top to maximize time under tension.",
       "Use a cable for constant tension."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/front-raises.gif",
     thumbnail_url: "/images/exercises/shoulders.jpg",
@@ -1029,6 +1042,7 @@ const EXERCISES: Exercise[] = [
       "Imagine a string pulling your elbows back and apart.",
       "Pause and squeeze for 2 seconds at full contraction."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/face-pulls.gif",
     thumbnail_url: "/images/exercises/shoulders.jpg",
@@ -1088,6 +1102,7 @@ const EXERCISES: Exercise[] = [
       "Brace your core as if someone is about to punch your stomach.",
       "Use lifting shoes with a raised heel for better depth."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/barbell-squat.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1147,6 +1162,7 @@ const EXERCISES: Exercise[] = [
       "Pause at the bottom to eliminate momentum.",
       "Vary foot placement to target different muscles."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/leg-press.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1206,6 +1222,7 @@ const EXERCISES: Exercise[] = [
       "Focus on driving through the heel of your front foot.",
       "Use a glute emphasis by leaning slightly forward."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/lunges.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1265,6 +1282,7 @@ const EXERCISES: Exercise[] = [
       "Imagine there is a wall behind you that you are trying to touch with your glutes.",
       "Pause at the bottom for a deep stretch."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/romanian-deadlift.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1324,6 +1342,7 @@ const EXERCISES: Exercise[] = [
       "Point your toes slightly outward to engage more quad fibers.",
       "Do not rest the weight on the stack between reps."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/leg-extensions.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1383,6 +1402,7 @@ const EXERCISES: Exercise[] = [
       "Pause at the top for 1-2 seconds.",
       "Drive your hips into the bench for stability."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/leg-curls.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1442,6 +1462,7 @@ const EXERCISES: Exercise[] = [
       "Slow down the eccentric phase to 3-4 seconds.",
       "Lean forward slightly to increase range of motion."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/barbell-curl.gif",
     thumbnail_url: "/images/exercises/arms.jpg",
@@ -1501,6 +1522,7 @@ const EXERCISES: Exercise[] = [
       "Lean forward slightly for better leverage.",
       "Pause at full extension for 1-2 seconds."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/tricep-pushdown.gif",
     thumbnail_url: "/images/exercises/arms.jpg",
@@ -1560,6 +1582,7 @@ const EXERCISES: Exercise[] = [
       "Curl the dumbbells slightly across your body for more brachialis activation.",
       "Slow down the negative phase for more time under tension."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/hammer-curls.gif",
     thumbnail_url: "/images/exercises/arms.jpg",
@@ -1619,6 +1642,7 @@ const EXERCISES: Exercise[] = [
       "Pause at the bottom for a deep stretch.",
       "Use a rope attachment on a low cable for constant tension."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/overhead-tricep-extension.gif",
     thumbnail_url: "/images/exercises/arms.jpg",
@@ -1678,6 +1702,7 @@ const EXERCISES: Exercise[] = [
       "Pull your elbows toward your toes to create full-body tension.",
       "Breathe into your ribcage, not your belly."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/plank.gif",
     thumbnail_url: "/images/exercises/core.jpg",
@@ -1737,6 +1762,7 @@ const EXERCISES: Exercise[] = [
       "Focus on contracting the upper abs.",
       "Slow down the movement\u20142 seconds up, 2 seconds down."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/crunches.gif",
     thumbnail_url: "/images/exercises/abs.jpg",
@@ -1796,6 +1822,7 @@ const EXERCISES: Exercise[] = [
       "Point your toes to engage the lower abs more.",
       "Pause at the top for a hard contraction."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/hanging-leg-raises.gif",
     thumbnail_url: "/images/exercises/abs.jpg",
@@ -1855,6 +1882,7 @@ const EXERCISES: Exercise[] = [
       "Rotate from your ribcage, not your shoulders.",
       "Pause at each side for a deep squeeze."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/russian-twists.gif",
     thumbnail_url: "/images/exercises/core.jpg",
@@ -1914,6 +1942,7 @@ const EXERCISES: Exercise[] = [
       "Think about driving your hips through the ceiling.",
       "Pause at the top for maximum activation."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/glute-bridges.gif",
     thumbnail_url: "/images/exercises/legs.jpg",
@@ -1975,6 +2004,7 @@ const EXERCISES: Exercise[] = [
       "Maintain a cadence of around 170-180 steps per minute.",
       "Keep your hands relaxed as if holding a potato chip."
     ],
+    instructions: [],
     primary_image_url: null,
     gif_url: "/gifs/exercises/running.gif",
     thumbnail_url: "/images/exercises/legs.jpg",

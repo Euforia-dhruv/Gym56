@@ -11,6 +11,7 @@ import {
   type ExerciseUpdateInput,
 } from "@/types/api";
 import { getSeedExercises, getSeedExerciseBySlug, getSeedRelatedExercises, getSeedExerciseSteps, getSeedExercisesByEquipment } from "@/lib/data/exercises-seed";
+import { getExercisesFromDb, getDbExerciseBySlug, getDbExercisesByEquipment } from "@/lib/data/exercise-loader";
 import { slugify } from "@/lib/utils";
 import type { Exercise } from "@/types";
 
@@ -64,9 +65,13 @@ export async function getPublishedExercises() {
       .is("deleted_at", null)
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
-    return data ?? [];
+    if (data && data.length > 0) return data;
+    return getExercisesFromDb();
   } catch {
-    return getSeedExercises();
+    const seedData = getSeedExercises();
+    const dbData = getExercisesFromDb();
+    const seedSlugs = new Set(seedData.map((e) => e.slug));
+    return [...seedData, ...dbData.filter((e) => !seedSlugs.has(e.slug))];
   }
 }
 
@@ -80,7 +85,8 @@ export async function getExercisesByEquipment(equipmentId: string) {
       .eq("is_published", true)
       .is("deleted_at", null);
     if (error) throw new Error(error.message);
-    return data ?? [];
+    if (data && data.length > 0) return data;
+    return getDbExercisesByEquipment(equipmentId);
   } catch {
     return getSeedExercisesByEquipment(equipmentId);
   }
@@ -281,7 +287,7 @@ export async function getExerciseBySlug(slug: string) {
     if (error) throw new Error(error.message);
     return data;
   } catch {
-    return getSeedExerciseBySlug(slug) || null;
+    return getSeedExerciseBySlug(slug) || getDbExerciseBySlug(slug) || null;
   }
 }
 

@@ -14,6 +14,11 @@ import {
   Loader2,
   Trash2,
   AlertCircle,
+  Flame,
+  TrendingUp,
+  BookOpen,
+  Bot,
+  Crown,
 } from "lucide-react";
 
 interface Message {
@@ -21,6 +26,45 @@ interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+const FEATURES = [
+  {
+    icon: Dumbbell,
+    title: "Workout Generation",
+    description: "Custom push/pull/legs splits, full-body routines, and sport-specific training programs",
+    query: "Create a comprehensive weekly workout routine for me based on my goals",
+  },
+  {
+    icon: BookOpen,
+    title: "Beginner Guidance",
+    description: "Step-by-step introduction to gym equipment, proper form, and building confidence",
+    query: "I'm completely new to the gym. Give me a beginner routine with detailed instructions",
+  },
+  {
+    icon: Flame,
+    title: "Fat Loss Plans",
+    description: "Calorie-deficit meal plans, HIIT cardio programming, and fat-burning strategies",
+    query: "Create a detailed fat loss plan with workouts and nutrition guidance",
+  },
+  {
+    icon: TrendingUp,
+    title: "Muscle Gain Plans",
+    description: "Progressive overload programs, bulking nutrition, and recovery optimization",
+    query: "Give me a muscle building program with progressive overload and nutrition advice",
+  },
+  {
+    icon: Apple,
+    title: "Nutrition Advice",
+    description: "Pre/post-workout meals, macro tracking, supplements, and diet personalization",
+    query: "What's the best nutrition plan for someone trying to build muscle and lose fat?",
+  },
+  {
+    icon: Heart,
+    title: "Exercise Form",
+    description: "Proper technique analysis, common form mistakes, and injury prevention tips",
+    query: "How do I properly perform a barbell squat? Include common mistakes to avoid",
+  },
+];
 
 const SUGGESTED_PROMPTS = [
   { icon: Dumbbell, label: "Create a push workout", query: "Create a push workout routine for me" },
@@ -163,16 +207,71 @@ export default function AiCoachPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black pt-20 flex flex-col">
+    <div className="min-h-screen bg-black flex flex-col">
+      {/* Hero Section */}
+      <section className="relative pt-28 pb-16 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#DC2626]/5 via-transparent to-black pointer-events-none" />
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#DC2626]/3 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#DC2626]/20 to-red-800/20 border border-[#DC2626]/30 text-[#DC2626] text-xs font-semibold uppercase tracking-wider mb-6">
+            <Crown className="w-3.5 h-3.5" />
+            Premium Feature
+          </div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-4"
+          >
+            Your Personal
+            <span className="bg-gradient-to-r from-[#DC2626] to-red-400 bg-clip-text text-transparent"> AI Coach</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-gray-400 text-lg max-w-2xl mx-auto mb-8"
+          >
+            Get expert-level workout plans, nutrition guidance, and fitness advice — powered by Gym 56&apos;s premium AI.
+          </motion.p>
+
+          {/* Feature Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12"
+          >
+            {FEATURES.map((feature) => (
+              <button
+                key={feature.title}
+                onClick={() => handlePromptClick(feature.query)}
+                className="glass rounded-xl p-5 hover:border-[#DC2626]/30 transition-all group text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#DC2626]/20 to-red-800/20 flex items-center justify-center mb-3">
+                  <feature.icon className="w-5 h-5 text-[#DC2626]" />
+                </div>
+                <h3 className="text-white font-semibold text-sm mb-1 group-hover:text-[#DC2626] transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-500 text-xs leading-relaxed">{feature.description}</p>
+              </button>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Chat Section */}
       <div className="flex-1 max-w-4xl w-full mx-auto px-4 flex flex-col">
         <div className="py-6 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#DC2626]/20 to-red-800/20 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-[#DC2626]" />
+              <Bot className="w-5 h-5 text-[#DC2626]" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">AI Coach</h1>
-              <p className="text-xs text-gray-500">Powered by Gym 56</p>
+              <h2 className="text-lg font-bold text-white">AI Coach Chat</h2>
+              <p className="text-xs text-gray-500">
+                {process.env.NEXT_PUBLIC_OPENAI_API_KEY ? "Powered by GPT-4o-mini" : "Powered by Gym 56"}
+              </p>
             </div>
           </div>
           <button
