@@ -19,111 +19,108 @@ interface EquipmentItem {
   src: string;
   label: string;
   size: number;
-  opacity: number;
   rotate: number;
-  scale: number;
   blur: number;
   floatDuration: number;
   floatDelay: number;
-  glowBlur: number;
-  parallaxFactor: number;
-  hideOnMobile: boolean;
-  // positioning helpers
+  parallaxPx: number;
+  depthLayer: 'background' | 'middle' | 'foreground';
   desktop: { top?: string; bottom?: string; left?: string; right?: string };
+  hideOnMobile: boolean;
 }
 
 const equipmentData: EquipmentItem[] = [
   {
     src: '/hero/rope.png',
     label: 'rope',
-    size: 110,
-    opacity: 0.18,
-    rotate: -18,
-    scale: 0.8,
-    blur: 5,
-    floatDuration: 9,
-    floatDelay: 0.7,
-    glowBlur: 80,
-    parallaxFactor: 0.5,
-    hideOnMobile: true,
-    desktop: { top: '80px', left: '40px' },
-  },
-  {
-    src: '/hero/treadmill.png',
-    label: 'treadmill',
-    size: 230,
-    opacity: 0.22,
-    rotate: 3,
-    scale: 0.95,
-    blur: 2,
-    floatDuration: 7,
-    floatDelay: 2.3,
-    glowBlur: 100,
-    parallaxFactor: 0.7,
-    hideOnMobile: true,
-    desktop: { top: '42%', left: '-5%' },
-  },
-  {
-    src: '/hero/dumbell.png',
-    label: 'dumbell',
-    size: 170,
-    opacity: 0.25,
+    size: 120,
     rotate: -25,
-    scale: 1.05,
-    blur: 0,
-    floatDuration: 8,
-    floatDelay: 4.1,
-    glowBlur: 120,
-    parallaxFactor: 1,
-    hideOnMobile: false,
-    desktop: { bottom: '60px', left: '50px' },
+    blur: 8,
+    floatDuration: 11,
+    floatDelay: 0.3,
+    parallaxPx: 6,
+    depthLayer: 'background',
+    hideOnMobile: true,
+    desktop: { top: '70px', left: '30px' },
   },
   {
     src: '/hero/barbell.png',
     label: 'barbell',
-    size: 210,
-    opacity: 0.2,
-    rotate: 20,
-    scale: 1,
-    blur: 2,
-    floatDuration: 10,
-    floatDelay: 1.5,
-    glowBlur: 90,
-    parallaxFactor: 0.6,
+    size: 240,
+    rotate: 18,
+    blur: 8,
+    floatDuration: 9,
+    floatDelay: 1.8,
+    parallaxPx: 6,
+    depthLayer: 'background',
     hideOnMobile: false,
-    desktop: { top: '90px', right: '40px' },
+    desktop: { top: '80px', right: '-20px' },
   },
   {
     src: '/hero/cycle.png',
     label: 'cycle',
-    size: 240,
-    opacity: 0.28,
-    rotate: -2,
-    scale: 1.08,
-    blur: 0,
-    floatDuration: 6,
-    floatDelay: 3.8,
-    glowBlur: 110,
-    parallaxFactor: 1.1,
+    size: 260,
+    rotate: 12,
+    blur: 5,
+    floatDuration: 8,
+    floatDelay: 4.2,
+    parallaxPx: 12,
+    depthLayer: 'middle',
     hideOnMobile: true,
-    desktop: { top: '40%', right: '-8%' },
+    desktop: { top: '38%', right: '-60px' },
   },
   {
     src: '/hero/bench.png',
     label: 'bench',
-    size: 190,
-    opacity: 0.2,
-    rotate: -12,
-    scale: 0.92,
+    size: 220,
+    rotate: -8,
     blur: 5,
-    floatDuration: 8.5,
-    floatDelay: 5.2,
-    glowBlur: 85,
-    parallaxFactor: 0.4,
+    floatDuration: 10,
+    floatDelay: 6.5,
+    parallaxPx: 12,
+    depthLayer: 'middle',
     hideOnMobile: true,
-    desktop: { bottom: '80px', right: '60px' },
+    desktop: { bottom: '70px', right: '-40px' },
+  },
+  {
+    src: '/hero/treadmill.png',
+    label: 'treadmill',
+    size: 260,
+    rotate: -15,
+    blur: 2,
+    floatDuration: 7,
+    floatDelay: 2.7,
+    parallaxPx: 18,
+    depthLayer: 'foreground',
+    hideOnMobile: true,
+    desktop: { top: '44%', left: '-80px' },
+  },
+  {
+    src: '/hero/dumbell.png',
+    label: 'dumbell',
+    size: 190,
+    rotate: -22,
+    blur: 0,
+    floatDuration: 12,
+    floatDelay: 5.8,
+    parallaxPx: 18,
+    depthLayer: 'foreground',
+    hideOnMobile: false,
+    desktop: { bottom: '50px', left: '-30px' },
   },
 ];
+
+function maskForDepth(depth: string, label: string): string | undefined {
+  if (label === 'treadmill' || label === 'barbell' || label === 'bench' || label === 'cycle') {
+    if (label === 'treadmill') return 'linear-gradient(to right, transparent 0%, black 30%, black 100%)';
+    if (label === 'barbell') return 'linear-gradient(to bottom, transparent 0%, black 25%, black 100%)';
+    if (label === 'cycle') return 'linear-gradient(to left, transparent 0%, black 40%, black 100%)';
+    if (label === 'bench') return 'linear-gradient(to left, transparent 0%, black 35%, black 100%)';
+  }
+  if (label === 'rope') return 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)';
+  if (label === 'dumbell') return 'linear-gradient(to right, transparent 0%, black 20%, black 100%)';
+  return undefined;
+}
 
 export default function Hero() {
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
@@ -158,6 +155,18 @@ export default function Hero() {
       ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
+      {/* Noise grain overlay */}
+      <div
+        className="absolute inset-0 z-[3] pointer-events-none"
+        style={{
+          opacity: 0.03,
+          mixBlendMode: 'overlay',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '256px 256px',
+        }}
+      />
+
       {/* Base background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 via-[#0a0a0a] to-black">
         <div className="absolute top-0 left-1/4 w-[700px] h-[900px] bg-gradient-radial from-[#DC2626]/10 via-[#DC2626]/3 to-transparent opacity-60" />
@@ -171,18 +180,40 @@ export default function Hero() {
         </div>
       </div>
 
+      {/* Hero central ambient glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] pointer-events-none"
+        style={{
+          width: '700px',
+          height: '500px',
+          background: 'radial-gradient(ellipse, rgba(239,68,68,0.12) 0%, transparent 70%)',
+        }}
+      />
+
+      {/* Vignette */}
+      <div
+        className="absolute inset-0 z-[2] pointer-events-none"
+        style={{
+          boxShadow: 'inset 0 0 150px 60px rgba(0,0,0,0.6)',
+        }}
+      />
+
       {/* Equipment */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
-        {equipmentData.map((eq, i) => {
-          const px = (mousePos.x - 0.5) * eq.parallaxFactor * 16;
-          const py = (mousePos.y - 0.5) * eq.parallaxFactor * 16;
+        {equipmentData.map((eq) => {
+          const px = (mousePos.x - 0.5) * eq.parallaxPx;
+          const py = (mousePos.y - 0.5) * eq.parallaxPx;
+
+          const mask = maskForDepth(eq.depthLayer, eq.label);
 
           const posStyle: React.CSSProperties = {
             width: eq.size,
             height: eq.size,
-            transform: `translate(${px}px, ${py}px) scale(${eq.scale}) rotate(${eq.rotate}deg)`,
+            transform: `translate(${px}px, ${py}px) rotate(${eq.rotate}deg)`,
             filter: `blur(${eq.blur}px)`,
             transition: 'transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
+            WebkitMaskImage: mask,
+            maskImage: mask,
           };
           if (eq.desktop.top) posStyle.top = eq.desktop.top;
           if (eq.desktop.bottom) posStyle.bottom = eq.desktop.bottom;
@@ -194,23 +225,37 @@ export default function Hero() {
 
           return (
             <motion.div
-              key={i}
+              key={eq.label}
               className={classes.join(' ')}
               initial={{ opacity: 0 }}
               animate={{
-                y: [0, -12, 12, -6, 0],
-                opacity: [eq.opacity, eq.opacity * 1.2, eq.opacity * 0.8, eq.opacity * 1.1, eq.opacity],
+                x: [0, 6, -4, 8, 0],
+                y: [0, -10, 8, -6, 0],
+                rotate: [eq.rotate, eq.rotate + 1.5, eq.rotate - 1, eq.rotate + 2, eq.rotate],
+                opacity: [0.22, 0.28, 0.18, 0.25, 0.22],
               }}
               style={posStyle}
               transition={{
-                y: {
+                x: {
                   duration: eq.floatDuration,
                   delay: eq.floatDelay,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 },
+                y: {
+                  duration: eq.floatDuration * 1.1,
+                  delay: eq.floatDelay + 0.3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
+                rotate: {
+                  duration: eq.floatDuration * 1.3,
+                  delay: eq.floatDelay + 0.6,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
                 opacity: {
-                  duration: eq.floatDuration * 0.8,
+                  duration: eq.floatDuration * 0.9,
                   delay: eq.floatDelay,
                   repeat: Infinity,
                   ease: 'easeInOut',
@@ -218,16 +263,16 @@ export default function Hero() {
               }}
               whileHover={{ opacity: 0.55, transition: { duration: 0.4 } }}
             >
-              {/* Soft glow behind equipment */}
+              {/* Soft red glow behind equipment */}
               <div
                 className="absolute"
                 style={{
-                  top: '-20%',
-                  left: '-20%',
-                  width: '140%',
-                  height: '140%',
-                  filter: `blur(${eq.glowBlur}px)`,
-                  background: `radial-gradient(circle, rgba(239,68,68,0.18) 0%, rgba(239,68,68,0.06) 40%, transparent 70%)`,
+                  top: '-30%',
+                  left: '-30%',
+                  width: '160%',
+                  height: '160%',
+                  filter: 'blur(120px)',
+                  background: 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0.06) 40%, transparent 70%)',
                   pointerEvents: 'none',
                 }}
               />
@@ -238,6 +283,7 @@ export default function Hero() {
                 height={eq.size}
                 className="relative w-full h-full object-contain z-[1]"
                 draggable={false}
+                priority
               />
             </motion.div>
           );
