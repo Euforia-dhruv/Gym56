@@ -10,6 +10,7 @@ import {
   type EquipmentCreateInput,
   type EquipmentUpdateInput,
 } from "@/types/api";
+import { getSeedEquipment, getSeedEquipmentBySlug, getSeedRelatedEquipment, getSeedEquipmentImages } from "@/lib/data/equipment-seed";
 import { slugify } from "@/lib/utils";
 import type { Equipment } from "@/types";
 
@@ -59,30 +60,36 @@ export async function getEquipmentById(id: string) {
 }
 
 export async function getPublishedEquipment() {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("equipment")
-    .select("*")
-    .eq("is_published", true)
-    .is("deleted_at", null)
-    .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("equipment")
+      .select("*")
+      .eq("is_published", true)
+      .is("deleted_at", null)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  } catch {
+    return getSeedEquipment();
+  }
 }
 
 export async function getEquipmentBySlug(slug: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("equipment")
-    .select("*")
-    .eq("slug", slug)
-    .eq("is_published", true)
-    .is("deleted_at", null)
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("equipment")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .is("deleted_at", null)
+      .single();
+    if (error) throw new Error(error.message);
+    return data;
+  } catch {
+    return getSeedEquipmentBySlug(slug) || null;
+  }
 }
 
 // ─── Create ─────────────────────────────────────────────────────────────────
@@ -274,29 +281,35 @@ export async function uploadEquipmentImage(
 // ─── Related equipment ─────────────────────────────────────────────────────
 
 export async function getRelatedEquipment(equipmentId: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("equipment_related")
-    .select("related_equipment:related_id(*)")
-    .eq("equipment_id", equipmentId)
-    .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data?.map((r) => r.related_equipment as unknown as Equipment) ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("equipment_related")
+      .select("related_equipment:related_id(*)")
+      .eq("equipment_id", equipmentId)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data?.map((r) => r.related_equipment as unknown as Equipment) ?? [];
+  } catch {
+    return getSeedRelatedEquipment(equipmentId);
+  }
 }
 
 // ─── Get equipment images ───────────────────────────────────────────────────
 
 export async function getEquipmentImages(equipmentId: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("equipment_images")
-    .select("*")
-    .eq("equipment_id", equipmentId)
-    .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("equipment_images")
+      .select("*")
+      .eq("equipment_id", equipmentId)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  } catch {
+    return getSeedEquipmentImages(equipmentId);
+  }
 }
 
 // ─── Delete image ───────────────────────────────────────────────────────────

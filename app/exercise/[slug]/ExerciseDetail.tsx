@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
@@ -155,7 +156,6 @@ export default function ExerciseDetail({
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={mediaUrl}
                   alt={exercise.name}

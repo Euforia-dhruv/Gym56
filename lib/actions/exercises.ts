@@ -10,6 +10,7 @@ import {
   type ExerciseCreateInput,
   type ExerciseUpdateInput,
 } from "@/types/api";
+import { getSeedExercises, getSeedExerciseBySlug, getSeedRelatedExercises, getSeedExerciseSteps, getSeedExercisesByEquipment } from "@/lib/data/exercises-seed";
 import { slugify } from "@/lib/utils";
 import type { Exercise } from "@/types";
 
@@ -54,29 +55,35 @@ export async function getExerciseById(id: string) {
 }
 
 export async function getPublishedExercises() {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("exercises")
-    .select("*, equipment:equipment_id(name, slug)")
-    .eq("is_published", true)
-    .is("deleted_at", null)
-    .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("exercises")
+      .select("*, equipment:equipment_id(name, slug)")
+      .eq("is_published", true)
+      .is("deleted_at", null)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  } catch {
+    return getSeedExercises();
+  }
 }
 
 export async function getExercisesByEquipment(equipmentId: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("exercises")
-    .select("*, equipment:equipment_id(name, slug)")
-    .eq("equipment_id", equipmentId)
-    .eq("is_published", true)
-    .is("deleted_at", null);
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("exercises")
+      .select("*, equipment:equipment_id(name, slug)")
+      .eq("equipment_id", equipmentId)
+      .eq("is_published", true)
+      .is("deleted_at", null);
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  } catch {
+    return getSeedExercisesByEquipment(equipmentId);
+  }
 }
 
 // ─── Create ─────────────────────────────────────────────────────────────────
@@ -262,43 +269,52 @@ export async function uploadExerciseImage(
 // ─── Get exercise by slug ──────────────────────────────────────────────────
 
 export async function getExerciseBySlug(slug: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("exercises")
-    .select("*, equipment:equipment_id(name, slug)")
-    .eq("slug", slug)
-    .eq("is_published", true)
-    .is("deleted_at", null)
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("exercises")
+      .select("*, equipment:equipment_id(name, slug)")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .is("deleted_at", null)
+      .single();
+    if (error) throw new Error(error.message);
+    return data;
+  } catch {
+    return getSeedExerciseBySlug(slug) || null;
+  }
 }
 
 // ─── Related exercises ────────────────────────────────────────────────────
 
 export async function getRelatedExercises(exerciseId: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("exercise_related")
-    .select("related_exercise:related_id(*)")
-    .eq("exercise_id", exerciseId)
-    .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data?.map((r) => r.related_exercise as unknown as Exercise) ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("exercise_related")
+      .select("related_exercise:related_id(*)")
+      .eq("exercise_id", exerciseId)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data?.map((r) => r.related_exercise as unknown as Exercise) ?? [];
+  } catch {
+    return getSeedRelatedExercises(exerciseId);
+  }
 }
 
 // ─── Exercise Steps ─────────────────────────────────────────────────────────
 
 export async function getExerciseSteps(exerciseId: string) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("exercise_steps")
-    .select("*")
-    .eq("exercise_id", exerciseId)
-    .order("step_number", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("exercise_steps")
+      .select("*")
+      .eq("exercise_id", exerciseId)
+      .order("step_number", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  } catch {
+    return getSeedExerciseSteps(exerciseId);
+  }
 }

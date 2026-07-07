@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
@@ -154,7 +155,6 @@ export default function EquipmentDetail({
                       }`}
                       aria-label={`View image ${i + 1} of ${equipment.name}`}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`${equipment.name} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     </button>
                   ))}

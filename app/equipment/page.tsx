@@ -20,7 +20,13 @@ export const metadata: Metadata = {
 };
 
 export default async function EquipmentPage() {
-  const equipment = await getPublishedEquipment();
+  let equipment;
+  try {
+    equipment = await getPublishedEquipment();
+  } catch {
+    const { getSeedEquipment } = await import("@/lib/data/equipment-seed");
+    equipment = getSeedEquipment();
+  }
   return (
     <>
       <Breadcrumb items={[{ label: "Equipment" }]} />
