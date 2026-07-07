@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -156,11 +156,13 @@ export default function ExerciseDetail({
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                <img
+                <Image
                   src={mediaUrl}
                   alt={exercise.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  loading="lazy"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 1024px) 100vw, 800px"
+                  unoptimized={mediaUrl.endsWith('.gif')}
                 />
               )}
               {exercise.video_url ? (

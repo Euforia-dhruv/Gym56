@@ -1,7 +1,5 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
 import * as React from "react";
 import {
   Plus,
@@ -296,6 +294,7 @@ export default function GalleryPage() {
                 }}
               >
                 {item.image.startsWith("data:") || item.image.startsWith("http") ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={item.image}
                     alt={item.title}
@@ -360,6 +359,7 @@ export default function GalleryPage() {
                   style={{ background: formImage.startsWith("linear-gradient") ? formImage : undefined }}
                 >
                   {(formImage.startsWith("data:") || formImage.startsWith("http")) && (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={formImage} alt="Preview" className="w-full h-full object-cover" />
                   )}
                 </div>

@@ -1,10 +1,9 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowLeft, Dumbbell, AlertTriangle, Shield } from "lucide-react";
 import { getDifficultyColor } from "@/lib/utils";
@@ -116,13 +115,15 @@ export default function ExerciseComparePage() {
                     className="glass rounded-xl p-4 hover:border-[#DC2626]/30 transition-all"
                   >
                     {/* Thumbnail */}
-                    <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 mb-3">
+                    <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 mb-3 relative">
                       {(ex.thumbnail_url || ex.primary_image_url) ? (
-                        <img
+                        <Image
                           src={ex.thumbnail_url || ex.primary_image_url!}
                           alt={ex.name}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 100vw, 50vw"
+                          unoptimized={(ex.thumbnail_url || ex.primary_image_url || '').endsWith('.gif')}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -132,11 +132,12 @@ export default function EquipmentDetail({
             <div className="mb-10">
               <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-gray-900 group mb-3">
                 {selectedImage ? (
-                  <img
+                  <Image
                     src={selectedImage}
                     alt={equipment.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    loading="lazy"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 1024px) 100vw, 800px"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
@@ -150,12 +151,12 @@ export default function EquipmentDetail({
                     <button
                       key={i}
                       onClick={() => setSelectedImage(url)}
-                      className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 relative transition-all ${
                         selectedImage === url ? "border-[#DC2626] opacity-100" : "border-white/10 opacity-60 hover:opacity-100"
                       }`}
                       aria-label={`View image ${i + 1} of ${equipment.name}`}
                     >
-                      <img src={url} alt={`${equipment.name} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                      <Image src={url} alt={`${equipment.name} ${i + 1}`} fill className="object-cover" sizes="80px" />
                     </button>
                   ))}
                 </div>

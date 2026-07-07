@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -391,11 +391,13 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 <Link href={`/exercise/${exercise.slug}`} onClick={() => addRecent(exercise.id)}>
                   <div className="aspect-[16/9] bg-gradient-to-br from-gray-900 to-black relative overflow-hidden">
                     {(exercise.thumbnail_url || exercise.primary_image_url) ? (
-                      <img
+                      <Image
                         src={exercise.thumbnail_url || exercise.primary_image_url!}
                         alt={exercise.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        unoptimized={exercise.thumbnail_url?.endsWith('.gif') || exercise.primary_image_url?.endsWith('.gif')}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

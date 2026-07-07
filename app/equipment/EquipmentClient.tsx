@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Dumbbell, ChevronRight, CheckCircle, XCircle, Search, X, SlidersHorizontal } from "lucide-react";
 import { getConditionColor, cn } from "@/lib/utils";
@@ -166,12 +166,13 @@ export function EquipmentClient({ initialEquipment }: { initialEquipment: Equipm
                 className="glass rounded-2xl p-6 hover:border-[#DC2626]/30 transition-all duration-300 border border-white/5 flex flex-col"
               >
                 {eq.primary_image_url && (
-                  <div className="aspect-video rounded-xl overflow-hidden mb-4 bg-gray-900">
-                    <img
+                  <div className="aspect-video rounded-xl overflow-hidden mb-4 bg-gray-900 relative">
+                    <Image
                       src={eq.primary_image_url}
                       alt={eq.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      loading="lazy"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
                 )}
