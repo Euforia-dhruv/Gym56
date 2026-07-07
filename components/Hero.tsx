@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 import { Users, Trophy, Dumbbell, Clock } from 'lucide-react';
@@ -14,16 +15,131 @@ const stats = [
   { icon: Clock, value: 6, label: 'Days a Week', suffix: '' },
 ];
 
-const equipmentImages = [
-  { src: '/hero/barbell.png', top: '8%', right: '3%', width: 200, height: 140 },
-  { src: '/hero/bench.png', top: '55%', right: '2%', width: 220, height: 140 },
-  { src: '/hero/cycle.png', top: '24%', right: '1%', width: 180, height: 200 },
-  { src: '/hero/dumbell.png', top: '65%', left: '3%', width: 150, height: 150 },
-  { src: '/hero/rope.png', top: '10%', left: '2%', width: 140, height: 170 },
-  { src: '/hero/treadmill.png', top: '34%', left: '1%', width: 170, height: 200 },
+interface EquipmentItem {
+  src: string;
+  label: string;
+  size: number;
+  opacity: number;
+  rotate: number;
+  scale: number;
+  blur: number;
+  floatDuration: number;
+  floatDelay: number;
+  glowBlur: number;
+  parallaxFactor: number;
+  hideOnMobile: boolean;
+  // positioning helpers
+  desktop: { top?: string; bottom?: string; left?: string; right?: string };
+}
+
+const equipmentData: EquipmentItem[] = [
+  {
+    src: '/hero/rope.png',
+    label: 'rope',
+    size: 110,
+    opacity: 0.18,
+    rotate: -18,
+    scale: 0.8,
+    blur: 5,
+    floatDuration: 9,
+    floatDelay: 0.7,
+    glowBlur: 80,
+    parallaxFactor: 0.5,
+    hideOnMobile: true,
+    desktop: { top: '80px', left: '40px' },
+  },
+  {
+    src: '/hero/treadmill.png',
+    label: 'treadmill',
+    size: 230,
+    opacity: 0.22,
+    rotate: 3,
+    scale: 0.95,
+    blur: 2,
+    floatDuration: 7,
+    floatDelay: 2.3,
+    glowBlur: 100,
+    parallaxFactor: 0.7,
+    hideOnMobile: true,
+    desktop: { top: '42%', left: '-5%' },
+  },
+  {
+    src: '/hero/dumbell.png',
+    label: 'dumbell',
+    size: 170,
+    opacity: 0.25,
+    rotate: -25,
+    scale: 1.05,
+    blur: 0,
+    floatDuration: 8,
+    floatDelay: 4.1,
+    glowBlur: 120,
+    parallaxFactor: 1,
+    hideOnMobile: false,
+    desktop: { bottom: '60px', left: '50px' },
+  },
+  {
+    src: '/hero/barbell.png',
+    label: 'barbell',
+    size: 210,
+    opacity: 0.2,
+    rotate: 20,
+    scale: 1,
+    blur: 2,
+    floatDuration: 10,
+    floatDelay: 1.5,
+    glowBlur: 90,
+    parallaxFactor: 0.6,
+    hideOnMobile: false,
+    desktop: { top: '90px', right: '40px' },
+  },
+  {
+    src: '/hero/cycle.png',
+    label: 'cycle',
+    size: 240,
+    opacity: 0.28,
+    rotate: -2,
+    scale: 1.08,
+    blur: 0,
+    floatDuration: 6,
+    floatDelay: 3.8,
+    glowBlur: 110,
+    parallaxFactor: 1.1,
+    hideOnMobile: true,
+    desktop: { top: '40%', right: '-8%' },
+  },
+  {
+    src: '/hero/bench.png',
+    label: 'bench',
+    size: 190,
+    opacity: 0.2,
+    rotate: -12,
+    scale: 0.92,
+    blur: 5,
+    floatDuration: 8.5,
+    floatDelay: 5.2,
+    glowBlur: 85,
+    parallaxFactor: 0.4,
+    hideOnMobile: true,
+    desktop: { bottom: '80px', right: '60px' },
+  },
 ];
 
 export default function Hero() {
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouse = (e: MouseEvent) => {
+      setMousePos({
+        x: e.clientX / window.innerWidth,
+        y: e.clientY / window.innerHeight,
+      });
+    };
+    window.addEventListener('mousemove', handleMouse, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouse);
+  }, []);
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -38,7 +154,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+    >
       {/* Base background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 via-[#0a0a0a] to-black">
         <div className="absolute top-0 left-1/4 w-[700px] h-[900px] bg-gradient-radial from-[#DC2626]/10 via-[#DC2626]/3 to-transparent opacity-60" />
@@ -52,49 +171,73 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Equipment images on sides */}
+      {/* Equipment */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
-        {equipmentImages.map((eq, i) => {
+        {equipmentData.map((eq, i) => {
+          const px = (mousePos.x - 0.5) * eq.parallaxFactor * 16;
+          const py = (mousePos.y - 0.5) * eq.parallaxFactor * 16;
+
           const posStyle: React.CSSProperties = {
-            top: eq.top,
-            width: eq.width,
-            height: eq.height,
+            width: eq.size,
+            height: eq.size,
+            transform: `translate(${px}px, ${py}px) scale(${eq.scale}) rotate(${eq.rotate}deg)`,
+            filter: `blur(${eq.blur}px)`,
+            transition: 'transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
           };
-          if (eq.left) posStyle.left = eq.left;
-          if (eq.right) posStyle.right = eq.right;
+          if (eq.desktop.top) posStyle.top = eq.desktop.top;
+          if (eq.desktop.bottom) posStyle.bottom = eq.desktop.bottom;
+          if (eq.desktop.left) posStyle.left = eq.desktop.left;
+          if (eq.desktop.right) posStyle.right = eq.desktop.right;
+
+          const classes = ['absolute'];
+          if (eq.hideOnMobile) classes.push('hidden sm:block');
 
           return (
             <motion.div
               key={i}
-              className="absolute"
-              style={posStyle}
+              className={classes.join(' ')}
+              initial={{ opacity: 0 }}
               animate={{
-                y: [0, -10, 5, -8, 0],
-                opacity: [0.6, 0.85, 0.5, 0.75, 0.6],
+                y: [0, -12, 12, -6, 0],
+                opacity: [eq.opacity, eq.opacity * 1.2, eq.opacity * 0.8, eq.opacity * 1.1, eq.opacity],
               }}
+              style={posStyle}
               transition={{
-                duration: 6 + (i % 3) * 2,
-                delay: i * 0.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
+                y: {
+                  duration: eq.floatDuration,
+                  delay: eq.floatDelay,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
+                opacity: {
+                  duration: eq.floatDuration * 0.8,
+                  delay: eq.floatDelay,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
               }}
+              whileHover={{ opacity: 0.55, transition: { duration: 0.4 } }}
             >
-              {eq.src.includes('rope') && (
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    filter: 'blur(30px)',
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
-                  }}
-                />
-              )}
+              {/* Soft glow behind equipment */}
+              <div
+                className="absolute"
+                style={{
+                  top: '-20%',
+                  left: '-20%',
+                  width: '140%',
+                  height: '140%',
+                  filter: `blur(${eq.glowBlur}px)`,
+                  background: `radial-gradient(circle, rgba(239,68,68,0.18) 0%, rgba(239,68,68,0.06) 40%, transparent 70%)`,
+                  pointerEvents: 'none',
+                }}
+              />
               <Image
                 src={eq.src}
-                alt="Equipment"
-                width={eq.width}
-                height={eq.height}
-                className="w-full h-full object-contain relative z-[1]"
-                style={{ filter: 'drop-shadow(0 0 20px rgba(220,38,38,0.3))' }}
+                alt=""
+                width={eq.size}
+                height={eq.size}
+                className="relative w-full h-full object-contain z-[1]"
+                draggable={false}
               />
             </motion.div>
           );
