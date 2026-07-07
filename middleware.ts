@@ -15,9 +15,10 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Read the Supabase session cookie.
+  // @supabase/ssr ^0.12 uses chunked cookies with .0/.1 suffixes
   const hasSession = Array.from(request.cookies.getAll()).some(
     (cookie) =>
-      cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")
+      cookie.name.startsWith("sb-") && cookie.name.includes("-auth-token")
   );
 
   // Redirect authenticated users away from auth pages
