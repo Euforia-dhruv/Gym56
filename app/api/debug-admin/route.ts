@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { cookies } from "next/headers";
 
 export async function GET() {
+  const cookieStore = await cookies();
+  const allCookies = cookieStore.getAll();
+
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -20,6 +24,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
+    cookies: allCookies.map((c) => ({ name: c.name, value: c.value.substring(0, 20) + "..." })),
     hasUser: !!user,
     userId: user?.id ?? null,
     userEmail: user?.email ?? null,
