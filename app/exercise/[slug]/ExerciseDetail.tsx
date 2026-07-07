@@ -66,7 +66,7 @@ function ListSection({ items, empty }: { items: string[]; empty?: string }) {
   );
 }
 
-const EXERCISE_IMAGE_BASE = "/exercises";
+const EXERCISE_IMAGE_BASE = "https://ik.imagekit.io/yuhonas";
 
 export default function ExerciseDetail({
   exercise,

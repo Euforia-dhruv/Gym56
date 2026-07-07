@@ -105,9 +105,10 @@ export function getExercisesFromDb(): Exercise[] {
           i.endsWith(".") ? i : i + "."
         );
 
+        const IMAGEKIT_BASE = "https://ik.imagekit.io/yuhonas";
         const imageUrl =
           ex.images && ex.images.length > 0
-            ? `/exercises/${ex.images[0]}`
+            ? `${IMAGEKIT_BASE}/${ex.images[0]}`
             : null;
 
         return {

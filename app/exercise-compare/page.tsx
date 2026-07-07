@@ -119,7 +119,7 @@ export default function ExerciseComparePage() {
                     <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 mb-3 relative">
                       {ex.images?.[0] ? (
                         <Image
-                          src={`/exercises/${ex.images[0]}`}
+                          src={`https://ik.imagekit.io/yuhonas/${ex.images[0]}`}
                           alt={ex.name}
                           fill
                           className="object-cover"

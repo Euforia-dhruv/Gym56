@@ -15,8 +15,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "raw.githubusercontent.com",
-        pathname: "/wrkout/**",
+        hostname: "ik.imagekit.io",
       },
       {
         protocol: "https",
