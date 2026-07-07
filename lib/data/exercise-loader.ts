@@ -1,6 +1,7 @@
 import type { Exercise } from "@/types";
 import { slugify } from "@/lib/utils";
-import rawExerciseData from "./exercisedb.json";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const EXERCISE_DB: RawExercise[] = require("./exercisedb.json");
 
 interface RawExercise {
   name: string;
@@ -80,92 +81,77 @@ function getMuscleGroup(primaryMuscles: string[], category: string): string {
   return "Full Body";
 }
 
-function getCategorySlug(category: string): string {
-  const CATEGORY_SLUG: Record<string, string> = {
-    chest: "chest.jpg",
-    back: "back.jpg",
-    shoulders: "shoulders.jpg",
-    legs: "legs.jpg",
-    arms: "arms.jpg",
-    core: "core.jpg",
-    abs: "abs.jpg",
-    cardio: "cardio.jpg",
-    glutes: "glutes.jpg",
-    full_body: "full-body.jpg",
-    Other: "default.jpg",
-  };
-  return CATEGORY_SLUG[category] || "default.jpg";
-}
-
 export function getExercisesFromDb(): Exercise[] {
   if (cachedExercises) return cachedExercises;
 
-  const rawData = rawExerciseData as unknown as RawExercise[];
-  const localGifs = new Set(
-    [
-      "barbell-bench-press", "barbell-curl", "barbell-squat", "bent-over-row",
-      "crunches", "deadlift", "decline-bench-press", "dumbbell-flyes",
-      "face-pulls", "front-raises", "glute-bridges", "hammer-curls",
-      "hanging-leg-raises", "incline-dumbbell-press", "lat-pulldown",
-      "lateral-raises", "leg-curls", "leg-extensions", "leg-press",
-      "lunges", "overhead-shoulder-press", "overhead-tricep-extension",
-      "plank", "pull-ups", "push-ups", "romanian-deadlift", "running",
-      "russian-twists", "seated-cable-row", "tricep-pushdown",
-    ]
-  );
+  try {
+    const rawData = EXERCISE_DB;
+    if (!rawData || !Array.isArray(rawData)) {
+      cachedExercises = [];
+      return [];
+    }
+    const IMAGEKIT_BASE = "https://ik.imagekit.io/yuhonas";
 
-  cachedExercises = rawData
-    .filter((ex) => ex.name && ex.instructions && ex.instructions.length > 0)
-    .map((ex, index) => {
-      const slug = slugify(ex.name);
-      const category = CATEGORY_MAP[ex.category.toLowerCase()] || "Strength";
-      const muscleGroup = getMuscleGroup(ex.primaryMuscles, ex.category);
-      const difficulty = LEVEL_MAP[ex.level.toLowerCase()] || "Intermediate";
-      const equipmentLabel = EQUIPMENT_MAP[ex.equipment.toLowerCase()] || ex.equipment;
-      const instructions = ex.instructions.map((i) =>
-        i.endsWith(".") ? i : i + "."
-      );
+    cachedExercises = rawData
+      .filter((ex) => ex.name && ex.instructions && ex.instructions.length > 0)
+      .map((ex, index) => {
+        const slug = slugify(ex.name);
+        const cat = (ex.category || "strength").toLowerCase();
+        const category = CATEGORY_MAP[cat] || "Strength";
+        const muscleGroup = getMuscleGroup(ex.primaryMuscles, ex.category || "");
+        const diff = (ex.level || "intermediate").toLowerCase();
+        const difficulty = LEVEL_MAP[diff] || "Intermediate";
+        const eq = (ex.equipment || "body only").toLowerCase();
+        const equipmentLabel = EQUIPMENT_MAP[eq] || ex.equipment || "Other";
+        const instructions = ex.instructions.map((i) =>
+          i.endsWith(".") ? i : i + "."
+        );
 
-      const gifUrl = localGifs.has(slug)
-        ? `/gifs/exercises/${slug}.gif`
-        : null;
+        const imageUrl =
+          ex.images && ex.images.length > 0
+            ? `${IMAGEKIT_BASE}/${ex.images[0]}`
+            : null;
 
-      return {
-        id: slug,
-        slug,
-        name: ex.name,
-        category,
-        muscle_group: muscleGroup,
-        equipment_id: null,
-        equipment_label: equipmentLabel,
-        difficulty,
-        target_muscles: ex.primaryMuscles.map(formatMuscleName),
-        secondary_muscles: ex.secondaryMuscles.map(formatMuscleName),
-        instructions,
-        pro_tips: [],
-        common_mistakes: [],
-        safety_tips: [],
-        breathing: null,
-        variations: [],
-        alternatives: [],
-        progressions: [],
-        regressions: [],
-        beginner_tips: [],
-        primary_image_url: null,
-        gif_url: gifUrl,
-        thumbnail_url: `/images/exercises/${getCategorySlug(muscleGroup)}`,
-        video_url: null,
-        is_published: true,
-        sort_order: index + 1,
-        created_by: null,
-        updated_by: null,
-        deleted_at: null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-    });
+        return {
+          id: slug,
+          slug,
+          name: ex.name,
+          category,
+          muscle_group: muscleGroup,
+          equipment_id: null,
+          equipment_label: equipmentLabel,
+          difficulty,
+          target_muscles: ex.primaryMuscles.map(formatMuscleName),
+          secondary_muscles: ex.secondaryMuscles.map(formatMuscleName),
+          instructions,
+          pro_tips: [],
+          common_mistakes: [],
+          safety_tips: [],
+          breathing: null,
+          variations: [],
+          alternatives: [],
+          progressions: [],
+          regressions: [],
+          beginner_tips: [],
+          primary_image_url: imageUrl,
+          gif_url: null,
+          thumbnail_url: imageUrl,
+          video_url: null,
+          is_published: true,
+          sort_order: index + 1,
+          created_by: null,
+          updated_by: null,
+          deleted_at: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+      });
+  } catch (e) {
+    console.error("[Gym56 ExerciseDB] Failed to load exercises:", e instanceof Error ? e.message : e);
+    cachedExercises = [];
+  }
 
-  return cachedExercises;
+  return cachedExercises || [];
 }
 
 function formatMuscleName(muscle: string): string {

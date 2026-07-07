@@ -15,15 +15,7 @@ import {
 } from "lucide-react";
 import { getDifficultyColor } from "@/lib/utils";
 
-const CATEGORIES = ["All", "Chest", "Back", "Shoulders", "Legs", "Arms", "Core", "Cardio", "Glutes", "Obliques", "Abs"] as const;
 const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced"] as const;
-const MUSCLES = [
-  "All", "Pectoralis Major", "Upper Chest", "Latissimus Dorsi", "Rhomboids", "Trapezius",
-  "Anterior Deltoids", "Lateral Deltoids", "Posterior Deltoids", "Quadriceps", "Hamstrings",
-  "Glutes", "Calves", "Biceps Brachii", "Triceps Brachii", "Brachialis",
-  "Rectus Abdominis", "Obliques", "Transverse Abdominis", "Erector Spinae",
-  "Forearms", "Hip Flexors", "Adductors", "Abductors",
-] as const;
 
 const FAVORITES_KEY = "gym56_favorite_exercises";
 const RECENT_KEY = "gym56_recent_exercises";
@@ -60,9 +52,7 @@ function useLocalStorage<T>(key: string, initial: T): [T, (v: T) => void] {
 
 export default function ExercisesClient({ initialExercises }: { initialExercises: ExerciseData[] }) {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
   const [difficulty, setDifficulty] = useState("All");
-  const [muscleFilter, setMuscleFilter] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
   const [favorites, setFavorites] = useLocalStorage<string[]>(FAVORITES_KEY, []);
   const [recent, setRecent] = useLocalStorage<string[]>(RECENT_KEY, []);
@@ -86,6 +76,22 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
     );
   }, []);
 
+  const derivedCategories = useMemo(() => {
+    const set = new Set<string>();
+    initialExercises.forEach((ex) => { if (ex.category) set.add(ex.category); });
+    return ["All", ...Array.from(set).sort()];
+  }, [initialExercises]);
+
+  const derivedMuscles = useMemo(() => {
+    const set = new Set<string>();
+    initialExercises.forEach((ex) => {
+      (ex.target_muscles || []).forEach((m) => set.add(m));
+      (ex.secondary_muscles || []).forEach((m) => set.add(m));
+      if (ex.muscle_group) set.add(ex.muscle_group);
+    });
+    return ["All", ...Array.from(set).sort()];
+  }, [initialExercises]);
+
   const equipmentSet = useMemo(() => {
     const set = new Set<string>();
     initialExercises.forEach((ex) => {
@@ -93,7 +99,10 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
     });
     return ["All Equipment", ...Array.from(set).sort()];
   }, [initialExercises]);
+
+  const [categoryFilter, setCategoryFilter] = useState("All");
   const [equipment, setEquipment] = useState("All Equipment");
+  const [muscleFilter, setMuscleFilter] = useState("All");
 
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showRecent, setShowRecent] = useState(false);
@@ -114,7 +123,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
       );
     }
 
-    if (category !== "All") list = list.filter((ex) => ex.category === category);
+    if (categoryFilter !== "All") list = list.filter((ex) => ex.category === categoryFilter);
     if (difficulty !== "All") list = list.filter((ex) => ex.difficulty === difficulty);
     if (muscleFilter !== "All") {
       list = list.filter(
@@ -127,14 +136,14 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
     if (equipment !== "All Equipment") list = list.filter((ex) => ex.equipment_label === equipment);
 
     return list;
-  }, [initialExercises, search, category, difficulty, muscleFilter, equipment, showFavoritesOnly, favorites]);
+  }, [initialExercises, search, categoryFilter, difficulty, muscleFilter, equipment, showFavoritesOnly, favorites]);
 
   const recentExercises = useMemo(
     () => recent.map((id) => initialExercises.find((ex) => ex.id === id)).filter(Boolean) as ExerciseData[],
     [recent, initialExercises]
   );
 
-  const activeFilterCount = [category !== "All", difficulty !== "All", muscleFilter !== "All", equipment !== "All Equipment", showFavoritesOnly].filter(Boolean).length;
+  const activeFilterCount = [categoryFilter !== "All", difficulty !== "All", muscleFilter !== "All", equipment !== "All Equipment", showFavoritesOnly].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8" role="region" aria-label="Exercise library">
@@ -241,7 +250,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-white font-semibold">Filters</h3>
               <button
-                onClick={() => { setCategory("All"); setDifficulty("All"); setMuscleFilter("All"); setEquipment("All Equipment"); setShowFavoritesOnly(false); }}
+                onClick={() => { setCategoryFilter("All"); setDifficulty("All"); setMuscleFilter("All"); setEquipment("All Equipment"); setShowFavoritesOnly(false); }}
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 Clear all
@@ -250,12 +259,12 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
             <div>
               <p className="text-sm text-gray-400 mb-2">Category</p>
               <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map((c) => (
+                {derivedCategories.map((c) => (
                   <button
                     key={c}
-                    onClick={() => setCategory(c)}
+                    onClick={() => setCategoryFilter(c)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                      category === c
+                      categoryFilter === c
                         ? "bg-[#DC2626] text-white"
                         : "bg-white/5 text-gray-400 hover:text-white hover:bg-white/10"
                     }`}
@@ -291,7 +300,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 className="w-full px-4 py-2 rounded-xl bg-black/50 border border-white/10 text-white text-sm focus:border-[#DC2626] focus:outline-none"
                 aria-label="Filter by muscle"
               >
-                {MUSCLES.map((m) => (
+                {derivedMuscles.map((m) => (
                   <option key={m} value={m}>{m}</option>
                 ))}
               </select>
@@ -390,14 +399,13 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 {/* Thumbnail */}
                 <Link href={`/exercise/${exercise.slug}`} onClick={() => addRecent(exercise.id)}>
                   <div className="aspect-[16/9] bg-gradient-to-br from-gray-900 to-black relative overflow-hidden">
-                    {(exercise.thumbnail_url || exercise.primary_image_url) ? (
+                    {(exercise.primary_image_url || exercise.thumbnail_url) ? (
                       <Image
-                        src={exercise.thumbnail_url || exercise.primary_image_url!}
+                        src={exercise.primary_image_url || exercise.thumbnail_url!}
                         alt={exercise.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        unoptimized={exercise.thumbnail_url?.endsWith('.gif') || exercise.primary_image_url?.endsWith('.gif')}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

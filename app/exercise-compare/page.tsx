@@ -116,14 +116,13 @@ export default function ExerciseComparePage() {
                   >
                     {/* Thumbnail */}
                     <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 mb-3 relative">
-                      {(ex.thumbnail_url || ex.primary_image_url) ? (
+                      {(ex.primary_image_url || ex.thumbnail_url) ? (
                         <Image
-                          src={ex.thumbnail_url || ex.primary_image_url!}
+                          src={ex.primary_image_url || ex.thumbnail_url!}
                           alt={ex.name}
                           fill
                           className="object-cover"
                           sizes="(max-width: 640px) 100vw, 50vw"
-                          unoptimized={(ex.thumbnail_url || ex.primary_image_url || '').endsWith('.gif')}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

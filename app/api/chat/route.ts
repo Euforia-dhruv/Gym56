@@ -1,5 +1,8 @@
-import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { NextResponse } from "next/server";
+import { streamText } from "ai";
+import { getModel } from "@/lib/ai/providers";
+import { AI_COACH_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 const GYM_INFO = {
   name: "GYM 56",
@@ -101,7 +104,6 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
   const intent = detectIntent(text);
   const lower = text.toLowerCase();
 
-  // Single short query — treat as exercise search
   if (intent === "quick_search") {
     const exercises = await searchExercises(supabase, text, 3);
     if (exercises.length > 0) {
@@ -109,7 +111,6 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     }
   }
 
-  // Specific exercise name
   const { data: exactExercise } = await supabase
     .from("exercises")
     .select("name, category, difficulty, target_muscles, secondary_muscles, common_mistakes, safety_tips, breathing, beginner_tips, variations, alternatives, progressions, regressions, equipment_label")
@@ -131,7 +132,6 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     return response;
   }
 
-  // Intent-based responses
   let category = Object.entries(CATEGORY_INFO).find(([key]) => lower.includes(key))?.[0];
 
   switch (intent) {
@@ -165,17 +165,16 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     }
 
     case "weight_loss": {
-      const response = `**Weight Loss Program at GYM 56**:\n\n` +
+      return `**Weight Loss Program at GYM 56**:\n\n` +
         `1. **Cardio** — 30-45 min of moderate cardio (treadmill, spin bike) 4-5x/week\n` +
         `2. **Strength training** — Compound lifts burn more calories. 3-4x/week.\n` +
         `3. **HIIT** — 20 min high-intensity intervals, 2-3x/week for maximum fat burn\n` +
         `4. **Nutrition** — Slight calorie deficit (300-500 cal), high protein (1.6-2.2g/kg bodyweight)\n\n` +
         `Consistency beats intensity. GYM 56 is open ${GYM_INFO.hours.toLowerCase()} for your workouts!`;
-      return response;
     }
 
     case "muscle_gain": {
-      const response = `**Muscle Building at GYM 56**:\n\n` +
+      return `**Muscle Building at GYM 56**:\n\n` +
         `1. **Progressive overload** — Gradually increase weight/reps each week\n` +
         `2. **Compound lifts** — Squat, Deadlift, Bench Press, Overhead Press, Rows\n` +
         `3. **Rep range** — 6-12 reps for hypertrophy, 3-5 sets per exercise\n` +
@@ -183,7 +182,6 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
         `5. **Calorie surplus** — Eat 200-400 calories above maintenance\n` +
         `6. **Protein** — 1.6-2.2g per kg of bodyweight daily\n\n` +
         `GYM 56 has all the equipment you need — power racks, dumbbells up to 50kg, cable machines, and more!`;
-      return response;
     }
 
     case "nutrition": {
@@ -270,7 +268,6 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     }
   }
 
-  // Category-specific info
   if (category) {
     const exercises = await searchExercises(supabase, category, 4);
     let response = CATEGORY_INFO[category] + "\n";
@@ -278,7 +275,6 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     return response;
   }
 
-  // General fallback — search everything
   const exercises = await searchExercises(supabase, text, 4);
   if (exercises.length > 0) {
     return `I found exercises related to "${text}" in our database:${formatExerciseResponse(exercises)}\n\nAsk me about specific exercises, workout plans, nutrition, or GYM 56 info!`;
@@ -299,56 +295,34 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
   const lastMessage = messages[messages.length - 1]?.content || "";
 
-  if (process.env.OPENAI_API_KEY) {
-    const { OpenAI } = await import("openai");
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const apiKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
+  const provider = process.env.AI_PROVIDER || "openrouter";
 
-    const SYSTEM_PROMPT = `You are the GYM56 AI Coach — an expert fitness coach for Gym 56, a premium fitness gym in Sector 26, Gandhinagar, Gujarat, India.
+  if (apiKey && provider !== "supabase") {
+    try {
+      const result = streamText({
+        model: getModel(),
+        system: AI_COACH_SYSTEM_PROMPT,
+        messages: messages.map((m: { role: string; content: string }) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        })),
+        headers:
+          provider === "openrouter"
+            ? {
+                "HTTP-Referer": "https://gym56.vercel.app",
+                "X-Title": "Gym56 AI Coach",
+              }
+            : undefined,
+      });
 
-Your role:
-- Help with workout planning, exercise form, nutrition, weight loss, muscle gain, recovery, supplements, gym etiquette, and general injury guidance.
-- When asked about exercises, provide detailed form instructions, target muscles, common mistakes, and safety tips.
-- Recommend proper Gym 56 equipment for specific goals.
-- Keep answers concise, motivational, and science-based.
-- If asked about medical issues, always include a disclaimer to consult a doctor.
-- The gym offers: Strength Training, Weight Loss programs, Personal Training.
-- Equipment available: Cable crossover, lat pulldown, leg press, power rack, treadmills, spin bikes, dumbbells, barbells, EZ curl bar, leg extension/curl machine, pec deck, adjustable benches, and more.
-- Gym hours: Mon-Sat 6-10 AM & 5-10 PM, Sun Closed.
-- Phone: +91 99244 41179
-
-Be encouraging but honest. Never give medical diagnoses. Never recommend illegal substances.`;
-
-    const formattedMessages = [
-      { role: "system" as const, content: SYSTEM_PROMPT },
-      ...messages.map((m: { role: string; content: string }) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      })),
-    ];
-
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: formattedMessages,
-      stream: true,
-    });
-
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of stream) {
-          const text = chunk.choices[0]?.delta?.content || "";
-          if (text) controller.enqueue(encoder.encode(text));
-        }
-        controller.close();
-      },
-    });
-
-    return new NextResponse(readable, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
-      },
-    });
+      return result.toTextStreamResponse();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "AI provider unavailable. Try again later." }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
+      );
+    }
   }
 
   const supabase = await createSupabaseServerClient();

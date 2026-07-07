@@ -65,8 +65,12 @@ export async function getPublishedExercises() {
       .is("deleted_at", null)
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
-    if (data && data.length > 0) return data;
-    return getExercisesFromDb();
+    const dbData = getExercisesFromDb();
+    if (data && data.length > 0) {
+      const supabaseSlugs = new Set(data.map((e: Exercise) => e.slug));
+      return [...data, ...dbData.filter((e) => !supabaseSlugs.has(e.slug))];
+    }
+    return dbData;
   } catch {
     const seedData = getSeedExercises();
     const dbData = getExercisesFromDb();
@@ -287,7 +291,9 @@ export async function getExerciseBySlug(slug: string) {
     if (error) throw new Error(error.message);
     return data;
   } catch {
-    return getSeedExerciseBySlug(slug) || getDbExerciseBySlug(slug) || null;
+    const dbEx = getDbExerciseBySlug(slug);
+    if (dbEx) return dbEx;
+    return getSeedExerciseBySlug(slug) || null;
   }
 }
 

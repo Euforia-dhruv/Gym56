@@ -76,7 +76,11 @@ export default function ExerciseDetail({
   instructions?: string[];
   relatedExercises?: Exercise[];
 }) {
-  const mediaUrl = exercise.video_url || exercise.gif_url || exercise.thumbnail_url || exercise.primary_image_url;
+  const mediaUrl = exercise.primary_image_url || exercise.thumbnail_url || exercise.gif_url || exercise.video_url;
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const showMedia = !!mediaUrl;
+  const showFallback = !showMedia || imageError;
   const hasBreathing = exercise.breathing && exercise.breathing.length > 0;
   const hasVariations = exercise.variations && exercise.variations.length > 0;
   const hasAlternatives = exercise.alternatives && exercise.alternatives.length > 0;
@@ -144,40 +148,48 @@ export default function ExerciseDetail({
           </div>
 
           {/* Media Section */}
-          {mediaUrl && (
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-white/10 bg-gray-900 group">
-              {exercise.video_url ? (
-                <video
-                  src={exercise.video_url}
-                  controls
-                  className="w-full h-full object-cover"
-                  aria-label={`${exercise.name} demonstration video`}
-                >
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-white/10 bg-gray-900 group">
+            {exercise.video_url ? (
+              <video
+                src={exercise.video_url}
+                controls
+                className="w-full h-full object-cover"
+                aria-label={`${exercise.name} demonstration video`}
+              >
+                Your browser does not support the video tag.
+              </video>
+            ) : showMedia && !showFallback ? (
+              <>
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-gray-900 animate-pulse flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-gray-800" />
+                  </div>
+                )}
                 <Image
-                  src={mediaUrl}
+                  src={mediaUrl!}
                   alt={exercise.name}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className={`object-cover transition-all duration-700 ${
+                    imageLoaded ? "opacity-100 group-hover:scale-105" : "opacity-0"
+                  }`}
                   sizes="(max-width: 1024px) 100vw, 800px"
-                  unoptimized={mediaUrl.endsWith('.gif')}
+                  priority
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageError(true)}
                 />
-              )}
-              {exercise.video_url ? (
-                <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white flex items-center gap-1.5">
-                  <Play className="w-3 h-3" />
-                  Video
-                </div>
-              ) : exercise.gif_url ? (
-                <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white flex items-center gap-1.5">
-                  <Play className="w-3 h-3" />
-                  GIF
-                </div>
-              ) : null}
-            </div>
-          )}
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Dumbbell className="w-16 h-16 text-white/10" />
+              </div>
+            )}
+            {exercise.video_url && (
+              <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white flex items-center gap-1.5">
+                <Play className="w-3 h-3" />
+                Video
+              </div>
+            )}
+          </div>
 
           {/* Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">

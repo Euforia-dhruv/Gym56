@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedExercises, getExerciseBySlug, getExerciseSteps, getRelatedExercises } from "@/lib/actions/exercises";
+import { getExercisesFromDb } from "@/lib/data/exercise-loader";
+import { getSeedExercises } from "@/lib/data/exercises-seed";
 import ExerciseDetail from "./ExerciseDetail";
 import JsonLd from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gym56.in";
 
 export async function generateStaticParams() {
+  const slugs = new Set<string>();
   try {
     const exercises = await getPublishedExercises();
-    return exercises.map((ex) => ({ slug: ex.slug }));
-  } catch {
-    return [];
-  }
+    exercises.forEach((ex) => slugs.add(ex.slug));
+  } catch { /* fall through */ }
+  try {
+    getSeedExercises().forEach((ex) => slugs.add(ex.slug));
+  } catch { /* fall through */ }
+  try {
+    getExercisesFromDb().forEach((ex) => slugs.add(ex.slug));
+  } catch { /* fall through */ }
+  return Array.from(slugs).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
