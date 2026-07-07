@@ -66,7 +66,19 @@ export async function getPublishedExercises() {
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
     if (data && data.length > 0) {
-      return data;
+      const dbExercises = getExercisesFromDb();
+      const dbMap = new Map(dbExercises.map((ex) => [ex.slug, ex]));
+      return data.map((ex) => {
+        const dbEx = dbMap.get(ex.slug);
+        if (dbEx && dbEx.images?.length) {
+          return {
+            ...ex,
+            images: dbEx.images,
+            primary_image_url: `https://ik.imagekit.io/yuhonas/${dbEx.images[0]}`,
+          };
+        }
+        return ex;
+      });
     }
   } catch {}
   return getExercisesFromDb();
@@ -282,7 +294,17 @@ export async function getExerciseBySlug(slug: string) {
       .is("deleted_at", null)
       .single();
     if (error) throw new Error(error.message);
-    return data;
+    if (data) {
+      const dbEx = getDbExerciseBySlug(slug);
+      if (dbEx && dbEx.images?.length) {
+        return {
+          ...data,
+          images: dbEx.images,
+          primary_image_url: `https://ik.imagekit.io/yuhonas/${dbEx.images[0]}`,
+        };
+      }
+      return data;
+    }
   } catch {
     const dbEx = getDbExerciseBySlug(slug);
     if (dbEx) return dbEx;
