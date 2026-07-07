@@ -2,42 +2,14 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { User, X, MessageSquare, Share2 } from 'lucide-react';
 
 const trainers = [
   {
-    name: 'Raj Patel',
-    role: 'Head Coach',
-    specialty: 'Strength & Conditioning',
-    bio: 'Experienced strength coach dedicated to helping members achieve their fitness goals.',
-    image: null,
-  },
-  {
-    name: 'Priya Sharma',
-    role: 'Fitness Coach',
-    specialty: 'Weight Loss & Wellness',
-    bio: 'Passionate about guiding members through sustainable fitness transformations.',
-    image: null,
-  },
-  {
-    name: 'Amit Singh',
-    role: 'Personal Trainer',
-    specialty: 'Strength & Mobility',
-    bio: 'Focused on delivering personalized training programs for all fitness levels.',
-    image: null,
-  },
-  {
     name: 'Yash Rathod',
-    role: 'Trainer',
-    specialty: '',
-    bio: '',
     image: '/trainers/Yash Rathod.jpeg',
   },
   {
     name: 'Luckyrajsinh Jadeja',
-    role: 'Trainer',
-    specialty: '',
-    bio: '',
     image: '/trainers/Luckyrajsinh Jadeja.png',
   },
 ];
@@ -81,7 +53,7 @@ export default function Trainers() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto"
         >
           {trainers.map((trainer, index) => (
             <motion.div
@@ -92,42 +64,16 @@ export default function Trainers() {
               className="glass rounded-3xl overflow-hidden hover:border-white/20 transition-all duration-300"
             >
               <div className="aspect-[4/5] bg-gradient-to-b from-[#DC2626]/20 to-black flex items-center justify-center relative overflow-hidden">
-                {trainer.image ? (
-                  <Image
-                    src={trainer.image}
-                    alt={trainer.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                ) : (
-                  <div className="w-32 h-32 rounded-full bg-[#DC2626]/10 flex items-center justify-center border border-[#DC2626]/20">
-                    <User className="w-16 h-16 text-[#DC2626]" />
-                  </div>
-                )}
+                <Image
+                  src={trainer.image}
+                  alt={trainer.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </div>
-              <div className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-1">{trainer.name}</h3>
-                {trainer.role && <p className="text-[#DC2626] text-sm mb-2 font-semibold">{trainer.role}</p>}
-                {trainer.specialty && <p className="text-gray-400 text-sm mb-4">{trainer.specialty}</p>}
-                {trainer.bio && <p className="text-gray-500 text-sm mb-6">{trainer.bio}</p>}
-                {trainer.bio && (
-                  <div className="flex justify-center gap-4">
-                    {[
-                      { Icon: X, label: 'Twitter' },
-                      { Icon: MessageSquare, label: 'Message' },
-                      { Icon: Share2, label: 'Share' },
-                    ].map(({ Icon, label }) => (
-                      <button
-                        key={label}
-                        aria-label={label}
-                        className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-[#DC2626] transition-colors"
-                      >
-                        <Icon className="w-5 h-5" aria-hidden="true" />
-                      </button>
-                    ))}
-                  </div>
-                )}
+              <div className="p-6 text-center">
+                <h3 className="text-xl font-bold">{trainer.name}</h3>
               </div>
             </motion.div>
           ))}
