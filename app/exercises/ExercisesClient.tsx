@@ -20,6 +20,8 @@ const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced"] as const;
 const FAVORITES_KEY = "gym56_favorite_exercises";
 const RECENT_KEY = "gym56_recent_exercises";
 
+const EXERCISE_IMAGE_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises";
+
 interface ExerciseData {
   id: string;
   name: string;
@@ -30,6 +32,7 @@ interface ExerciseData {
   target_muscles: string[];
   secondary_muscles: string[];
   muscle_group: string | null;
+  images: string[];
   thumbnail_url: string | null;
   primary_image_url: string | null;
 }
@@ -399,9 +402,9 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 {/* Thumbnail */}
                 <Link href={`/exercise/${exercise.slug}`} onClick={() => addRecent(exercise.id)}>
                   <div className="aspect-[16/9] bg-gradient-to-br from-gray-900 to-black relative overflow-hidden">
-                    {(exercise.primary_image_url || exercise.thumbnail_url) ? (
+                    {exercise.images?.[0] ? (
                       <Image
-                        src={exercise.primary_image_url || exercise.thumbnail_url!}
+                        src={`${EXERCISE_IMAGE_BASE}/${exercise.images[0]}`}
                         alt={exercise.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-500"

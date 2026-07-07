@@ -17,7 +17,6 @@ import {
   Sparkles,
   Wind,
   BookOpen,
-  Play,
   Info,
   Share2,
   Zap,
@@ -67,6 +66,8 @@ function ListSection({ items, empty }: { items: string[]; empty?: string }) {
   );
 }
 
+const EXERCISE_IMAGE_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises";
+
 export default function ExerciseDetail({
   exercise,
   instructions = [],
@@ -76,11 +77,11 @@ export default function ExerciseDetail({
   instructions?: string[];
   relatedExercises?: Exercise[];
 }) {
-  const mediaUrl = exercise.primary_image_url || exercise.thumbnail_url || exercise.gif_url || exercise.video_url;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const showMedia = !!mediaUrl;
-  const showFallback = !showMedia || imageError;
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const hasImages = exercise.images && exercise.images.length > 0;
+  const imageUrl = hasImages ? `${EXERCISE_IMAGE_BASE}/${exercise.images[galleryIndex]}` : null;
   const hasBreathing = exercise.breathing && exercise.breathing.length > 0;
   const hasVariations = exercise.variations && exercise.variations.length > 0;
   const hasAlternatives = exercise.alternatives && exercise.alternatives.length > 0;
@@ -149,44 +150,52 @@ export default function ExerciseDetail({
 
           {/* Media Section */}
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-white/10 bg-gray-900 group">
-            {exercise.video_url ? (
-              <video
-                src={exercise.video_url}
-                controls
-                className="w-full h-full object-cover"
-                aria-label={`${exercise.name} demonstration video`}
-              >
-                Your browser does not support the video tag.
-              </video>
-            ) : showMedia && !showFallback ? (
+            {hasImages ? (
               <>
                 {!imageLoaded && (
                   <div className="absolute inset-0 bg-gray-900 animate-pulse flex items-center justify-center">
                     <div className="w-12 h-12 rounded-xl bg-gray-800" />
                   </div>
                 )}
-                <Image
-                  src={mediaUrl!}
-                  alt={exercise.name}
-                  fill
-                  className={`object-cover transition-all duration-700 ${
-                    imageLoaded ? "opacity-100 group-hover:scale-105" : "opacity-0"
-                  }`}
-                  sizes="(max-width: 1024px) 100vw, 800px"
-                  priority
-                  onLoad={() => setImageLoaded(true)}
-                  onError={() => setImageError(true)}
-                />
+                {imageError ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <p className="text-gray-500 text-sm">Failed to load: {exercise.images[galleryIndex]}</p>
+                  </div>
+                ) : (
+                  <Image
+                    src={imageUrl!}
+                    alt={exercise.name}
+                    fill
+                    className={`object-contain transition-all duration-700 ${
+                      imageLoaded ? "opacity-100" : "opacity-0"
+                    }`}
+                    sizes="(max-width: 1024px) 100vw, 800px"
+                    priority
+                    onLoad={() => setImageLoaded(true)}
+                    onError={() => {
+                      console.error(`[Gym56] Failed to load exercise image: ${imageUrl}`);
+                      setImageError(true);
+                    }}
+                  />
+                )}
+                {exercise.images.length > 1 && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                    {exercise.images.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setGalleryIndex(i); setImageLoaded(false); setImageError(false); }}
+                        className={`w-2.5 h-2.5 rounded-full transition-all ${
+                          i === galleryIndex ? "bg-[#DC2626] w-6" : "bg-white/40 hover:bg-white/60"
+                        }`}
+                        aria-label={`View image ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </>
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <Dumbbell className="w-16 h-16 text-white/10" />
-              </div>
-            )}
-            {exercise.video_url && (
-              <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white flex items-center gap-1.5">
-                <Play className="w-3 h-3" />
-                Video
               </div>
             )}
           </div>

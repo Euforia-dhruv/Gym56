@@ -60,6 +60,7 @@ export interface Exercise {
   regressions: string[];
   beginner_tips: string[];
   instructions: string[];
+  images: string[];
   primary_image_url: string | null;
   gif_url: string | null;
   thumbnail_url: string | null;

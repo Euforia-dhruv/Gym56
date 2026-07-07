@@ -124,6 +124,7 @@ export function getExercisesFromDb(): Exercise[] {
           target_muscles: ex.primaryMuscles.map(formatMuscleName),
           secondary_muscles: ex.secondaryMuscles.map(formatMuscleName),
           instructions,
+          images: ex.images || [],
           pro_tips: [],
           common_mistakes: [],
           safety_tips: [],

@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
         hostname: "ik.imagekit.io",
         pathname: "/yuhonas/**",
       },
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        pathname: "/yuhonas/free-exercise-db/**",
+      },
     ],
   },
   async headers() {

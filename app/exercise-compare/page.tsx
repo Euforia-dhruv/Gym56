@@ -21,6 +21,7 @@ interface ExerciseCompare {
   safety_tips: string[];
   breathing: string | null;
   muscle_group: string | null;
+  images: string[];
   thumbnail_url: string | null;
   primary_image_url: string | null;
   variations: string[];
@@ -116,9 +117,9 @@ export default function ExerciseComparePage() {
                   >
                     {/* Thumbnail */}
                     <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 mb-3 relative">
-                      {(ex.primary_image_url || ex.thumbnail_url) ? (
+                      {ex.images?.[0] ? (
                         <Image
-                          src={ex.primary_image_url || ex.thumbnail_url!}
+                          src={`https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/${ex.images[0]}`}
                           alt={ex.name}
                           fill
                           className="object-cover"
