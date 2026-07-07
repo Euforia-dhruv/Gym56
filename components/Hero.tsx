@@ -27,6 +27,7 @@ interface EquipmentItem {
   depthLayer: 'background' | 'middle' | 'foreground';
   desktop: { top?: string; bottom?: string; left?: string; right?: string };
   hideOnMobile: boolean;
+  href: string;
 }
 
 const equipmentData: EquipmentItem[] = [
@@ -42,6 +43,7 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'background',
     hideOnMobile: true,
     desktop: { top: '70px', left: '30px' },
+    href: '/exercises?equipment=Bodyweight',
   },
   {
     src: '/hero/barbell.png',
@@ -55,6 +57,7 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'background',
     hideOnMobile: false,
     desktop: { top: '80px', right: '-20px' },
+    href: '/exercises?equipment=Barbell',
   },
   {
     src: '/hero/cycle.png',
@@ -68,6 +71,7 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'middle',
     hideOnMobile: true,
     desktop: { top: '38%', right: '-60px' },
+    href: '/exercises?equipment=Machine',
   },
   {
     src: '/hero/bench.png',
@@ -81,6 +85,7 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'middle',
     hideOnMobile: true,
     desktop: { bottom: '70px', right: '-40px' },
+    href: '/exercises?equipment=Barbell',
   },
   {
     src: '/hero/treadmill.png',
@@ -94,6 +99,7 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'foreground',
     hideOnMobile: true,
     desktop: { top: '44%', left: '-80px' },
+    href: '/exercises?equipment=Machine',
   },
   {
     src: '/hero/dumbell.png',
@@ -107,6 +113,7 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'foreground',
     hideOnMobile: false,
     desktop: { bottom: '50px', left: '-30px' },
+    href: '/exercises?equipment=Dumbbell',
   },
 ];
 
@@ -199,7 +206,7 @@ export default function Hero() {
       />
 
       {/* Equipment */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
+      <div className="absolute inset-0 overflow-hidden z-[1]">
         {equipmentData.map((eq) => {
           const px = (mousePos.x - 0.5) * eq.parallaxPx;
           const py = (mousePos.y - 0.5) * eq.parallaxPx;
@@ -276,15 +283,21 @@ export default function Hero() {
                   pointerEvents: 'none',
                 }}
               />
-              <Image
-                src={eq.src}
-                alt=""
-                width={eq.size}
-                height={eq.size}
-                className="relative w-full h-full object-contain z-[1]"
-                draggable={false}
-                priority
-              />
+              <a
+                href={eq.href}
+                className="relative block w-full h-full z-[1]"
+                aria-label={`View ${eq.label} exercises`}
+              >
+                <Image
+                  src={eq.src}
+                  alt=""
+                  width={eq.size}
+                  height={eq.size}
+                  className="w-full h-full object-contain"
+                  draggable={false}
+                  priority
+                />
+              </a>
             </motion.div>
           );
         })}
