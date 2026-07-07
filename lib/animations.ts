@@ -2,7 +2,7 @@
  * Shared Framer Motion animation variants.
  *
  * These are used across multiple components (Hero, Features, TrustedSection,
- * Membership, Reviews, Equipment, Exercises, etc.) to ensure consistent
+ * Reviews, Equipment, Exercises, etc.) to ensure consistent
  * entrance animations.
  */
 

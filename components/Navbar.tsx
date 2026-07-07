@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import { CONFIG } from "@/lib/config";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,13 +37,11 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
+    { name: "About", href: "/#about" },
     { name: "Equipment", href: "/equipment" },
     { name: "Exercises", href: "/exercises" },
-    { name: "Nutrition", href: "/nutrition" },
-    { name: "Tools", href: "/tools" },
-    { name: "AI Coach", href: "/ai-coach" },
-    { name: "Community", href: "/community" },
-    { name: "Contact", href: "#contact" },
+    { name: "Services", href: "/#services" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (
@@ -93,12 +92,14 @@ export default function Navbar() {
                   >
                     Login
                   </Link>
-                  <Link
-                    href="/signup"
+                  <a
+                    href={CONFIG.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="px-6 py-2 text-sm font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-[#DC2626]/30"
                   >
-                    Join Now
-                  </Link>
+                    Contact on WhatsApp
+                  </a>
                 </>
               ) : (
                 <div className="relative">
@@ -200,13 +201,15 @@ export default function Navbar() {
                     >
                       Login
                     </Link>
-                    <Link
-                      href="/signup"
+                    <a
+                      href={CONFIG.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="block w-full text-center px-6 py-3 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all"
                     >
-                      Join Now
-                    </Link>
+                      Contact on WhatsApp
+                    </a>
                   </>
                 ) : (
                   <button

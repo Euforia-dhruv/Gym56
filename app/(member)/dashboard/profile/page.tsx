@@ -10,11 +10,6 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useToast } from "@/components/ui/Toast";
-import {
-  getMyProfile,
-  updateMyProfile,
-  uploadMyAvatar,
-} from "@/lib/actions/member-profile";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import type { Profile } from "@/types";
 
@@ -32,23 +27,41 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState("");
 
   useEffect(() => {
-    getMyProfile()
-      .then((data) => {
-        setProfile(data);
-        setFullName(data.full_name || "");
-        setPhone(data.phone || "");
-      })
-      .catch(() => router.push("/login?redirectTo=/dashboard/profile"))
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        router.push("/login?redirectTo=/dashboard/profile");
+        return;
+      }
+      return supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single()
+        .then(({ data, error }) => {
+          if (error || !data) {
+            router.push("/login?redirectTo=/dashboard/profile");
+            return;
+          }
+          setProfile(data);
+          setFullName(data.full_name || "");
+          setPhone(data.phone || "");
+        });
+    }).catch(() => router.push("/login?redirectTo=/dashboard/profile"))
       .finally(() => setLoading(false));
-  }, [router]);
+  }, [router, supabase]);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await updateMyProfile({
-        full_name: fullName.trim() || undefined,
-        phone: phone.trim() || undefined,
-      });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+      await supabase
+        .from("profiles")
+        .update({
+          full_name: fullName.trim() || null,
+          phone: phone.trim() || null,
+        })
+        .eq("id", user.id);
       toast({ title: "Profile updated!", variant: "success" });
     } catch (err) {
       toast({
@@ -62,7 +75,16 @@ export default function ProfilePage() {
   };
 
   const handleImageUpload = async (formData: FormData) => {
-    return uploadMyAvatar(formData);
+    const file = formData.get("file") as File;
+    if (!file) throw new Error("No file provided");
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+    const ext = file.name.split(".").pop();
+    const path = `avatars/${user.id}.${ext}`;
+    await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
+    await supabase.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id);
+    return { publicUrl };
   };
 
   const handleSignOut = async () => {

@@ -100,6 +100,7 @@ export async function createExercise(input: ExerciseCreateInput) {
       equipment_label: parsed.equipment_label || null,
       difficulty: parsed.difficulty,
       target_muscles: parsed.target_muscles,
+      pro_tips: parsed.pro_tips ?? [],
       common_mistakes: parsed.common_mistakes,
       safety_tips: parsed.safety_tips,
       is_published: parsed.is_published,
@@ -148,6 +149,7 @@ export async function updateExercise(input: ExerciseUpdateInput) {
   if (parsed.equipment_label !== undefined) updateData.equipment_label = parsed.equipment_label || null;
   if (parsed.difficulty !== undefined) updateData.difficulty = parsed.difficulty;
   if (parsed.target_muscles !== undefined) updateData.target_muscles = parsed.target_muscles;
+  if (parsed.pro_tips !== undefined) updateData.pro_tips = parsed.pro_tips;
   if (parsed.common_mistakes !== undefined) updateData.common_mistakes = parsed.common_mistakes;
   if (parsed.safety_tips !== undefined) updateData.safety_tips = parsed.safety_tips;
   if (parsed.is_published !== undefined) updateData.is_published = parsed.is_published;

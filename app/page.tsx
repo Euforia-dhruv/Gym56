@@ -6,7 +6,11 @@ import AboutSection from "@/components/AboutSection";
 import Features from "@/components/Features";
 import Trainers from "@/components/Trainers";
 import Transformations from "@/components/Transformations";
-import Membership from "@/components/Membership";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import Facilities from "@/components/Facilities";
+import EquipmentSection from "@/components/EquipmentSection";
+import ExercisePreview from "@/components/ExercisePreview";
+import ContactCTA from "@/components/ContactCTA";
 import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
 import FAQ from "@/components/FAQ";
@@ -17,11 +21,11 @@ import CTA from "@/components/CTA";
 export const metadata: Metadata = {
   title: "Gym 56 — Premium Fitness in Gandhinagar",
   description:
-    "Join Gym 56 in Sector 26, Gandhinagar. Modern equipment, expert trainers, air-conditioned facilities, and flexible membership plans starting at ₹1500.",
+    "Join Gym 56 in Sector 26, Gandhinagar. Modern equipment, expert trainers, air-conditioned facilities, and premium fitness experience.",
   openGraph: {
     title: "Gym 56 — Premium Fitness in Gandhinagar",
     description:
-      "Join Gym 56 in Sector 26, Gandhinagar. Modern equipment, expert trainers, and flexible membership plans.",
+      "Join Gym 56 in Sector 26, Gandhinagar. Modern equipment, expert trainers, air-conditioned facilities, and premium fitness experience.",
     url: "https://gym56.vercel.app",
     type: "website",
   },
@@ -37,7 +41,11 @@ export default function Home() {
       <Features />
       <Trainers />
       <Transformations />
-      <Membership />
+      <WhyChooseUs />
+      <Facilities />
+      <EquipmentSection />
+      <ExercisePreview />
+      <ContactCTA />
       <Gallery />
       <Reviews />
       <FAQ />

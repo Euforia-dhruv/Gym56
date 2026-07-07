@@ -38,7 +38,7 @@ export function EquipmentClient({ initialEquipment }: { initialEquipment: Equipm
   const availableCount = initialEquipment.filter((eq) => eq.is_available).length;
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8" role="region" aria-label="Equipment library">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -119,6 +119,7 @@ export function EquipmentClient({ initialEquipment }: { initialEquipment: Equipm
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                       category === c ? "bg-[#DC2626] text-white" : "bg-white/5 text-gray-400 hover:text-white"
                     }`}
+                    aria-label={`Filter by category: ${c}`}
                   >
                     {c}
                   </button>
@@ -135,6 +136,7 @@ export function EquipmentClient({ initialEquipment }: { initialEquipment: Equipm
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all capitalize ${
                       conditionFilter === c ? "bg-[#DC2626] text-white" : "bg-white/5 text-gray-400 hover:text-white"
                     }`}
+                    aria-label={`Filter by condition: ${c}`}
                   >
                     {c}
                   </button>
@@ -198,6 +200,7 @@ export function EquipmentClient({ initialEquipment }: { initialEquipment: Equipm
                 <Link
                   href={`/equipment/${eq.slug}`}
                   className="inline-flex items-center gap-2 text-[#DC2626] font-semibold hover:text-white transition-colors duration-300 mt-auto pt-2 border-t border-white/5"
+                  aria-label={`View details for ${eq.name}`}
                 >
                   View Details
                   <ChevronRight className="w-4 h-4" />

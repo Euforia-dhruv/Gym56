@@ -1,7 +1,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { getMyProfile } from "@/lib/actions/member-profile";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 
 export default async function AdminGroupLayout({
@@ -16,9 +15,13 @@ export default async function AdminGroupLayout({
 
   if (!user) redirect("/login");
 
-  const profile = await getMyProfile();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
 
-  if (profile.role !== "admin") redirect("/");
+  if (!profile || profile.role !== "admin") redirect("/");
 
   return <AdminLayout>{children}</AdminLayout>;
 }

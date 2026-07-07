@@ -20,7 +20,6 @@ export function getDifficultyColor(difficulty: string): string {
   }
 }
 
-/** Return Tailwind classes for a subscription / booking status badge. */
 export function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
     case 'active':

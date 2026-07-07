@@ -10,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   Shield,
+  Share2,
   BookOpen,
   ChevronRight,
   AlertTriangle,
@@ -51,12 +52,27 @@ export default function EquipmentDetail({
     ? equipment.difficulty
     : null;
 
+  const [copied, setCopied] = useState(false);
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: equipment.name, url }); } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {}
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <Link
           href="/equipment"
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 group"
+          aria-label="Back to equipment"
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
           Back to Equipment
@@ -93,9 +109,22 @@ export default function EquipmentDetail({
             )}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8">
-            {equipment.name}
-          </h1>
+          <div className="flex items-start justify-between gap-4 mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+              {equipment.name}
+            </h1>
+            <button
+              onClick={handleShare}
+              className="flex-shrink-0 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all group mt-2"
+              aria-label={copied ? "Link copied" : "Share equipment"}
+            >
+              {copied ? (
+                <span className="text-xs text-green-400 font-medium">Copied!</span>
+              ) : (
+                <Share2 className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+              )}
+            </button>
+          </div>
 
           {/* Image Gallery */}
           {allImages.length > 0 && (
@@ -123,6 +152,7 @@ export default function EquipmentDetail({
                       className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
                         selectedImage === url ? "border-[#DC2626] opacity-100" : "border-white/10 opacity-60 hover:opacity-100"
                       }`}
+                      aria-label={`View image ${i + 1} of ${equipment.name}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`${equipment.name} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
@@ -224,6 +254,20 @@ export default function EquipmentDetail({
             </div>
           </div>
 
+          {equipment.secondary_muscles && equipment.secondary_muscles.length > 0 && (
+            <div className="glass rounded-2xl p-6 sm:p-8 mb-6">
+              <div className="flex items-center gap-3 mb-5">
+                <Target className="w-6 h-6 text-[#DC2626]" />
+                <h2 className="text-xl font-bold text-white">Secondary Muscles</h2>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {equipment.secondary_muscles.map((m, i) => (
+                  <span key={i} className="px-3 py-1.5 rounded-lg bg-white/5 text-sm text-gray-300 border border-white/5">{m}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* How to Use / Instructions */}
           {(equipment.instructions?.length > 0 || equipment.how_to_use?.length > 0) && (
             <div className="glass rounded-2xl p-6 sm:p-8 mb-6">
@@ -233,6 +277,32 @@ export default function EquipmentDetail({
               </div>
               <ol className="space-y-4">
                 {(equipment.instructions?.length > 0 ? equipment.instructions : equipment.how_to_use).map((step, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.08 }}
+                    className="flex gap-4"
+                  >
+                    <span className="flex-shrink-0 w-8 h-8 bg-[#DC2626] text-white rounded-full flex items-center justify-center font-bold text-sm" aria-hidden="true">
+                      {index + 1}
+                    </span>
+                    <p className="text-gray-300 pt-1">{step}</p>
+                  </motion.li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {equipment.seat_adjustment && equipment.seat_adjustment.length > 0 && (
+            <div className="glass rounded-2xl p-6 sm:p-8 mb-6">
+              <div className="flex items-center gap-3 mb-5">
+                <Wrench className="w-6 h-6 text-[#DC2626]" />
+                <h2 className="text-xl font-bold text-white">Seat Adjustment</h2>
+              </div>
+              <ol className="space-y-4">
+                {equipment.seat_adjustment.map((step, index) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -322,6 +392,7 @@ export default function EquipmentDetail({
                     key={ex.id}
                     href={`/exercise/${ex.slug}`}
                     className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all group"
+                    aria-label={`View exercise: ${ex.name}`}
                   >
                     <div className="min-w-0">
                       <p className="font-semibold text-white text-sm group-hover:text-[#DC2626] transition-colors truncate">
@@ -362,6 +433,7 @@ export default function EquipmentDetail({
                     <Link
                       href={`/equipment/${eq.slug}`}
                       className="inline-flex items-center gap-2 text-[#DC2626] font-semibold hover:text-white transition-colors duration-300"
+                      aria-label={`View details for ${eq.name}`}
                     >
                       View Details
                       <ChevronRight className="w-4 h-4" aria-hidden="true" />

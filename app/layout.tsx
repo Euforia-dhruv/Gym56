@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s — Gym 56",
   },
   description:
-    "Gym 56 is a premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and flexible membership plans.",
+    "Gym 56 is a premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and top-notch facilities.",
   metadataBase: new URL("https://gym56.vercel.app"),
   openGraph: {
     siteName: "Gym 56",
@@ -22,14 +22,14 @@ export const metadata: Metadata = {
     locale: "en_IN",
     title: "Gym 56 — Premium Fitness in Gandhinagar",
     description:
-      "Premium fitness gym in Sector 26, Gandhinagar. Modern equipment, expert trainers, and flexible membership plans.",
+      "Premium fitness gym in Sector 26, Gandhinagar. Modern equipment, expert trainers, and top-notch facilities.",
     url: "https://gym56.vercel.app",
   },
   twitter: {
     card: "summary_large_image",
     title: "Gym 56 — Premium Fitness in Gandhinagar",
     description:
-      "Premium fitness gym in Sector 26, Gandhinagar. Modern equipment, expert trainers, and flexible membership plans.",
+      "Premium fitness gym in Sector 26, Gandhinagar. Modern equipment, expert trainers, and top-notch facilities.",
   },
   icons: {
     icon: "/gym56-logo.png",
@@ -49,7 +49,7 @@ const localBusinessSchema = {
   "@type": "Gym",
   name: "Gym 56",
   description:
-    "Premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and flexible membership plans.",
+    "Premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and top-notch facilities.",
   url: "https://gym56.vercel.app",
   telephone: "+919924441179",
   address: {

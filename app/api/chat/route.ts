@@ -38,7 +38,7 @@ const TOP_QUERIES = [
   { keywords: ["recovery", "rest", "sore", "warm up", "cool down", "stretch", "mobility", "injury"], intent: "recovery" },
   { keywords: ["equipment", "machine", "cable", "dumbbell", "barbell", "free weight"], intent: "equipment" },
   { keywords: ["phone", "call", "contact", "address", "location", "timing", "hour", "open"], intent: "gym_info" },
-  { keywords: ["price", "cost", "membership", "fee", "plan", "sign up", "join", "register"], intent: "pricing" },
+  { keywords: ["sign up", "join", "register", "fee", "cost", "price"], intent: "pricing" },
 ];
 
 function detectIntent(text: string): string | null {
@@ -262,11 +262,11 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     }
 
     case "pricing": {
-      return `For membership pricing and plans, please **contact GYM 56 directly**:\n` +
+      return `For inquiries about fees and joining GYM 56, please **contact us**:\n` +
         `📞 ${GYM_INFO.phone}\n` +
+        `💬 WhatsApp: https://wa.me/91992441179\n` +
         `📍 Visit us at ${GYM_INFO.location}\n\n` +
-        `We offer various membership options — monthly, quarterly, and annual plans. ` +
-        `Visit the gym for a free trial and personalized consultation!`;
+        `We'd love to have you train with us!`;
     }
   }
 
@@ -290,7 +290,7 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     `• **Nutrition** — Pre/post workout meals, supplements, diet tips\n` +
     `• **Weight loss** — Cardio, HIIT, strength training, diet\n` +
     `• **Muscle gain** — Progressive overload, sets/reps, nutrition\n` +
-    `• **GYM 56 info** — Hours, location, equipment, membership\n` +
+    `• **GYM 56 info** — Hours, location, equipment\n` +
     `• **Recovery** — Warm-ups, cool-downs, rest days, injury prevention\n\n` +
     `What would you like to know? 💪`;
 }

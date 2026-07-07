@@ -308,7 +308,7 @@ export default function EquipmentPage() {
             if (editing) {
               await handleUpdate(data as unknown as Record<string, unknown>);
             } else {
-              await handleCreate(data as Parameters<typeof createEquipment>[0]);
+              await handleCreate(data as unknown as Parameters<typeof createEquipment>[0]);
             }
           }}
           onImageUpload={handleImageUpload}

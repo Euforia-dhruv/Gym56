@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sign Up - Gym 56",
-  description: "Join Gym 56 — Gandhinagar's premium fitness destination. Choose from flexible membership plans and start your fitness journey today.",
+  description: "Join Gym 56 — Gandhinagar's premium fitness destination. Start your fitness journey today.",
   openGraph: {
     title: "Sign Up — Gym 56",
     description: "Join Gym 56 — Gandhinagar's premium fitness destination. Start your fitness journey today.",

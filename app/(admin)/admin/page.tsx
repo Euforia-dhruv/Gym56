@@ -1,22 +1,18 @@
 import type { Metadata } from "next";
 import {
-  Users,
   Dumbbell,
   BookOpen,
-  CreditCard,
   Mail,
-  IndianRupee,
+  Settings,
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard } from "@/components/admin/StatCard";
 import { DashboardCard } from "@/components/admin/DashboardCard";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { getDashboardStats } from "@/lib/actions/members";
+import { getEquipment } from "@/lib/actions/equipment";
+import { getExercises } from "@/lib/actions/exercises";
 import { getUnreadCount } from "@/lib/actions/contact";
-import { getActivePlans, getSubscriptionCounts } from "@/lib/actions/memberships";
-import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -37,19 +33,18 @@ const quickActions = [
     description: "Create exercise guide",
   },
   {
-    label: "View Members",
-    href: "/admin/members",
-    icon: Users,
-    description: "Manage gym members",
-  },
-  {
     label: "View Messages",
     href: "/admin/contact",
     icon: Mail,
     description: "Unread messages",
   },
+  {
+    label: "Settings",
+    href: "/admin/settings",
+    icon: Settings,
+    description: "Manage site settings",
+  },
 ];
-
 
 const systemStatusBadge: Record<string, { variant: "success" | "warning" | "default"; label: string }> = {
   operational: { variant: "success", label: "Operational" },
@@ -57,67 +52,36 @@ const systemStatusBadge: Record<string, { variant: "success" | "warning" | "defa
   not_configured: { variant: "default", label: "Not configured" },
 };
 
-// ─── Server Component ───────────────────────────────────────────────────────
-
 export default async function AdminDashboardPage() {
-  let stats;
-  let unreadCount;
-  let plans;
+  let equipmentCount = 0;
+  let exerciseCount = 0;
+  let unreadCount = 0;
 
   try {
-    const [s, u, p] = await Promise.all([
-      getDashboardStats(),
+    const [equipment, exercises, unread] = await Promise.all([
+      getEquipment(),
+      getExercises(),
       getUnreadCount(),
-      getActivePlans(),
     ]);
-    stats = s;
-    unreadCount = u;
-    plans = p;
+    equipmentCount = equipment.length;
+    exerciseCount = exercises.length;
+    unreadCount = unread;
   } catch {
     // Fallback in case of error
-    stats = {
-      totalMembers: 0,
-      totalEquipment: 0,
-      totalExercises: 0,
-      activeSubscriptions: 0,
-      unreadMessages: 0,
-    };
-    unreadCount = 0;
-    plans = [];
-  }
-
-  const planCounts: Record<string, number> = {};
-  try {
-    const counts = await getSubscriptionCounts();
-    Object.assign(planCounts, counts);
-  } catch {
-    // Fallback
   }
 
   const dashStats = [
     {
-      title: "Total Members",
-      value: stats.totalMembers,
-      subtitle: "Registered accounts",
-      icon: <Users className="w-6 h-6" />,
-    },
-    {
       title: "Equipment",
-      value: stats.totalEquipment,
+      value: equipmentCount,
       subtitle: "Items in inventory",
       icon: <Dumbbell className="w-6 h-6" />,
     },
     {
       title: "Exercises",
-      value: stats.totalExercises,
+      value: exerciseCount,
       subtitle: "Published exercises",
       icon: <BookOpen className="w-6 h-6" />,
-    },
-    {
-      title: "Active Plans",
-      value: stats.activeSubscriptions,
-      subtitle: "Active subscriptions",
-      icon: <CreditCard className="w-6 h-6" />,
     },
     {
       title: "Unread Messages",
@@ -125,24 +89,16 @@ export default async function AdminDashboardPage() {
       subtitle: "Contact submissions",
       icon: <Mail className="w-6 h-6" />,
     },
-    {
-      title: "Pricing Plans",
-      value: plans.length,
-      subtitle: "Membership plans available",
-      icon: <IndianRupee className="w-6 h-6" />,
-    },
   ];
 
   const systemStatus = [
     { label: "Supabase Auth", status: "operational" as const },
     { label: "Database", status: "operational" as const },
     { label: "Storage", status: "operational" as const },
-    { label: "Payment Gateway", status: "not_configured" as const },
   ];
 
   return (
     <div className="space-y-8">
-      {/* Page heading */}
       <div>
         <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard</h1>
         <p className="mt-1 text-sm text-gray-400">
@@ -150,7 +106,6 @@ export default async function AdminDashboardPage() {
         </p>
       </div>
 
-      {/* Stat cards */}
       <section aria-labelledby="stats-heading">
         <h2 id="stats-heading" className="sr-only">Key metrics</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -160,7 +115,6 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Quick actions */}
       <section aria-labelledby="quick-actions-heading">
         <h2 id="quick-actions-heading" className="text-lg font-bold text-white mb-4">
           Quick Actions
@@ -190,46 +144,7 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Activity */}
-        <section aria-labelledby="activity-heading" className="lg:col-span-2">
-          <DashboardCard
-            title="Pricing Plans"
-            action={
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/admin/memberships">
-                  View all <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
-                </Link>
-              </Button>
-            }
-          >
-            <div className="space-y-3 p-2">
-              {plans.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center py-8">No plans created yet.</p>
-              ) : (
-                plans.map((plan) => (
-                  <div
-                    key={plan.id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-white/3 border border-white/8"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold text-white">{plan.name}</p>
-                      <p className="text-xs text-gray-500">
-                        {planCounts[plan.id] ?? 0} active subscriber{(planCounts[plan.id] ?? 0) !== 1 ? "s" : ""}
-                      </p>
-                    </div>
-                    <span className="text-sm font-bold text-white">
-                      {formatCurrency(plan.price_minor, plan.currency)}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          </DashboardCard>
-        </section>
-
-        {/* System Status */}
         <section aria-labelledby="system-heading">
           <DashboardCard title="System Status">
             <ul className="space-y-3" aria-labelledby="system-heading">

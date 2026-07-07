@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -17,6 +18,8 @@ import {
   BookOpen,
   Play,
   Info,
+  Share2,
+  Zap,
 } from "lucide-react";
 import { getDifficultyColor } from "@/lib/utils";
 import type { Exercise } from "@/types";
@@ -72,7 +75,7 @@ export default function ExerciseDetail({
   instructions?: string[];
   relatedExercises?: Exercise[];
 }) {
-  const mediaUrl = exercise.gif_url || exercise.thumbnail_url || exercise.primary_image_url;
+  const mediaUrl = exercise.video_url || exercise.gif_url || exercise.thumbnail_url || exercise.primary_image_url;
   const hasBreathing = exercise.breathing && exercise.breathing.length > 0;
   const hasVariations = exercise.variations && exercise.variations.length > 0;
   const hasAlternatives = exercise.alternatives && exercise.alternatives.length > 0;
@@ -81,12 +84,27 @@ export default function ExerciseDetail({
   const hasBeginnerTips = exercise.beginner_tips && exercise.beginner_tips.length > 0;
   const hasSecondary = exercise.secondary_muscles && exercise.secondary_muscles.length > 0;
 
+  const [copied, setCopied] = useState(false);
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: exercise.name, url }); } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {}
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <Link
           href="/exercises"
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group"
+          aria-label="Back to exercises"
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
           Back to Exercises
@@ -107,26 +125,55 @@ export default function ExerciseDetail({
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-            {exercise.name}
-          </h1>
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
+              {exercise.name}
+            </h1>
+            <button
+              onClick={handleShare}
+              className="flex-shrink-0 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all group mt-2"
+              aria-label={copied ? "Link copied" : "Share exercise"}
+            >
+              {copied ? (
+                <span className="text-xs text-green-400 font-medium">Copied!</span>
+              ) : (
+                <Share2 className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+              )}
+            </button>
+          </div>
 
           {/* Media Section */}
           {mediaUrl && (
             <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-white/10 bg-gray-900 group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={mediaUrl}
-                alt={exercise.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                loading="lazy"
-              />
-              {exercise.gif_url && (
+              {exercise.video_url ? (
+                <video
+                  src={exercise.video_url}
+                  controls
+                  className="w-full h-full object-cover"
+                  aria-label={`${exercise.name} demonstration video`}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={mediaUrl}
+                  alt={exercise.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                />
+              )}
+              {exercise.video_url ? (
+                <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white flex items-center gap-1.5">
+                  <Play className="w-3 h-3" />
+                  Video
+                </div>
+              ) : exercise.gif_url ? (
                 <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white flex items-center gap-1.5">
                   <Play className="w-3 h-3" />
                   GIF
                 </div>
-              )}
+              ) : null}
             </div>
           )}
 
@@ -281,6 +328,19 @@ export default function ExerciseDetail({
                 <ListSection items={exercise.beginner_tips} />
               </Section>
             )}
+
+            {exercise.pro_tips && exercise.pro_tips.length > 0 && (
+              <Section title="Pro Tips" icon={<Zap className="w-5 h-5" />}>
+                <ul className="space-y-2">
+                  {exercise.pro_tips.map((tip, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] mt-2 flex-shrink-0" />
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
           </div>
 
           {/* Related Exercises */}
@@ -299,6 +359,7 @@ export default function ExerciseDetail({
                     <Link
                       href={`/exercise/${related.slug}`}
                       className="inline-flex items-center gap-2 text-[#DC2626] font-semibold hover:text-white transition-colors duration-300"
+                      aria-label={`View ${related.name}`}
                     >
                       View
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

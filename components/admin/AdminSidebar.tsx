@@ -7,8 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   Dumbbell,
-  Users,
-  CreditCard,
   Mail,
   Settings,
   ChevronLeft,
@@ -34,8 +32,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { label: 'Members', href: '/admin/members', icon: Users },
-  { label: 'Memberships', href: '/admin/memberships', icon: CreditCard },
   { label: 'Equipment', href: '/admin/equipment', icon: Dumbbell },
   { label: 'Exercises', href: '/admin/exercises', icon: BookOpen },
   { label: 'Contact', href: '/admin/contact', icon: Mail, badge: 3 },

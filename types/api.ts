@@ -32,6 +32,8 @@ export const EquipmentCreateSchema = z.object({
   location: z.string().max(200).optional().default(""),
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced", "All Levels"]).optional().default("All Levels"),
   muscles_trained: commaArray,
+  secondary_muscles: z.array(z.string()).default([]),
+  seat_adjustment: z.array(z.string()).default([]),
   common_mistakes: commaArray,
   maintenance_tips: commaArray,
   instructions: commaArray,
@@ -68,6 +70,7 @@ export const ExerciseCreateSchema = z.object({
   equipment_label: z.string().max(200).optional().default(""),
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
   target_muscles: commaArray,
+  pro_tips: z.array(z.string()).default([]),
   common_mistakes: commaArray,
   safety_tips: commaArray,
   breathing: z.string().max(2000).optional().default(""),
@@ -87,25 +90,6 @@ export const ExerciseUpdateSchema = ExerciseCreateSchema.partial().extend({
 
 export type ExerciseCreateInput = z.infer<typeof ExerciseCreateSchema>;
 export type ExerciseUpdateInput = z.infer<typeof ExerciseUpdateSchema>;
-
-// ─── Membership Plans ────────────────────────────────────────────────────────
-
-export const MembershipPlanCreateSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
-  duration_months: z.coerce.number().int().positive("Duration must be positive"),
-  price_minor: z.coerce.number().int().min(0, "Price must be ≥ 0"),
-  savings_label: z.string().max(200).optional().default(""),
-  is_featured: z.boolean().default(false),
-  is_active: z.boolean().default(true),
-  sort_order: z.coerce.number().int().min(0).default(0),
-});
-
-export const MembershipPlanUpdateSchema = MembershipPlanCreateSchema.partial().extend({
-  id: z.string().uuid(),
-});
-
-export type MembershipPlanCreateInput = z.infer<typeof MembershipPlanCreateSchema>;
-export type MembershipPlanUpdateInput = z.infer<typeof MembershipPlanUpdateSchema>;
 
 // ─── Contact Form ────────────────────────────────────────────────────────────
 

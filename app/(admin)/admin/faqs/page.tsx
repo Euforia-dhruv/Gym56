@@ -34,18 +34,18 @@ interface FAQ {
   published: boolean;
 }
 
-const CATEGORIES = ["All", "Memberships", "Facilities", "Timing", "Classes", "Personal Training", "Nutrition", "Payments", "General"];
+const CATEGORIES = ["All", "Pricing", "Facilities", "Timing", "Classes", "Personal Training", "Nutrition", "General"];
 
 function seedFAQs(): FAQ[] {
   return [
     { id: "1", question: "What are your opening hours?", answer: "We are open Monday to Saturday from 6:00 AM to 10:00 PM, and Sunday from 8:00 AM to 6:00 PM.", category: "Timing", order: 1, published: true },
-    { id: "2", question: "How much does a membership cost?", answer: "We offer various membership plans starting from ₹1,999/month. Please visit our Memberships page for detailed pricing.", category: "Memberships", order: 2, published: true },
-    { id: "3", question: "Do you offer trial sessions?", answer: "Yes! We offer a free trial session for all new members. You can book your trial through our website or visit the front desk.", category: "Memberships", order: 3, published: true },
+    { id: "2", question: "How much does it cost to join?", answer: "We offer flexible pricing options starting from ₹1,999/month. Contact us on WhatsApp for detailed pricing and offers.", category: "Pricing", order: 2, published: true },
+    { id: "3", question: "Do you offer trial sessions?", answer: "Yes! We offer a free trial session for all new visitors. You can book your trial through WhatsApp or visit our front desk.", category: "Pricing", order: 3, published: true },
     { id: "4", question: "What equipment do you have?", answer: "We have a wide range of equipment including treadmills, cycles, dumbbells, bench presses, cable machines, leg press, and more.", category: "Facilities", order: 4, published: true },
-    { id: "5", question: "Do you offer personal training?", answer: "Absolutely! Our certified personal trainers offer one-on-one sessions tailored to your fitness goals. Contact us for pricing.", category: "Personal Training", order: 5, published: true },
+    { id: "5", question: "Do you offer personal training?", answer: "Absolutely! Our certified personal trainers offer one-on-one sessions tailored to your fitness goals. Contact us on WhatsApp for pricing.", category: "Personal Training", order: 5, published: true },
     { id: "6", question: "What group classes do you offer?", answer: "We offer Yoga, Zumba, HIIT, Boxing, Pilates, and Spin classes. Check our schedule for timings and availability.", category: "Classes", order: 6, published: true },
     { id: "7", question: "Is there parking available?", answer: "Yes, we have ample parking space for both two-wheelers and four-wheelers.", category: "Facilities", order: 7, published: true },
-    { id: "8", question: "Can I freeze my membership?", answer: "Yes, you can freeze your membership for up to 30 days per year. Please contact our support team for assistance.", category: "Memberships", order: 8, published: false },
+    { id: "8", question: "Can I pause my plan?", answer: "Yes, you can pause your plan for up to 30 days per year. Contact our support team for assistance.", category: "Pricing", order: 8, published: false },
   ];
 }
 

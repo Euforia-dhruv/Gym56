@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 import { Users, Trophy, Dumbbell, Clock } from 'lucide-react';
+import { CONFIG } from '@/lib/config';
 
 const stats = [
   { icon: Users, value: 45, label: 'Happy Members', suffix: '+' },
@@ -365,19 +366,21 @@ export default function Hero() {
           variants={item}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
         >
-          <Link
-            href="/signup"
+          <a
+            href={CONFIG.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-8 py-4 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#DC2626]/30"
           >
             Join Now
-          </Link>
+          </a>
 
-          <a
-            href="#membership"
+          <Link
+            href="/equipment"
             className="px-8 py-4 text-lg font-semibold text-white border border-white/20 hover:border-white/40 rounded-full transition-all duration-300 hover:scale-105 glass"
           >
-            Explore Gym
-          </a>
+            Explore Equipment
+          </Link>
         </motion.div>
 
         {/* Statistics Cards */}

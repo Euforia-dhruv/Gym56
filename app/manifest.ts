@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Gym 56 — Premium Fitness in Gandhinagar",
     short_name: "Gym 56",
     description:
-      "Premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and flexible membership plans.",
+      "Premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and top-notch facilities.",
     start_url: "/",
     display: "standalone",
     background_color: "#000000",

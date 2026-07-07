@@ -136,7 +136,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
   const activeFilterCount = [category !== "All", difficulty !== "All", muscleFilter !== "All", equipment !== "All Equipment", showFavoritesOnly].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black pt-24 pb-16 px-4 sm:px-6 lg:px-8" role="region" aria-label="Exercise library">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -200,6 +200,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 : "bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-white/30"
             }`}
             aria-label="Show favorites only"
+            aria-pressed={showFavoritesOnly}
           >
             <Heart className={`w-4 h-4 ${showFavoritesOnly ? "fill-red-400" : ""}`} />
             Favorites {favorites.length > 0 && `(${favorites.length})`}
@@ -212,6 +213,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 : "bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-white/30"
             }`}
             aria-label="Show recently viewed"
+            aria-pressed={showRecent}
           >
             <Clock className="w-4 h-4" />
             Recent
@@ -346,7 +348,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
               return (
                 <span key={id} className="inline-flex items-center gap-1 px-2 py-1 bg-white/5 rounded-full text-xs text-white">
                   {ex?.name}
-                  <button onClick={() => toggleCompare(id)} className="text-gray-500 hover:text-white ml-1">
+                  <button onClick={() => toggleCompare(id)} className="text-gray-500 hover:text-white ml-1" aria-label={`Remove ${ex?.name || "item"} from comparison`}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -355,6 +357,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
             <button
               onClick={() => setCompareList([])}
               className="ml-auto text-xs text-gray-500 hover:text-white transition-colors"
+              aria-label="Clear comparison list"
             >
               Clear
             </button>

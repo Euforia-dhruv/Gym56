@@ -22,6 +22,13 @@ export interface EquipmentFormProps {
     quantity: number;
     condition: string;
     location: string;
+    difficulty: string;
+    muscles_trained: string;
+    secondary_muscles: string;
+    instructions: string;
+    common_mistakes: string;
+    maintenance_tips: string;
+    seat_adjustment: string;
     is_available: boolean;
     is_published: boolean;
   }) => Promise<void>;
@@ -51,6 +58,25 @@ export function EquipmentForm({
   const [location, setLocation] = React.useState(equipment?.location ?? "");
   const [isAvailable, setIsAvailable] = React.useState(equipment?.is_available ?? true);
   const [isPublished, setIsPublished] = React.useState(equipment?.is_published ?? false);
+  const [difficulty, setDifficulty] = React.useState(equipment?.difficulty ?? "All Levels");
+  const [musclesTrained, setMusclesTrained] = React.useState(
+    equipment?.muscles_trained?.join(", ") ?? ""
+  );
+  const [equipSecondaryMuscles, setEquipSecondaryMuscles] = React.useState(
+    equipment?.secondary_muscles?.join(", ") ?? ""
+  );
+  const [instructions, setInstructions] = React.useState(
+    equipment?.instructions?.join(", ") ?? ""
+  );
+  const [equipCommonMistakes, setEquipCommonMistakes] = React.useState(
+    equipment?.common_mistakes?.join(", ") ?? ""
+  );
+  const [maintenanceTips, setMaintenanceTips] = React.useState(
+    equipment?.maintenance_tips?.join(", ") ?? ""
+  );
+  const [seatAdjustment, setSeatAdjustment] = React.useState(
+    equipment?.seat_adjustment?.join(", ") ?? ""
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +95,13 @@ export function EquipmentForm({
         quantity,
         condition,
         location: location.trim(),
+        difficulty,
+        muscles_trained: musclesTrained.trim(),
+        secondary_muscles: equipSecondaryMuscles.trim(),
+        instructions: instructions.trim(),
+        common_mistakes: equipCommonMistakes.trim(),
+        maintenance_tips: maintenanceTips.trim(),
+        seat_adjustment: seatAdjustment.trim(),
         is_available: isAvailable,
         is_published: isPublished,
       });
@@ -135,6 +168,78 @@ export function EquipmentForm({
         placeholder="Describe the equipment, its uses, and any relevant details…"
         rows={4}
       />
+
+      <Select
+        label="Difficulty"
+        value={difficulty}
+        onChange={(e) => setDifficulty(e.target.value)}
+        options={[
+          { value: "Beginner", label: "Beginner" },
+          { value: "Intermediate", label: "Intermediate" },
+          { value: "Advanced", label: "Advanced" },
+          { value: "All Levels", label: "All Levels" },
+        ]}
+      />
+
+      <div>
+        <p className="text-sm font-medium text-gray-300 mb-2">Muscles Trained</p>
+        <textarea
+          value={musclesTrained}
+          onChange={(e) => setMusclesTrained(e.target.value)}
+          placeholder="Comma-separated values"
+          className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm px-4 py-2.5 min-h-[80px] focus:outline-none focus:border-[#DC2626] transition-colors"
+        />
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-gray-300 mb-2">Secondary Muscles</p>
+        <textarea
+          value={equipSecondaryMuscles}
+          onChange={(e) => setEquipSecondaryMuscles(e.target.value)}
+          placeholder="Comma-separated values"
+          className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm px-4 py-2.5 min-h-[80px] focus:outline-none focus:border-[#DC2626] transition-colors"
+        />
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-gray-300 mb-2">Instructions (how-to-use steps)</p>
+        <textarea
+          value={instructions}
+          onChange={(e) => setInstructions(e.target.value)}
+          placeholder="Comma-separated values"
+          className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm px-4 py-2.5 min-h-[80px] focus:outline-none focus:border-[#DC2626] transition-colors"
+        />
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-gray-300 mb-2">Common Mistakes</p>
+        <textarea
+          value={equipCommonMistakes}
+          onChange={(e) => setEquipCommonMistakes(e.target.value)}
+          placeholder="Comma-separated values"
+          className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm px-4 py-2.5 min-h-[80px] focus:outline-none focus:border-[#DC2626] transition-colors"
+        />
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-gray-300 mb-2">Maintenance Tips</p>
+        <textarea
+          value={maintenanceTips}
+          onChange={(e) => setMaintenanceTips(e.target.value)}
+          placeholder="Comma-separated values"
+          className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm px-4 py-2.5 min-h-[80px] focus:outline-none focus:border-[#DC2626] transition-colors"
+        />
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-gray-300 mb-2">Seat Adjustment</p>
+        <textarea
+          value={seatAdjustment}
+          onChange={(e) => setSeatAdjustment(e.target.value)}
+          placeholder="Comma-separated values"
+          className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm px-4 py-2.5 min-h-[80px] focus:outline-none focus:border-[#DC2626] transition-colors"
+        />
+      </div>
 
       {/* Availability & publish toggles */}
       <div className="flex flex-wrap gap-6">

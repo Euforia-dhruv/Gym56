@@ -109,6 +109,8 @@ export async function createEquipment(input: EquipmentCreateInput) {
       is_published: parsed.is_published,
       difficulty: parsed.difficulty || 'All Levels',
       muscles_trained: parsed.muscles_trained ?? [],
+      secondary_muscles: parsed.secondary_muscles ?? [],
+      seat_adjustment: parsed.seat_adjustment ?? [],
       common_mistakes: parsed.common_mistakes ?? [],
       maintenance_tips: parsed.maintenance_tips ?? [],
       instructions: parsed.instructions ?? [],
@@ -151,6 +153,8 @@ export async function updateEquipment(input: EquipmentUpdateInput) {
   if (parsed.is_published !== undefined) updateData.is_published = parsed.is_published;
   if (parsed.difficulty !== undefined) updateData.difficulty = parsed.difficulty;
   if (parsed.muscles_trained !== undefined) updateData.muscles_trained = parsed.muscles_trained;
+  if (parsed.secondary_muscles !== undefined) updateData.secondary_muscles = parsed.secondary_muscles;
+  if (parsed.seat_adjustment !== undefined) updateData.seat_adjustment = parsed.seat_adjustment;
   if (parsed.common_mistakes !== undefined) updateData.common_mistakes = parsed.common_mistakes;
   if (parsed.maintenance_tips !== undefined) updateData.maintenance_tips = parsed.maintenance_tips;
   if (parsed.instructions !== undefined) updateData.instructions = parsed.instructions;

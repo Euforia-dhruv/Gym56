@@ -5,38 +5,7 @@ export interface Profile {
   full_name: string | null;
   phone: string | null;
   avatar_url: string | null;
-  role: "member" | "admin" | "trainer";
-  created_at: string;
-  updated_at: string;
-}
-
-export interface MembershipPlan {
-  id: string;
-  name: string;
-  duration_months: number;
-  currency: string;
-  price_minor: number;
-  savings_label: string | null;
-  is_featured: boolean;
-  is_active: boolean;
-  sort_order: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Subscription {
-  id: string;
-  user_id: string;
-  plan_id: string;
-  starts_at: string;
-  expires_at: string;
-  payment_status: "pending" | "paid" | "failed" | "refunded" | "cancelled";
-  payment_ref: string | null;
-  payment_gateway: string | null;
-  amount_paid_minor: number | null;
-  currency: string;
-  notes: string | null;
-  created_by: string | null;
+  role: "admin" | "trainer";
   created_at: string;
   updated_at: string;
 }
@@ -54,6 +23,8 @@ export interface Equipment {
   is_published: boolean;
   primary_image_url: string | null;
   sort_order: number;
+  secondary_muscles: string[];
+  seat_adjustment: string[];
   how_to_use: string[];
   safety_tips: string[];
   common_mistakes: string[];
@@ -79,6 +50,7 @@ export interface Exercise {
   difficulty: "Beginner" | "Intermediate" | "Advanced";
   target_muscles: string[];
   secondary_muscles: string[];
+  pro_tips: string[];
   common_mistakes: string[];
   safety_tips: string[];
   breathing: string | null;

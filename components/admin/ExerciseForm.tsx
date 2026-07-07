@@ -31,7 +31,9 @@ export interface ExerciseFormProps {
     progressions: string;
     regressions: string;
     beginner_tips: string;
+    pro_tips: string;
     gif_url: string | null;
+    video_url: string | null;
     thumbnail_url: string | null;
     is_published: boolean;
   }) => Promise<void>;
@@ -86,7 +88,11 @@ export function ExerciseForm({
   const [beginnerTips, setBeginnerTips] = React.useState(
     exercise?.beginner_tips?.join(", ") ?? ""
   );
+  const [proTips, setProTips] = React.useState(
+    exercise?.pro_tips?.join(", ") ?? ""
+  );
   const [gifUrl, setGifUrl] = React.useState(exercise?.gif_url ?? "");
+  const [videoUrl, setVideoUrl] = React.useState(exercise?.video_url ?? "");
   const [thumbnailUrl, setThumbnailUrl] = React.useState(exercise?.thumbnail_url ?? "");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -116,7 +122,9 @@ export function ExerciseForm({
         progressions: progressions.trim(),
         regressions: regressions.trim(),
         beginner_tips: beginnerTips.trim(),
+        pro_tips: proTips.trim(),
         gif_url: gifUrl.trim() || null,
+        video_url: videoUrl.trim() || null,
         thumbnail_url: thumbnailUrl.trim() || null,
         is_published: isPublished,
       });
@@ -254,12 +262,25 @@ export function ExerciseForm({
         placeholder="Start with bodyweight, Focus on form first"
         rows={2}
       />
+      <Textarea
+        label="Pro Tips (comma-separated)"
+        value={proTips}
+        onChange={(e) => setProTips(e.target.value)}
+        placeholder="Keep your wrists straight, Drive through your heels"
+        rows={2}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           label="GIF URL"
           value={gifUrl}
           onChange={(e) => setGifUrl(e.target.value)}
           placeholder="https://example.com/exercise.gif"
+        />
+        <Input
+          label="Video URL"
+          value={videoUrl}
+          onChange={(e) => setVideoUrl(e.target.value)}
+          placeholder="https://example.com/exercise.mp4"
         />
         <Input
           label="Thumbnail URL"

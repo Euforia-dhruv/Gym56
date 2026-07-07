@@ -6,7 +6,7 @@ import {
   Dumbbell, Flame, Calendar, Scale, Ruler, Trophy, Target,
   Bell, ChevronRight, Plus, X, Check, Camera, Clock,
   TrendingDown, TrendingUp,
-  CreditCard, BarChart3, Activity,
+  BarChart3, Activity,
   Trash2, CheckCircle, Circle,
   Loader2, LogIn,
   Sparkles, ChevronLeft
@@ -33,7 +33,6 @@ import { useToast } from "@/components/ui/Toast";
 interface Props {
   user: { id: string; email?: string };
   profile: { full_name?: string; avatar_url?: string; phone?: string; created_at?: string } | null;
-  subscription: { plan?: { name?: string }; expires_at?: string; payment_status?: string } | null;
 }
 
 const containerVariants = {
@@ -84,7 +83,7 @@ function WeightChartSVG({ logs, goalWeight }: { logs: WeightLog[]; goalWeight?: 
   const labels = sorted.filter((_, i) => i === 0 || i === sorted.length - 1 || i % Math.max(Math.floor(sorted.length / 4), 1) === 0);
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-auto" preserveAspectRatio="xMidYMid meet" aria-label="Weight trend chart">
       <defs>
         <linearGradient id="weightGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#DC2626" stopOpacity="0.3" />
@@ -143,6 +142,7 @@ function WeeklyCalendar({ attendance, onToggle }: { attendance: string[]; onTogg
                 ? "bg-[#DC2626]/20 border border-[#DC2626]/40"
                 : "bg-white/5 border border-white/10 hover:bg-white/10"
             } ${isToday ? "ring-2 ring-[#DC2626]/60" : ""}`}
+            aria-label={`${dayNames[i]} ${d.getDate()}${isCheckedIn ? ", checked in" : ""}`}
           >
             <span className="text-xs text-gray-500">{dayNames[i]}</span>
             <span className={`text-sm font-bold ${isToday ? "text-white" : "text-gray-400"}`}>{d.getDate()}</span>
@@ -173,9 +173,9 @@ function MonthlyCalendar({ attendance }: { attendance: string[] }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="p-1 rounded-lg hover:bg-white/10 text-gray-400"><ChevronLeft className="w-4 h-4" /></button>
+        <button onClick={prevMonth} className="p-1 rounded-lg hover:bg-white/10 text-gray-400" aria-label="Previous month"><ChevronLeft className="w-4 h-4" /></button>
         <span className="text-sm font-semibold text-white">{monthName} {year}</span>
-        <button onClick={nextMonth} className="p-1 rounded-lg hover:bg-white/10 text-gray-400"><ChevronRight className="w-4 h-4" /></button>
+        <button onClick={nextMonth} className="p-1 rounded-lg hover:bg-white/10 text-gray-400" aria-label="Next month"><ChevronRight className="w-4 h-4" /></button>
       </div>
       <div className="grid grid-cols-7 gap-1">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
@@ -237,7 +237,7 @@ function ProgressBar({ value, max, color = "#DC2626" }: { value: number; max: nu
 // ================================================================
 // MAIN COMPONENT
 // ================================================================
-export default function DashboardOverview({ user, profile, subscription }: Props) {
+export default function DashboardOverview({ user, profile }: Props) {
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
 
@@ -452,6 +452,8 @@ export default function DashboardOverview({ user, profile, subscription }: Props
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
               activeTab === tab.id ? "bg-[#DC2626] text-white" : "bg-white/5 text-gray-400 hover:text-white"
             }`}
+            aria-label={`Tab: ${tab.label}`}
+            aria-current={activeTab === tab.id ? "page" : undefined}
           >
             {tab.icon} {tab.label}
           </button>
@@ -494,7 +496,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
               You have <span className="text-white font-semibold">{unreadNotifs}</span> unread notification{unreadNotifs > 1 ? "s" : ""}
             </p>
           </div>
-          <button onClick={() => { setNotifications(markAllNotificationsRead()); }} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold">
+          <button onClick={() => { setNotifications(markAllNotificationsRead()); }} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold" aria-label="Mark all notifications as read">
             Mark all read
           </button>
         </motion.div>
@@ -513,7 +515,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
         ].map((stat, i) => (
           <div key={i} className="glass rounded-xl p-3 sm:p-4 border border-white/5">
             <div className={`${stat.color} mb-1`}>{stat.icon}</div>
-            <p className="text-lg sm:text-xl font-black text-white">{stat.value}</p>
+            <p className="text-lg sm:text-xl font-black text-white" role="status">{stat.value}</p>
             <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
             <p className="text-[10px] text-gray-600">{stat.sub}</p>
           </div>
@@ -528,45 +530,30 @@ export default function DashboardOverview({ user, profile, subscription }: Props
       {/* ─── Section: Membership + Weight ─── */}
       {(activeTab === "overview" || true) &&
         <div className={`${activeTab !== "overview" ? "hidden lg:grid" : "grid"} grid-cols-1 lg:grid-cols-2 gap-6`}>
-          {/* Membership Card */}
+          {/* Quick Stats Card */}
           <motion.div variants={itemVariants}>
             <GlassCard>
-              <SectionTitle icon={<CreditCard className="w-5 h-5" />} title="Membership" />
-              <div className="flex flex-col sm:flex-row gap-6 items-start">
-                <div className="flex-1 space-y-3">
-                  <div>
-                    <p className="text-sm text-gray-500">Plan</p>
-                    <p className="text-xl font-bold text-white">{subscription?.plan?.name || "No Active Plan"}</p>
-                  </div>
-                  {subscription?.expires_at && (
-                    <div>
-                      <p className="text-sm text-gray-500">Expires</p>
-                      <p className="text-lg font-semibold text-white">{new Date(subscription.expires_at).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}</p>
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-sm text-gray-500">Status</p>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                      subscription?.payment_status === "paid" ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"
-                    }`}>
-                      {subscription?.payment_status === "paid" ? "Active" : "Inactive"}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Member ID</p>
-                    <p className="text-xs font-mono text-gray-400 break-all">{user.id.slice(0, 16)}...</p>
-                  </div>
+              <SectionTitle icon={<Activity className="w-5 h-5" />} title="Quick Stats" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="glass rounded-xl p-4 text-center">
+                  <Dumbbell className="w-6 h-6 text-[#DC2626] mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-white">{workouts.length}</p>
+                  <p className="text-xs text-gray-500">Workouts</p>
                 </div>
-                <div className="flex-shrink-0 bg-white rounded-xl p-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gym56-member-${user.id}`}
-                    alt="Membership QR Code"
-                    className="w-32 h-32 sm:w-40 sm:h-40"
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                  />
-                  <p className="text-[10px] text-center text-gray-500 mt-2 font-medium">Scan for check-in</p>
+                <div className="glass rounded-xl p-4 text-center">
+                  <Flame className="w-6 h-6 text-[#DC2626] mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-white">{streak}</p>
+                  <p className="text-xs text-gray-500">Day Streak</p>
+                </div>
+                <div className="glass rounded-xl p-4 text-center">
+                  <Scale className="w-6 h-6 text-[#DC2626] mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-white">{weightLogs.length > 0 ? `${weightLogs[weightLogs.length - 1].weight}kg` : "—"}</p>
+                  <p className="text-xs text-gray-500">Current Weight</p>
+                </div>
+                <div className="glass rounded-xl p-4 text-center">
+                  <Trophy className="w-6 h-6 text-[#DC2626] mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-white">{achievements.filter(a => a.earned).length}</p>
+                  <p className="text-xs text-gray-500">Achievements</p>
                 </div>
               </div>
             </GlassCard>
@@ -577,7 +564,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
             <GlassCard>
               <div className="flex items-center justify-between mb-4">
                 <SectionTitle icon={<Scale className="w-5 h-5" />} title="Weight Tracker" />
-                <button onClick={() => setShowAddWeight(!showAddWeight)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1">
+                <button onClick={() => setShowAddWeight(!showAddWeight)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1" aria-label="Log weight">
                   <Plus className="w-3.5 h-3.5" /> Log Weight
                 </button>
               </div>
@@ -619,7 +606,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
             <GlassCard>
               <div className="flex items-center justify-between mb-4">
                 <SectionTitle icon={<Dumbbell className="w-5 h-5" />} title="Recent Workouts" />
-                <button onClick={() => setShowAddWorkout(true)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1">
+                <button onClick={() => setShowAddWorkout(true)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1" aria-label="Log workout">
                   <Plus className="w-3.5 h-3.5" /> Log Workout
                 </button>
               </div>
@@ -638,7 +625,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
                 <div className="text-center py-6 text-gray-500 text-sm">
                   <Dumbbell className="w-8 h-8 mx-auto mb-2 opacity-30" />
                   <p>No workouts logged yet</p>
-                  <button onClick={() => setShowAddWorkout(true)} className="text-[#DC2626] text-xs font-semibold mt-2 hover:text-white">Log your first workout</button>
+                  <button onClick={() => setShowAddWorkout(true)} className="text-[#DC2626] text-xs font-semibold mt-2 hover:text-white" aria-label="Log your first workout">Log your first workout</button>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-[320px] overflow-y-auto scrollbar-thin">
@@ -702,7 +689,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
             <GlassCard>
               <div className="flex items-center justify-between mb-4">
                 <SectionTitle icon={<Target className="w-5 h-5" />} title="Goals" />
-                <button onClick={() => setShowAddGoal(true)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1">
+                <button onClick={() => setShowAddGoal(true)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1" aria-label="Add goal">
                   <Plus className="w-3.5 h-3.5" /> Add Goal
                 </button>
               </div>
@@ -714,7 +701,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
                       <Input name="target" type="number" placeholder="Target" className="flex-1" />
                       <Input name="unit" placeholder="Unit (e.g. kg, sessions)" className="flex-1" />
                     </div>
-                    <Button type="submit" size="sm"><Plus className="w-4 h-4" /> Add</Button>
+                    <Button type="submit" size="sm" aria-label="Add goal"><Plus className="w-4 h-4" /> Add</Button>
                   </motion.form>
                 )}
               </AnimatePresence>
@@ -731,7 +718,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <button onClick={() => !g.completed && handleCompleteGoal(g.id)} className="flex-shrink-0">
+                              <button onClick={() => !g.completed && handleCompleteGoal(g.id)} className="flex-shrink-0" aria-label={g.completed ? `Goal "${g.title}" completed` : `Mark goal "${g.title}" as complete`}>
                                 {g.completed ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Circle className="w-4 h-4 text-gray-500 hover:text-[#DC2626]" />}
                               </button>
                               <p className={`text-sm font-semibold truncate ${g.completed ? "text-gray-400 line-through" : "text-white"}`}>{g.title}</p>
@@ -741,7 +728,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
                               <span className="text-xs text-gray-500 flex-shrink-0">{g.current}/{g.target} {g.unit}</span>
                             </div>
                           </div>
-                          <button onClick={() => handleDeleteGoal(g.id)} className="text-gray-600 hover:text-red-400 ml-2 flex-shrink-0"><X className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => handleDeleteGoal(g.id)} className="text-gray-600 hover:text-red-400 ml-2 flex-shrink-0" aria-label={`Delete goal "${g.title}"`}><X className="w-3.5 h-3.5" /></button>
                         </div>
                       </div>
                     );
@@ -757,7 +744,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
               <div className="flex items-center justify-between mb-4">
                 <SectionTitle icon={<Bell className="w-5 h-5" />} title="Notifications" />
                 {notifications.length > 0 && (
-                  <button onClick={() => setNotifications(clearAllNotifications())} className="text-xs text-gray-500 hover:text-white transition-colors">
+                  <button onClick={() => setNotifications(clearAllNotifications())} className="text-xs text-gray-500 hover:text-white transition-colors" aria-label="Clear all notifications">
                     Clear all
                   </button>
                 )}
@@ -801,7 +788,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
           <GlassCard>
             <div className="flex items-center justify-between mb-4">
               <SectionTitle icon={<Camera className="w-5 h-5" />} title="Progress Photos" />
-              <button onClick={() => fileInputRef.current?.click()} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1">
+              <button onClick={() => fileInputRef.current?.click()} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1" aria-label="Add progress photo">
                 <Plus className="w-3.5 h-3.5" /> Add Photo
               </button>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoCapture} />
@@ -810,7 +797,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
               <div className="text-center py-8 text-gray-500 text-sm">
                 <Camera className="w-10 h-10 mx-auto mb-2 opacity-30" />
                 <p>No progress photos yet</p>
-                <button onClick={() => fileInputRef.current?.click()} className="text-[#DC2626] text-xs font-semibold mt-2 hover:text-white">Upload your first photo</button>
+                <button onClick={() => fileInputRef.current?.click()} className="text-[#DC2626] text-xs font-semibold mt-2 hover:text-white" aria-label="Upload your first progress photo">Upload your first photo</button>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -819,7 +806,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.photo} alt="Progress" loading="lazy" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button onClick={() => { setProgressPhotos(deleteProgressPhoto(p.id)); }} className="p-1.5 rounded-full bg-red-500/80 hover:bg-red-500"><Trash2 className="w-3.5 h-3.5 text-white" /></button>
+                      <button onClick={() => { setProgressPhotos(deleteProgressPhoto(p.id)); }} className="p-1.5 rounded-full bg-red-500/80 hover:bg-red-500" aria-label="Delete progress photo"><Trash2 className="w-3.5 h-3.5 text-white" /></button>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                       <p className="text-[10px] text-white font-medium">{new Date(p.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
@@ -840,7 +827,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
             <GlassCard>
               <div className="flex items-center justify-between mb-4">
                 <SectionTitle icon={<Ruler className="w-5 h-5" />} title="Body Measurements" />
-                <button onClick={() => setShowAddMeasurement(!showAddMeasurement)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1">
+                <button onClick={() => setShowAddMeasurement(!showAddMeasurement)} className="text-xs text-[#DC2626] hover:text-white transition-colors font-semibold flex items-center gap-1" aria-label="Log measurements">
                   <Plus className="w-3.5 h-3.5" /> Log
                 </button>
               </div>
@@ -855,7 +842,7 @@ export default function DashboardOverview({ user, profile, subscription }: Props
                       <Input name="calves" type="number" step="0.1" placeholder="Calves (cm)" />
                       <Input name="shoulders" type="number" step="0.1" placeholder="Shoulders (cm)" />
                     </div>
-                    <Button type="submit" size="sm"><Check className="w-4 h-4" /> Save</Button>
+                    <Button type="submit" size="sm" aria-label="Save measurements"><Check className="w-4 h-4" /> Save</Button>
                   </motion.form>
                 )}
               </AnimatePresence>
