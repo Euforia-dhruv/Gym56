@@ -1,6 +1,6 @@
 // Centralized configuration for Gym56
 export const CONFIG = {
-  WHATSAPP_NUMBER: "91992441179",
+  WHATSAPP_NUMBER: "919429421772",
   WHATSAPP_MESSAGE: "Hello Gym56! I'm interested in joining your gym. Please share membership details.",
   get whatsappUrl() {
     return `https://wa.me/${this.WHATSAPP_NUMBER}?text=${encodeURIComponent(this.WHATSAPP_MESSAGE)}`;

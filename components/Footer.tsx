@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { MessageSquare, Share2 } from 'lucide-react';
+import { CONFIG } from '@/lib/config';
 
 export default function Footer() {
   return (
@@ -85,12 +86,12 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://wa.me/91992441179"
+                  href={CONFIG.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  WhatsApp: +91 99244 41179
+                  WhatsApp: +91 94294 21772
                 </a>
               </li>
               <li>Mon - Sat: 6:00 - 10:00 AM & 5:00 - 10:00 PM</li>

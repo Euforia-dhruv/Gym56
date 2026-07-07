@@ -262,7 +262,7 @@ async function handleTextQuery(supabase: SupabaseClient, text: string): Promise<
     case "pricing": {
       return `For inquiries about fees and joining GYM 56, please **contact us**:\n` +
         `📞 ${GYM_INFO.phone}\n` +
-        `💬 WhatsApp: https://wa.me/91992441179\n` +
+        `💬 WhatsApp: https://wa.me/919429421772\n` +
         `📍 Visit us at ${GYM_INFO.location}\n\n` +
         `We'd love to have you train with us!`;
     }
