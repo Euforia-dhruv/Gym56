@@ -15,12 +15,12 @@ const stats = [
 ];
 
 const equipmentImages = [
-  { src: '/hero/equipment-1.jpeg', top: '10%', right: '4%', width: 130, height: 130 },
-  { src: '/hero/equipment-2.jpeg', top: '58%', right: '3%', width: 160, height: 110 },
-  { src: '/hero/equipment-3.jpeg', top: '28%', right: '1%', width: 120, height: 160 },
-  { src: '/hero/equipment-4.jpeg', top: '68%', left: '4%', width: 110, height: 80 },
-  { src: '/hero/equipment-5.jpeg', top: '12%', left: '3%', width: 150, height: 70 },
-  { src: '/hero/equipment-6.jpeg', top: '40%', left: '2%', width: 100, height: 120 },
+  { src: '/hero/barbell.png', top: '10%', right: '4%', width: 150, height: 100 },
+  { src: '/hero/bench.png', top: '58%', right: '3%', width: 160, height: 100 },
+  { src: '/hero/cycle.png', top: '28%', right: '1%', width: 130, height: 150 },
+  { src: '/hero/dumbell.png', top: '68%', left: '4%', width: 100, height: 100 },
+  { src: '/hero/rope.png', top: '12%', left: '3%', width: 100, height: 120 },
+  { src: '/hero/treadmill.png', top: '38%', left: '2%', width: 120, height: 140 },
 ];
 
 export default function Hero() {
