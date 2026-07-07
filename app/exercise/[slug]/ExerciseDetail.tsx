@@ -80,8 +80,9 @@ export default function ExerciseDetail({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
-  const hasImages = exercise.images && exercise.images.length > 0;
-  const imageUrl = hasImages ? `${EXERCISE_IMAGE_BASE}/${exercise.images[galleryIndex]}` : null;
+  const imageArray = exercise.images || [];
+  const hasImages = imageArray.length > 0 || !!exercise.primary_image_url;
+  const imageUrl = exercise.primary_image_url || (imageArray.length > 0 ? `${EXERCISE_IMAGE_BASE}/${imageArray[galleryIndex]}` : null);
   const hasBreathing = exercise.breathing && exercise.breathing.length > 0;
   const hasVariations = exercise.variations && exercise.variations.length > 0;
   const hasAlternatives = exercise.alternatives && exercise.alternatives.length > 0;
@@ -178,9 +179,9 @@ export default function ExerciseDetail({
                     }}
                   />
                 )}
-                {exercise.images.length > 1 && (
+                {imageArray.length > 1 && (
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-                    {exercise.images.map((_, i) => (
+                    {imageArray.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => { setGalleryIndex(i); setImageLoaded(false); setImageError(false); }}

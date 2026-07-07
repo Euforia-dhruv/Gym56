@@ -402,19 +402,23 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 {/* Thumbnail */}
                 <Link href={`/exercise/${exercise.slug}`} onClick={() => addRecent(exercise.id)}>
                   <div className="aspect-[16/9] bg-gradient-to-br from-gray-900 to-black relative overflow-hidden">
-                    {exercise.images?.[0] ? (
-                      <Image
-                        src={`${EXERCISE_IMAGE_BASE}/${exercise.images[0]}`}
-                        alt={exercise.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Dumbbell className="w-10 h-10 text-white/10" />
-                      </div>
-                    )}
+                    {(() => {
+                      const imgSrc = exercise.thumbnail_url || exercise.primary_image_url || 
+                        (exercise.images?.[0] ? `${EXERCISE_IMAGE_BASE}/${exercise.images[0]}` : null);
+                      return imgSrc ? (
+                        <Image
+                          src={imgSrc}
+                          alt={exercise.name}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Dumbbell className="w-10 h-10 text-white/10" />
+                        </div>
+                      );
+                    })()}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     {/* Favorite Toggle */}
                     <button
