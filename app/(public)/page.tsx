@@ -17,6 +17,7 @@ import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
 import LocationSection from "@/components/LocationSection";
 import CTA from "@/components/CTA";
+import { getExercisesFromDb } from "@/lib/data/exercise-loader";
 
 export const metadata: Metadata = {
   title: "Gym 56 — Premium Fitness in Gandhinagar",
@@ -31,11 +32,31 @@ export const metadata: Metadata = {
   },
 };
 
+const EXERCISE_SLUGS = [
+  "barbell-bench-press---medium-grip",
+  "dumbbell-bicep-curl",
+  "cable-crossover",
+  "leg-press",
+  "wide-grip-lat-pulldown",
+  "dumbbell-shoulder-press",
+  "barbell-squat",
+  "barbell-deadlift",
+  "push-ups---close-triceps-position",
+  "alternate-hammer-curl",
+  "seated-cable-row",
+  "triceps-pushdown",
+];
+
 export default function Home() {
+  const allExercises = getExercisesFromDb();
+  const featured = EXERCISE_SLUGS
+    .map((slug) => allExercises.find((ex) => ex.slug === slug))
+    .filter((ex): ex is NonNullable<typeof ex> => !!ex && !!ex.images?.length);
+
   return (
     <>
       <Hero />
-      <EquipmentCarousel />
+      <EquipmentCarousel exercises={featured} />
       <TrustedSection />
       <AboutSection />
       <Features />
