@@ -397,7 +397,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className="glass rounded-2xl overflow-hidden hover:border-[#DC2626]/30 transition-all duration-300 border border-white/5 group"
+                className="glass rounded-2xl overflow-hidden hover:border-[#DC2626]/30 transition-all duration-300 border border-white/5 group hover-lift"
               >
                 {/* Thumbnail */}
                 <Link href={`/exercise/${exercise.slug}`} onClick={() => addRecent(exercise.id)}>
@@ -410,7 +410,7 @@ export default function ExercisesClient({ initialExercises }: { initialExercises
                           src={imgSrc}
                           alt={exercise.name}
                           fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="object-cover group-hover:scale-110 transition-transform duration-500 hover-zoom"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         />
                       ) : (

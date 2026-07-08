@@ -3,10 +3,38 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Menu, X, User } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { CONFIG } from "@/lib/config";
+
+const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/#about" },
+  { name: "Equipment", href: "/equipment" },
+  { name: "Exercises", href: "/exercises" },
+  { name: "Nutrition", href: "/nutrition" },
+  { name: "Tools", href: "/tools" },
+  { name: "AI Coach", href: "/ai-coach" },
+  { name: "Contact", href: "/#contact" },
+];
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06, delayChildren: 0.05 },
+  },
+};
+
+const staggerItem: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.3 },
+  },
+};
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,11 +46,10 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close all menus on Escape key — keyboard accessibility
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") {
       setIsMobileMenuOpen(false);
@@ -35,35 +62,46 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/#about" },
-    { name: "Equipment", href: "/equipment" },
-    { name: "Exercises", href: "/exercises" },
-    { name: "Nutrition", href: "/nutrition" },
-    { name: "Tools", href: "/tools" },
-    { name: "AI Coach", href: "/ai-coach" },
-    { name: "Contact", href: "/#contact" },
-  ];
-
   return (
     <nav
       aria-label="Main navigation"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "glass" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled
+          ? "glass backdrop-blur-2xl shadow-lg shadow-black/20"
+          : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <Link href="/" className="flex-shrink-0">
-            <Image
-              src="/gym56-logo.png"
-              alt="GYM 56 - Forged Strength"
-              width={80}
-              height={80}
-              className="h-14 w-auto"
-              priority
-            />
+        <div
+          className={`flex justify-between items-center transition-all duration-500 ${
+            isScrolled ? "h-16" : "h-20"
+          }`}
+        >
+          {/* Logo + Brand */}
+          <Link href="/" className="flex-shrink-0 flex items-center gap-2 sm:gap-3">
+            <motion.div
+              animate={
+                !isScrolled
+                  ? { y: [0, -4, 0] }
+                  : { y: 0 }
+              }
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Image
+                src="/gym56-logo.png"
+                alt="GYM 56 - Forged Strength"
+                width={80}
+                height={80}
+                className={`transition-all duration-500 ${
+                  isScrolled ? "h-10 w-auto" : "h-14 w-auto"
+                }`}
+                priority
+              />
+            </motion.div>
+            <span className="md:hidden text-lg sm:text-xl font-extrabold tracking-tight">
+              <span className="text-white">GYM</span>
+              <span className="text-[#DC2626]">56</span>
+            </span>
           </Link>
 
           {/* Desktop nav links */}
@@ -81,11 +119,7 @@ export default function Navbar() {
             {/* Desktop auth area */}
             <div className="flex items-center space-x-4">
               {loading ? (
-                // Skeleton prevents layout shift while auth state loads
-                <div
-                  className="w-24 h-9 rounded-full bg-white/5 animate-pulse"
-                  aria-hidden="true"
-                />
+                <div className="w-24 h-9 rounded-full animate-shimmer" aria-hidden="true" />
               ) : !user ? (
                 <>
                   <Link
@@ -98,7 +132,7 @@ export default function Navbar() {
                     href={CONFIG.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-6 py-2 text-sm font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-[#DC2626]/30"
+                    className="px-6 py-2 text-sm font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-[#DC2626]/30 active:scale-[0.97]"
                   >
                     Contact on WhatsApp
                   </a>
@@ -160,7 +194,7 @@ export default function Navbar() {
 
           {/* Mobile menu toggle */}
           <button
-            className="md:hidden text-white"
+            className="md:hidden text-white p-2 -mr-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMobileMenuOpen}
@@ -184,28 +218,32 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="md:hidden glass border-t border-white/10 overflow-hidden"
           >
-            <div className="px-4 py-6 space-y-4">
+            <motion.div
+              className="px-4 py-6 space-y-1"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
               {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-lg font-medium text-gray-300 hover:text-white transition-colors"
-                >
-                  {link.name}
-                </Link>
+                <motion.div key={link.name} variants={staggerItem}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-3 text-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
               ))}
 
-              <div className="pt-4 border-t border-white/10 space-y-3">
+              <div className="pt-4 mt-2 border-t border-white/10 space-y-3">
                 {loading ? (
-                  <div
-                    className="w-full h-10 rounded-full bg-white/5 animate-pulse"
-                    aria-hidden="true"
-                  />
+                  <div className="w-full h-10 rounded-full animate-shimmer" aria-hidden="true" />
                 ) : !user ? (
-                  <>
+                  <div className="space-y-3 px-4">
                     <Link
                       href="/login"
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -218,24 +256,26 @@ export default function Navbar() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block w-full text-center px-6 py-3 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all"
+                      className="block w-full text-center px-6 py-3 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all active:scale-[0.97]"
                     >
                       Contact on WhatsApp
                     </a>
-                  </>
+                  </div>
                 ) : (
-                  <button
-                    onClick={() => {
-                      signOut();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left px-0 py-2 text-lg font-medium text-gray-300 hover:text-white transition-colors"
-                  >
-                    Sign Out
-                  </button>
+                  <div className="px-4">
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full text-left px-0 py-2 text-lg font-medium text-gray-300 hover:text-white transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

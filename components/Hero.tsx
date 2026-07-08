@@ -293,7 +293,7 @@ export default function Hero() {
                   alt=""
                   width={eq.size}
                   height={eq.size}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain hover-zoom"
                   draggable={false}
                   priority
                 />
@@ -312,7 +312,7 @@ export default function Hero() {
       >
         <motion.h1
           variants={item}
-          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-6"
+          className="heading-glow text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-6"
         >
           <span className="block">FORGED STRENGTH.</span>
           <span className="block bg-gradient-to-r from-white via-gray-200 to-[#DC2626] bg-clip-text text-transparent">
@@ -335,14 +335,14 @@ export default function Hero() {
             href={CONFIG.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-4 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#DC2626]/30"
+            className="px-8 py-4 text-lg font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#DC2626]/30 active:scale-[0.97] animate-pulse-glow"
           >
             Join Now
           </a>
 
           <Link
             href="/equipment"
-            className="px-8 py-4 text-lg font-semibold text-white border border-white/20 hover:border-white/40 rounded-full transition-all duration-300 hover:scale-105 glass"
+            className="px-8 py-4 text-lg font-semibold text-white border border-white/20 hover:border-white/40 rounded-full transition-all duration-300 hover:scale-105 active:scale-[0.97] glass"
           >
             Explore Equipment
           </Link>
@@ -361,7 +361,7 @@ export default function Hero() {
               key={index}
               variants={item}
               whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              className="glass rounded-2xl p-6 border border-white/10 hover:border-[#DC2626]/40 transition-all duration-300"
+              className="glass rounded-2xl p-6 border border-white/10 hover:border-[#DC2626]/40 transition-all duration-300 hover-lift"
             >
               <stat.icon className="w-10 h-10 text-[#DC2626] mx-auto mb-3" />
               <div className="text-3xl md:text-4xl font-black text-white mb-1">
