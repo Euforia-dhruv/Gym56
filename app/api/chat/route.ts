@@ -10,6 +10,9 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    const lastMsg = messages[messages.length - 1];
+    console.log("User message:", lastMsg?.content);
+
     if (!hasApiKey()) {
       return new Response(
         JSON.stringify({
@@ -23,6 +26,7 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log("Calling BluesMinds...");
     const result = streamText({
       model: getModel(),
       system: AI_COACH_SYSTEM_PROMPT,
@@ -31,11 +35,12 @@ export async function POST(req: Request) {
         content: m.content,
       })),
     });
+    console.log("BluesMinds response: streaming started");
 
     return result.toTextStreamResponse();
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("[AI Coach] error:", msg);
+    console.log("API Error:", msg);
     return new Response(
       JSON.stringify({ error: "server_error", message: "Something went wrong. Please try again." }),
       { status: 500, headers: { "Content-Type": "application/json" } }
