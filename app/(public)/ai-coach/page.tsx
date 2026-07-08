@@ -19,6 +19,11 @@ import {
   BookOpen,
   Bot,
   Crown,
+  Copy,
+  Check,
+  RefreshCw,
+  Square,
+  WifiOff,
 } from "lucide-react";
 
 interface Message {
@@ -32,7 +37,7 @@ const FEATURES = [
     icon: Dumbbell,
     title: "Workout Generation",
     description: "Custom push/pull/legs splits, full-body routines, and sport-specific training programs",
-    query: "Create a comprehensive weekly workout routine for me based on my goals",
+    query: "Create a weekly workout routine for me based on my goals",
   },
   {
     icon: BookOpen,
@@ -44,7 +49,7 @@ const FEATURES = [
     icon: Flame,
     title: "Fat Loss Plans",
     description: "Calorie-deficit meal plans, HIIT cardio programming, and fat-burning strategies",
-    query: "Create a detailed fat loss plan with workouts and nutrition guidance",
+    query: "Create a fat loss plan with workouts and nutrition guidance",
   },
   {
     icon: TrendingUp,
@@ -56,7 +61,7 @@ const FEATURES = [
     icon: Apple,
     title: "Nutrition Advice",
     description: "Pre/post-workout meals, macro tracking, supplements, and diet personalization",
-    query: "What's the best nutrition plan for someone trying to build muscle and lose fat?",
+    query: "What should I eat before and after workouts?",
   },
   {
     icon: Heart,
@@ -86,10 +91,13 @@ export default function AiCoachPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notConnected, setNotConnected] = useState(false);
   const [showPrompts, setShowPrompts] = useState(true);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -105,31 +113,58 @@ export default function AiCoachPage() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    if (messages.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
   }, [messages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = useCallback(async (text: string) => {
+  const stopGenerating = useCallback(() => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+  }, []);
+
+  const sendMessage = useCallback(async (text: string, retryId?: string) => {
     if (!text.trim() || isLoading) return;
 
     setIsLoading(true);
     setError(null);
+    setNotConnected(false);
     setShowPrompts(false);
     setInput("");
 
     const userMessage: Message = { id: generateId(), role: "user", content: text };
     const assistantMessage: Message = { id: generateId(), role: "assistant", content: "" };
 
-    setMessages((prev) => [...prev, userMessage, assistantMessage]);
+    if (retryId) {
+      setMessages((prev) => {
+        const idx = prev.findIndex((m) => m.id === retryId);
+        if (idx >= 0) {
+          const updated = [...prev];
+          updated[idx] = assistantMessage;
+          return updated;
+        }
+        return prev;
+      });
+    } else {
+      setMessages((prev) => [...prev, userMessage, assistantMessage]);
+    }
 
     const controller = new AbortController();
     abortRef.current = controller;
 
     try {
-      const history = messages.concat(userMessage).map((m) => ({
+      const history = (retryId
+        ? messages.slice(0, -1)
+        : messages
+      ).concat(userMessage).map((m) => ({
         role: m.role,
         content: m.content,
       }));
@@ -140,6 +175,13 @@ export default function AiCoachPage() {
         body: JSON.stringify({ messages: history }),
         signal: controller.signal,
       });
+
+      if (res.status === 503) {
+        setNotConnected(true);
+        setMessages((prev) => prev.slice(0, retryId ? -1 : -2));
+        setIsLoading(false);
+        return;
+      }
 
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`);
@@ -164,9 +206,19 @@ export default function AiCoachPage() {
         }
       }
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === "AbortError") return;
+      if (err instanceof Error && err.name === "AbortError") {
+        setMessages((prev) => {
+          const updated = [...prev];
+          const last = updated[updated.length - 1];
+          if (last && last.role === "assistant" && !last.content) {
+            return updated.slice(0, -1);
+          }
+          return updated;
+        });
+        return;
+      }
       setError("Failed to get response. Please try again.");
-      setMessages((prev) => prev.slice(0, -1));
+      setMessages((prev) => prev.slice(0, retryId ? -1 : -2));
     } finally {
       setIsLoading(false);
       abortRef.current = null;
@@ -186,11 +238,11 @@ export default function AiCoachPage() {
   };
 
   const handleClear = () => {
-    if (abortRef.current) abortRef.current.abort();
+    stopGenerating();
     setMessages([]);
     setInput("");
     setError(null);
-    localStorage.removeItem(STORAGE_KEY);
+    setNotConnected(false);
     setShowPrompts(true);
   };
 
@@ -198,12 +250,19 @@ export default function AiCoachPage() {
     sendMessage(query);
   };
 
-  const handleRetry = () => {
-    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
-    if (lastUserMsg) {
-      setMessages((prev) => prev.slice(0, -1));
-      sendMessage(lastUserMsg.content);
+  const handleRegenerate = (msgId: string) => {
+    const userMsg = messages.findLast((m) => m.role === "user");
+    if (userMsg) {
+      sendMessage(userMsg.content, msgId);
     }
+  };
+
+  const handleCopy = async (content: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {}
   };
 
   return (
@@ -231,32 +290,33 @@ export default function AiCoachPage() {
             transition={{ delay: 0.1 }}
             className="text-gray-400 text-lg max-w-2xl mx-auto mb-8"
           >
-            Get expert-level workout plans, nutrition guidance, and fitness advice — powered by Gym 56&apos;s premium AI.
+            Get expert-level workout plans, nutrition guidance, and fitness advice — powered by Gym 56.
           </motion.p>
 
-          {/* Feature Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12"
-          >
-            {FEATURES.map((feature) => (
-              <button
-                key={feature.title}
-                onClick={() => handlePromptClick(feature.query)}
-                className="glass rounded-xl p-5 hover:border-[#DC2626]/30 transition-all group text-left"
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#DC2626]/20 to-red-800/20 flex items-center justify-center mb-3">
-                  <feature.icon className="w-5 h-5 text-[#DC2626]" />
-                </div>
-                <h3 className="text-white font-semibold text-sm mb-1 group-hover:text-[#DC2626] transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-500 text-xs leading-relaxed">{feature.description}</p>
-              </button>
-            ))}
-          </motion.div>
+          {!notConnected && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12"
+            >
+              {FEATURES.map((feature) => (
+                <button
+                  key={feature.title}
+                  onClick={() => handlePromptClick(feature.query)}
+                  className="glass rounded-xl p-5 hover:border-[#DC2626]/30 transition-all group text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#DC2626]/20 to-red-800/20 flex items-center justify-center mb-3">
+                    <feature.icon className="w-5 h-5 text-[#DC2626]" />
+                  </div>
+                  <h3 className="text-white font-semibold text-sm mb-1 group-hover:text-[#DC2626] transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-500 text-xs leading-relaxed">{feature.description}</p>
+                </button>
+              ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -269,23 +329,36 @@ export default function AiCoachPage() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">AI Coach Chat</h2>
-              <p className="text-xs text-gray-500">
-                {process.env.NEXT_PUBLIC_OPENAI_API_KEY ? "Powered by GPT-4o-mini" : "Powered by Gym 56"}
-              </p>
+              <p className="text-xs text-gray-500">Powered by Gym 56</p>
             </div>
           </div>
-          <button
-            onClick={handleClear}
-            className="p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 transition-all"
-            aria-label="Clear conversation"
-            title="Clear conversation"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            {isLoading && (
+              <button
+                onClick={stopGenerating}
+                className="p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 transition-all"
+                aria-label="Stop generating"
+                title="Stop"
+              >
+                <Square className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              onClick={handleClear}
+              className="p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 transition-all"
+              aria-label="Clear conversation"
+              title="Clear conversation"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 space-y-6 scrollbar-thin">
-          {messages.length === 0 && showPrompts && (
+        <div
+          ref={chatRef}
+          className="flex-1 overflow-y-auto py-6 space-y-6 scrollbar-thin"
+        >
+          {messages.length === 0 && showPrompts && !notConnected && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -311,16 +384,38 @@ export default function AiCoachPage() {
             </motion.div>
           )}
 
+          {notConnected && messages.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-16"
+            >
+              <div className="w-20 h-20 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-6">
+                <WifiOff className="w-10 h-10 text-yellow-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-3">AI Coach is not connected yet</h2>
+              <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
+                The AI Coach needs an API key to work. Once connected, you will be able to ask anything about workouts, nutrition, and fitness.
+              </p>
+            </motion.div>
+          )}
+
           {error && (
             <div className="glass rounded-xl p-4 border border-yellow-500/30 bg-yellow-500/5 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-              <div>
+              <div className="flex-1">
                 <p className="text-yellow-300 font-medium text-sm">Connection error</p>
                 <p className="text-yellow-400/70 text-xs mt-1">{error}</p>
-                <button onClick={handleRetry} className="text-yellow-300 text-xs font-medium mt-2 hover:underline">
-                  Try again
-                </button>
               </div>
+              <button
+                onClick={() => {
+                  const lastUserMsg = messages.findLast((m) => m.role === "user");
+                  if (lastUserMsg) sendMessage(lastUserMsg.content);
+                }}
+                className="text-yellow-300 text-xs font-medium hover:underline flex-shrink-0"
+              >
+                Try again
+              </button>
             </div>
           )}
 
@@ -338,23 +433,50 @@ export default function AiCoachPage() {
                     <Sparkles className="w-4 h-4 text-[#DC2626]" />
                   </div>
                 )}
-                <div
-                  className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-5 py-3.5 ${
-                    m.role === "user"
-                      ? "bg-[#DC2626]/10 border border-[#DC2626]/20 text-white"
-                      : "glass border border-white/5 text-gray-200"
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {m.content}
-                    {m.role === "assistant" && m.content === "" && isLoading && (
-                      <span className="inline-flex gap-1 ml-1">
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                      </span>
-                    )}
-                  </p>
+                <div className="max-w-[85%] sm:max-w-[75%]">
+                  <div
+                    className={`rounded-2xl px-5 py-3.5 ${
+                      m.role === "user"
+                        ? "bg-[#DC2626]/10 border border-[#DC2626]/20 text-white"
+                        : "glass border border-white/5 text-gray-200"
+                    }`}
+                  >
+                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                      {m.content}
+                      {m.role === "assistant" && m.content === "" && isLoading && (
+                        <span className="inline-flex gap-1 ml-1">
+                          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {m.role === "assistant" && m.content && (
+                    <div className="flex items-center gap-2 mt-1.5 px-2">
+                      <button
+                        onClick={() => handleCopy(m.content, m.id)}
+                        className="text-gray-600 hover:text-white transition-colors"
+                        aria-label="Copy response"
+                        title="Copy"
+                      >
+                        {copiedId === m.id ? (
+                          <Check className="w-3.5 h-3.5 text-green-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleRegenerate(m.id)}
+                        disabled={isLoading}
+                        className="text-gray-600 hover:text-white transition-colors disabled:opacity-30"
+                        aria-label="Regenerate response"
+                        title="Regenerate"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 {m.role === "user" && (
                   <div className="w-8 h-8 rounded-xl bg-[#DC2626]/10 flex items-center justify-center flex-shrink-0 mt-1">
@@ -364,6 +486,19 @@ export default function AiCoachPage() {
               </motion.div>
             ))}
           </AnimatePresence>
+
+          {notConnected && messages.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass rounded-xl p-5 border border-yellow-500/20 bg-yellow-500/5 text-center"
+            >
+              <WifiOff className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
+              <p className="text-yellow-300 font-medium text-sm">AI Coach is not connected yet</p>
+              <p className="text-yellow-400/70 text-xs mt-1">An API key is required to enable AI responses.</p>
+            </motion.div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -375,15 +510,16 @@ export default function AiCoachPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask your AI coach anything..."
+                placeholder={notConnected ? "AI Coach is not connected yet" : "Ask your AI coach anything..."}
                 rows={1}
-                className="w-full px-4 py-3.5 rounded-xl bg-black/50 border border-white/10 focus:border-[#DC2626] focus:outline-none focus:ring-1 focus:ring-[#DC2626] transition-all text-white placeholder-gray-600 resize-none text-sm"
+                disabled={notConnected}
+                className="w-full px-4 py-3.5 rounded-xl bg-black/50 border border-white/10 focus:border-[#DC2626] focus:outline-none focus:ring-1 focus:ring-[#DC2626] transition-all text-white placeholder-gray-600 resize-none text-sm disabled:opacity-30"
                 style={{ minHeight: "48px", maxHeight: "120px" }}
               />
             </div>
             <button
               type="submit"
-              disabled={isLoading || !input.trim()}
+              disabled={isLoading || !input.trim() || notConnected}
               className="px-5 py-3.5 rounded-xl bg-[#DC2626] hover:bg-[#B91C1C] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-white flex items-center justify-center"
             >
               {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
