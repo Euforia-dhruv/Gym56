@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { MessageSquare, Share2 } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import { CONFIG } from '@/lib/config';
 
 export default function Footer() {
@@ -44,16 +44,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://jsdl.in/DT-99GFBNQ1Y5B"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#DC2626] hover:border-[#DC2626] transition-all"
-                aria-label="Justdial"
-              >
-                <MessageSquare className="w-5 h-5" />
-              </a>
-              <a
-                href="https://share.google/D3JjDCMLem7x2e2NG"
+                href="https://maps.app.goo.gl/fC3iHyTbnKSci16t5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#DC2626] hover:border-[#DC2626] transition-all"
@@ -113,22 +104,12 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://share.google/D3JjDCMLem7x2e2NG"
+                  href="https://maps.app.goo.gl/fC3iHyTbnKSci16t5"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
                   Google Maps
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://jsdl.in/DT-99GFBNQ1Y5B"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
-                >
-                  Justdial
                 </a>
               </li>
             </ul>

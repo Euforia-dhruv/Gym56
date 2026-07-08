@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Clock, Navigation, Star } from 'lucide-react';
+import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
 
 const hours = [
   { label: 'Monday - Saturday', times: '6:00 AM – 10:00 AM\n5:00 PM – 10:00 PM' },
@@ -10,7 +10,7 @@ const hours = [
 
 const buttons = [
   {
-    href: 'https://share.google/D3JjDCMLem7x2e2NG',
+    href: 'https://maps.app.goo.gl/fC3iHyTbnKSci16t5',
     label: 'Get Directions',
     icon: (className: string) => <Navigation className={className} />,
     gradient: 'from-[#DC2626]/10 to-[#DC2626]/5',
@@ -32,15 +32,6 @@ const buttons = [
     border: 'border-purple-500/30',
     textColor: 'text-purple-400',
     hoverBg: 'hover:bg-purple-500/20',
-  },
-  {
-    href: 'https://share.google/D3JjDCMLem7x2e2NG',
-    label: 'JustDial',
-    icon: (className: string) => <Star className={className} />,
-    gradient: 'from-blue-500/10 to-blue-500/5',
-    border: 'border-blue-500/30',
-    textColor: 'text-blue-400',
-    hoverBg: 'hover:bg-blue-500/20',
   },
 ];
 

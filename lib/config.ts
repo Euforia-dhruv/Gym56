@@ -7,5 +7,5 @@ export const CONFIG = {
   },
   PHONE: "+919429421772",
   INSTAGRAM: "https://www.instagram.com/gym56_gandhinagar",
-  MAPS: "https://share.google/D3JjDCMLem7x2e2NG",
+  MAPS: "https://maps.app.goo.gl/fC3iHyTbnKSci16t5",
 };

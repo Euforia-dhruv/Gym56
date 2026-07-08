@@ -82,9 +82,8 @@ const organizationSchema = {
   url: "https://gym56.vercel.app",
   logo: "https://gym56.vercel.app/gym56-logo.png",
   sameAs: [
-    "https://share.google/D3JjDCMLem7x2e2NG",
+    "https://maps.app.goo.gl/fC3iHyTbnKSci16t5",
     "https://www.instagram.com/gym56_gandhinagar",
-    "https://jsdl.in/DT-99GFBNQ1Y5B",
   ],
 };
 

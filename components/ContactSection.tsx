@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, MapPin, Clock, CheckCircle, AlertCircle, MessageSquare } from "lucide-react";
+import { Phone, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { submitContactForm } from "@/lib/actions/contact";
 
 type FormData = {
@@ -122,7 +122,7 @@ export default function ContactSection() {
                     Gujarat 382028
                   </p>
                   <a
-                    href="https://share.google/D3JjDCMLem7x2e2NG"
+                    href="https://maps.app.goo.gl/fC3iHyTbnKSci16t5"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-[#DC2626]/10 border border-[#DC2626]/30 text-[#DC2626] rounded-full text-sm font-medium hover:bg-[#DC2626]/20 transition-colors inline-block"
@@ -179,15 +179,7 @@ export default function ContactSection() {
                       </svg>
                       Instagram
                     </a>
-                    <a
-                      href="https://jsdl.in/DT-99GFBNQ1Y5B"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full text-sm font-medium hover:bg-blue-500/20 transition-colors inline-flex items-center gap-2"
-                    >
-                      <MessageSquare className="w-4 h-4" />
-                      JustDial
-                    </a>
+
                   </div>
                 </div>
               </div>
