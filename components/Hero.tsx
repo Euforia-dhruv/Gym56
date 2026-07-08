@@ -42,7 +42,7 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 6,
     depthLayer: 'background',
     hideOnMobile: true,
-    desktop: { top: '70px', left: '30px' },
+    desktop: { top: '130px', left: '30px' },
     href: '/exercises?equipment=Bodyweight',
   },
   {
@@ -56,7 +56,7 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 6,
     depthLayer: 'background',
     hideOnMobile: false,
-    desktop: { top: '80px', right: '-20px' },
+    desktop: { top: '140px', right: '-20px' },
     href: '/exercises?equipment=Barbell',
   },
   {
