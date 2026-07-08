@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import LayoutShell from "@/components/LayoutShell";
 import JsonLd from "@/components/JsonLd";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
@@ -131,7 +130,7 @@ export default function RootLayout({
           }}
         />
         <AuthProvider>
-          <LayoutShell>{children}</LayoutShell>
+          {children}
         </AuthProvider>
         <CookieConsent />
       </body>
