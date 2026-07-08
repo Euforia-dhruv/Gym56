@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
@@ -15,9 +14,12 @@ const stats = [
   { icon: Clock, value: 6, label: 'Days a Week', suffix: '' },
 ];
 
-interface EquipmentItem {
-  src: string;
+const IMAGEKIT_BASE = 'https://ik.imagekit.io/yuhonas';
+
+interface HeroExercise {
+  img: string;
   label: string;
+  name: string;
   size: number;
   rotate: number;
   blur: number;
@@ -30,11 +32,12 @@ interface EquipmentItem {
   href: string;
 }
 
-const equipmentData: EquipmentItem[] = [
+const exercises: HeroExercise[] = [
   {
-    src: '/hero/rope.png',
-    label: 'rope',
-    size: 120,
+    img: `${IMAGEKIT_BASE}/Leg_Press/0.jpg`,
+    label: 'leg-press',
+    name: 'Leg Press',
+    size: 200,
     rotate: -25,
     blur: 8,
     floatDuration: 11,
@@ -43,12 +46,13 @@ const equipmentData: EquipmentItem[] = [
     depthLayer: 'background',
     hideOnMobile: true,
     desktop: { top: '130px', left: '30px' },
-    href: '/exercises?equipment=Bodyweight',
+    href: '/exercise/leg-press',
   },
   {
-    src: '/hero/barbell.png',
-    label: 'barbell',
-    size: 240,
+    img: `${IMAGEKIT_BASE}/Barbell_Bench_Press_-_Medium_Grip/0.jpg`,
+    label: 'barbell-bench',
+    name: 'Barbell Bench Press',
+    size: 220,
     rotate: 18,
     blur: 8,
     floatDuration: 9,
@@ -56,13 +60,14 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 6,
     depthLayer: 'background',
     hideOnMobile: false,
-    desktop: { top: '140px', right: '-20px' },
-    href: '/exercises?equipment=Barbell',
+    desktop: { top: '120px', right: '-30px' },
+    href: '/exercise/barbell-bench-press---medium-grip',
   },
   {
-    src: '/hero/cycle.png',
-    label: 'cycle',
-    size: 260,
+    img: `${IMAGEKIT_BASE}/Cable_Crossover/0.jpg`,
+    label: 'cable-cross',
+    name: 'Cable Crossover',
+    size: 240,
     rotate: 12,
     blur: 5,
     floatDuration: 8,
@@ -70,13 +75,14 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 12,
     depthLayer: 'middle',
     hideOnMobile: true,
-    desktop: { top: '38%', right: '-60px' },
-    href: '/exercises?equipment=Machine',
+    desktop: { top: '38%', right: '-70px' },
+    href: '/exercise/cable-crossover',
   },
   {
-    src: '/hero/bench.png',
-    label: 'bench',
-    size: 220,
+    img: `${IMAGEKIT_BASE}/Wide-Grip_Lat_Pulldown/0.jpg`,
+    label: 'lat-pulldown',
+    name: 'Lat Pulldown',
+    size: 210,
     rotate: -8,
     blur: 5,
     floatDuration: 10,
@@ -84,13 +90,14 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 12,
     depthLayer: 'middle',
     hideOnMobile: true,
-    desktop: { bottom: '70px', right: '-40px' },
-    href: '/exercises?equipment=Barbell',
+    desktop: { bottom: '80px', right: '-50px' },
+    href: '/exercise/wide-grip-lat-pulldown',
   },
   {
-    src: '/hero/treadmill.png',
-    label: 'treadmill',
-    size: 260,
+    img: `${IMAGEKIT_BASE}/Close-Grip_Front_Lat_Pulldown/0.jpg`,
+    label: 'close-lat',
+    name: 'Close-Grip Lat Pulldown',
+    size: 240,
     rotate: -15,
     blur: 2,
     floatDuration: 7,
@@ -98,13 +105,14 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 18,
     depthLayer: 'foreground',
     hideOnMobile: true,
-    desktop: { top: '44%', left: '-80px' },
-    href: '/exercises?equipment=Machine',
+    desktop: { top: '44%', left: '-90px' },
+    href: '/exercise/close-grip-front-lat-pulldown',
   },
   {
-    src: '/hero/dumbell.png',
-    label: 'dumbell',
-    size: 190,
+    img: `${IMAGEKIT_BASE}/Dumbbell_Bicep_Curl/0.jpg`,
+    label: 'dumbbell-curl',
+    name: 'Dumbbell Bicep Curl',
+    size: 180,
     rotate: -22,
     blur: 0,
     floatDuration: 12,
@@ -112,20 +120,20 @@ const equipmentData: EquipmentItem[] = [
     parallaxPx: 18,
     depthLayer: 'foreground',
     hideOnMobile: false,
-    desktop: { bottom: '50px', left: '-30px' },
-    href: '/exercises?equipment=Dumbbell',
+    desktop: { bottom: '60px', left: '-40px' },
+    href: '/exercise/dumbbell-bicep-curl',
   },
 ];
 
-function maskForDepth(depth: string, label: string): string | undefined {
-  if (label === 'treadmill' || label === 'barbell' || label === 'bench' || label === 'cycle') {
-    if (label === 'treadmill') return 'linear-gradient(to right, transparent 0%, black 30%, black 100%)';
-    if (label === 'barbell') return 'linear-gradient(to bottom, transparent 0%, black 25%, black 100%)';
-    if (label === 'cycle') return 'linear-gradient(to left, transparent 0%, black 40%, black 100%)';
-    if (label === 'bench') return 'linear-gradient(to left, transparent 0%, black 35%, black 100%)';
+function maskForDepth(label: string): string | undefined {
+  if (label === 'close-lat' || label === 'barbell-bench' || label === 'lat-pulldown' || label === 'cable-cross') {
+    if (label === 'close-lat') return 'linear-gradient(to right, transparent 0%, black 30%, black 100%)';
+    if (label === 'barbell-bench') return 'linear-gradient(to bottom, transparent 0%, black 25%, black 100%)';
+    if (label === 'cable-cross') return 'linear-gradient(to left, transparent 0%, black 40%, black 100%)';
+    if (label === 'lat-pulldown') return 'linear-gradient(to left, transparent 0%, black 35%, black 100%)';
   }
-  if (label === 'rope') return 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)';
-  if (label === 'dumbell') return 'linear-gradient(to right, transparent 0%, black 20%, black 100%)';
+  if (label === 'leg-press') return 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)';
+  if (label === 'dumbbell-curl') return 'linear-gradient(to right, transparent 0%, black 20%, black 100%)';
   return undefined;
 }
 
@@ -205,72 +213,72 @@ export default function Hero() {
         }}
       />
 
-      {/* Equipment */}
+      {/* Exercise cards */}
       <div className="absolute inset-0 overflow-hidden z-[1]">
-        {equipmentData.map((eq) => {
-          const px = (mousePos.x - 0.5) * eq.parallaxPx;
-          const py = (mousePos.y - 0.5) * eq.parallaxPx;
+        {exercises.map((ex) => {
+          const px = (mousePos.x - 0.5) * ex.parallaxPx;
+          const py = (mousePos.y - 0.5) * ex.parallaxPx;
 
-          const mask = maskForDepth(eq.depthLayer, eq.label);
+          const mask = maskForDepth(ex.label);
 
           const posStyle: React.CSSProperties = {
-            width: eq.size,
-            height: eq.size,
-            transform: `translate(${px}px, ${py}px) rotate(${eq.rotate}deg)`,
-            filter: `blur(${eq.blur}px)`,
+            width: ex.size,
+            height: ex.size,
+            transform: `translate(${px}px, ${py}px) rotate(${ex.rotate}deg)`,
+            filter: `blur(${ex.blur}px)`,
             transition: 'transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
             WebkitMaskImage: mask,
             maskImage: mask,
           };
-          if (eq.desktop.top) posStyle.top = eq.desktop.top;
-          if (eq.desktop.bottom) posStyle.bottom = eq.desktop.bottom;
-          if (eq.desktop.left) posStyle.left = eq.desktop.left;
-          if (eq.desktop.right) posStyle.right = eq.desktop.right;
+          if (ex.desktop.top) posStyle.top = ex.desktop.top;
+          if (ex.desktop.bottom) posStyle.bottom = ex.desktop.bottom;
+          if (ex.desktop.left) posStyle.left = ex.desktop.left;
+          if (ex.desktop.right) posStyle.right = ex.desktop.right;
 
           const classes = ['absolute'];
-          if (eq.hideOnMobile) classes.push('hidden sm:block');
+          if (ex.hideOnMobile) classes.push('hidden sm:block');
 
           return (
             <motion.div
-              key={eq.label}
+              key={ex.label}
               className={classes.join(' ')}
               initial={{ opacity: 0 }}
               animate={{
                 x: [0, 6, -4, 8, 0],
                 y: [0, -10, 8, -6, 0],
-                rotate: [eq.rotate, eq.rotate + 1.5, eq.rotate - 1, eq.rotate + 2, eq.rotate],
+                rotate: [ex.rotate, ex.rotate + 1.5, ex.rotate - 1, ex.rotate + 2, ex.rotate],
                 opacity: [0.22, 0.28, 0.18, 0.25, 0.22],
               }}
               style={posStyle}
               transition={{
                 x: {
-                  duration: eq.floatDuration,
-                  delay: eq.floatDelay,
+                  duration: ex.floatDuration,
+                  delay: ex.floatDelay,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 },
                 y: {
-                  duration: eq.floatDuration * 1.1,
-                  delay: eq.floatDelay + 0.3,
+                  duration: ex.floatDuration * 1.1,
+                  delay: ex.floatDelay + 0.3,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 },
                 rotate: {
-                  duration: eq.floatDuration * 1.3,
-                  delay: eq.floatDelay + 0.6,
+                  duration: ex.floatDuration * 1.3,
+                  delay: ex.floatDelay + 0.6,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 },
                 opacity: {
-                  duration: eq.floatDuration * 0.9,
-                  delay: eq.floatDelay,
+                  duration: ex.floatDuration * 0.9,
+                  delay: ex.floatDelay,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 },
               }}
               whileHover={{ opacity: 0.55, transition: { duration: 0.4 } }}
             >
-              {/* Soft red glow behind equipment */}
+              {/* Soft red glow behind exercise */}
               <div
                 className="absolute"
                 style={{
@@ -284,18 +292,15 @@ export default function Hero() {
                 }}
               />
               <a
-                href={eq.href}
-                className="relative block w-full h-full z-[1]"
-                aria-label={`View ${eq.label} exercises`}
+                href={ex.href}
+                className="relative block w-full h-full z-[1] overflow-hidden rounded-2xl"
+                aria-label={`View ${ex.name} exercise`}
               >
-                <Image
-                  src={eq.src}
+                <img
+                  src={ex.img}
                   alt=""
-                  width={eq.size}
-                  height={eq.size}
-                  className="w-full h-full object-contain hover-zoom"
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                   draggable={false}
-                  priority
                 />
               </a>
             </motion.div>
