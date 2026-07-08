@@ -12,7 +12,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, isAdmin } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -130,6 +130,16 @@ export default function Navbar() {
                         exit={{ opacity: 0, y: 10 }}
                         className="absolute right-0 mt-2 w-48 glass rounded-xl border border-white/10 overflow-hidden shadow-xl"
                       >
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            role="menuitem"
+                            onClick={() => setIsProfileMenuOpen(false)}
+                            className="block px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                          >
+                            Admin Panel
+                          </Link>
+                        )}
                         <button
                           role="menuitem"
                           onClick={() => {
