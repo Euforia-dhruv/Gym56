@@ -189,20 +189,33 @@ export default function AiCoachPage() {
 
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
+      let buffer = "";
 
       if (reader) {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          setMessages((prev) => {
-            const updated = [...prev];
-            const last = updated[updated.length - 1];
-            if (last && last.role === "assistant") {
-              updated[updated.length - 1] = { ...last, content: last.content + chunk };
-            }
-            return updated;
-          });
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const json = line.slice(6).trim();
+            if (json === "[DONE]") continue;
+            try {
+              const parsed = JSON.parse(json);
+              const content = parsed?.choices?.[0]?.delta?.content;
+              if (!content) continue;
+              setMessages((prev) => {
+                const updated = [...prev];
+                const last = updated[updated.length - 1];
+                if (last && last.role === "assistant") {
+                  updated[updated.length - 1] = { ...last, content: last.content + content };
+                }
+                return updated;
+              });
+            } catch {}
+          }
         }
       }
     } catch (err: unknown) {
