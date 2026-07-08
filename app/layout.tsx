@@ -48,7 +48,7 @@ const localBusinessSchema = {
   description:
     "Premium fitness gym in Sector 26, Gandhinagar, Gujarat. Modern equipment, expert trainers, and top-notch facilities.",
   url: "https://gym56.vercel.app",
-  telephone: "+919924441179",
+  telephone: "+919429421772",
   address: {
     "@type": "PostalAddress",
     streetAddress: "2nd Floor, Yogi Mall, Behind D-Mart, Green City, Sector 26",
@@ -82,7 +82,7 @@ const organizationSchema = {
   url: "https://gym56.vercel.app",
   logo: "https://gym56.vercel.app/gym56-logo.png",
   sameAs: [
-    "https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6",
+    "https://share.google/D3JjDCMLem7x2e2NG",
     "https://www.instagram.com/gym56_gandhinagar",
     "https://jsdl.in/DT-99GFBNQ1Y5B",
   ],

@@ -5,7 +5,7 @@ export const CONFIG = {
   get whatsappUrl() {
     return `https://wa.me/${this.WHATSAPP_NUMBER}?text=${encodeURIComponent(this.WHATSAPP_MESSAGE)}`;
   },
-  PHONE: "+919924441179",
+  PHONE: "+919429421772",
   INSTAGRAM: "https://www.instagram.com/gym56_gandhinagar",
-  MAPS: "https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6",
+  MAPS: "https://share.google/D3JjDCMLem7x2e2NG",
 };

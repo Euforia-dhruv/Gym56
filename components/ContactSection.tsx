@@ -122,7 +122,7 @@ export default function ContactSection() {
                     Gujarat 382028
                   </p>
                   <a
-                    href="https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6"
+                    href="https://share.google/D3JjDCMLem7x2e2NG"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-[#DC2626]/10 border border-[#DC2626]/30 text-[#DC2626] rounded-full text-sm font-medium hover:bg-[#DC2626]/20 transition-colors inline-block"

@@ -10,7 +10,7 @@ const hours = [
 
 const buttons = [
   {
-    href: 'https://maps.google.com/?q=GYM56+Sector+26+Gandhinagar',
+    href: 'https://share.google/D3JjDCMLem7x2e2NG',
     label: 'Get Directions',
     icon: (className: string) => <Navigation className={className} />,
     gradient: 'from-[#DC2626]/10 to-[#DC2626]/5',
@@ -34,7 +34,7 @@ const buttons = [
     hoverBg: 'hover:bg-purple-500/20',
   },
   {
-    href: 'https://jsdl.in/DT-99GFBNQ1Y5B',
+    href: 'https://share.google/D3JjDCMLem7x2e2NG',
     label: 'JustDial',
     icon: (className: string) => <Star className={className} />,
     gradient: 'from-blue-500/10 to-blue-500/5',
@@ -93,7 +93,7 @@ export default function LocationSection() {
                     href="tel:+919924441179"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
-                    +91 99244 41179
+                    +91 94294 21772
                   </a>
                 </div>
               </div>

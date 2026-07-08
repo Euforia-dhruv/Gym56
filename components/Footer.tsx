@@ -53,7 +53,7 @@ export default function Footer() {
                 <MessageSquare className="w-5 h-5" />
               </a>
               <a
-                href="https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6"
+                href="https://share.google/D3JjDCMLem7x2e2NG"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#DC2626] hover:border-[#DC2626] transition-all"
@@ -113,7 +113,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://maps.app.goo.gl/Y4VNHVrCJjX1HCUx6"
+                  href="https://share.google/D3JjDCMLem7x2e2NG"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
