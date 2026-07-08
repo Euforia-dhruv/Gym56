@@ -1,5 +1,3 @@
-import { streamText } from "ai";
-import { getModel } from "@/lib/ai/providers";
 import { AI_COACH_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 
 function hasApiKey(): boolean {
@@ -15,29 +13,54 @@ export async function POST(req: Request) {
 
     if (!hasApiKey()) {
       return new Response(
-        JSON.stringify({
-          error: "not_connected",
-          message: "AI Coach is not connected yet.",
-        }),
-        {
-          status: 503,
-          headers: { "Content-Type": "application/json" },
-        }
+        JSON.stringify({ error: "not_connected", message: "AI Coach is not connected yet." }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Calling BluesMinds...");
-    const result = streamText({
-      model: getModel(),
-      system: AI_COACH_SYSTEM_PROMPT,
-      messages: messages.map((m: { role: string; content: string }) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      })),
-    });
-    console.log("BluesMinds response: streaming started");
+    const baseURL = process.env.BLUESMINDS_BASE_URL || "https://integrate.api.nvidia.com/v1";
+    const model = process.env.BLUESMINDS_MODEL || "z-ai/glm-5.2";
+    const apiKey = process.env.BLUESMINDS_API_KEY;
 
-    return result.toTextStreamResponse();
+    const systemMsg = { role: "system", content: AI_COACH_SYSTEM_PROMPT };
+    const body = {
+      model,
+      messages: [systemMsg, ...messages.map((m: { role: string; content: string }) => ({
+        role: m.role,
+        content: m.content,
+      }))],
+      stream: true,
+    };
+
+    console.log("Calling NVIDIA...", { baseURL, model });
+
+    const res = await fetch(`${baseURL}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      console.log("API Error:", res.status, errText);
+      return new Response(
+        JSON.stringify({ error: "api_error", message: `API returned ${res.status}` }),
+        { status: 502, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("NVIDIA response: streaming started");
+
+    return new Response(res.body, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+      },
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.log("API Error:", msg);
