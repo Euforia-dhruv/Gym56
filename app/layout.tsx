@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ScrollToTop from "@/components/ScrollToTop";
+import LayoutShell from "@/components/LayoutShell";
 import JsonLd from "@/components/JsonLd";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
@@ -133,10 +131,7 @@ export default function RootLayout({
           }}
         />
         <AuthProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-          <ScrollToTop />
+          <LayoutShell>{children}</LayoutShell>
         </AuthProvider>
         <CookieConsent />
       </body>
