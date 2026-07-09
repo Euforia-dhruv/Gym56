@@ -147,7 +147,7 @@ export default function LocationSection() {
               <div className="absolute -inset-4 bg-[#DC2626]/5 blur-3xl rounded-[32px] opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
               <iframe
                 title="Gym 56 Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3665.6642970753187!2d72.6390286!3d23.2553001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2d0061ed69ab%3A0x70866159496d731e!2sGYM%2056!5e0!3m2!1sen!2sin!4v1783443796832!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3665.6641636327668!2d72.63415768756579!3d23.25530495349888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2d0061ed69ab%3A0x70866159496d731e!2sGYM%2056!5e0!3m2!1sen!2sin!4v1783586756056!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0, minHeight: '400px' }}
