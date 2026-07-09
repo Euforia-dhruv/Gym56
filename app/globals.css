@@ -247,7 +247,3 @@ body {
     background: rgba(255, 255, 255, 0.2);
   }
 }
-
-body.gym56-modal-open {
-  overflow: hidden;
-}

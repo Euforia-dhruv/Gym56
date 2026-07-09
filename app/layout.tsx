@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import Script from "next/script";
 import JsonLd from "@/components/JsonLd";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
@@ -124,9 +123,7 @@ export default function RootLayout({
         <JsonLd data={websiteSchema} />
         <JsonLd data={breadcrumbSchema} />
         <Analytics />
-        <Script
-          id="register-sw"
-          strategy="afterInteractive"
+        <script
           dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js')})}`,
           }}

@@ -5,8 +5,6 @@ import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-const BODY_SCROLL_LOCK = 'gym56-modal-open';
-
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -37,13 +35,13 @@ export function Modal({
   React.useEffect(() => {
     if (open) {
       previousFocusRef.current = document.activeElement as HTMLElement;
-      document.body.classList.add(BODY_SCROLL_LOCK);
+      document.body.style.overflow = 'hidden';
       const timer = setTimeout(() => {
         panelRef.current?.querySelector<HTMLElement>('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])')?.focus();
       }, 50);
       return () => {
         clearTimeout(timer);
-        document.body.classList.remove(BODY_SCROLL_LOCK);
+        document.body.style.overflow = '';
         previousFocusRef.current?.focus();
       };
     }

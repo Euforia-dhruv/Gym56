@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -804,7 +803,8 @@ export default function DashboardOverview({ user, profile }: Props) {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {progressPhotos.slice(0, 10).map((p) => (
                   <div key={p.id} className="relative group rounded-xl overflow-hidden aspect-square bg-white/5">
-                    <Image src={p.photo} alt="Progress photo" width={400} height={400} className="w-full h-full object-cover" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.photo} alt="Progress" loading="lazy" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <button onClick={() => { setProgressPhotos(deleteProgressPhoto(p.id)); }} className="p-1.5 rounded-full bg-red-500/80 hover:bg-red-500" aria-label="Delete progress photo"><Trash2 className="w-3.5 h-3.5 text-white" /></button>
                     </div>

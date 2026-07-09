@@ -47,7 +47,6 @@ export async function getEquipment() {
 }
 
 export async function getEquipmentById(id: string) {
-  IdParamSchema.parse(id);
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("equipment")
@@ -90,38 +89,6 @@ export async function getEquipmentBySlug(slug: string) {
     return data;
   } catch {
     return getSeedEquipmentBySlug(slug) || null;
-  }
-}
-
-export async function getRelatedEquipment(equipmentId: string) {
-  IdParamSchema.parse(equipmentId);
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("equipment_related")
-      .select("related_equipment:related_id(*)")
-      .eq("equipment_id", equipmentId)
-      .order("sort_order", { ascending: true });
-    if (error) throw new Error(error.message);
-    return data?.map((r) => r.related_equipment as unknown as Equipment) ?? [];
-  } catch {
-    return getSeedRelatedEquipment(equipmentId);
-  }
-}
-
-export async function getEquipmentImages(equipmentId: string) {
-  IdParamSchema.parse(equipmentId);
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("equipment_images")
-      .select("*")
-      .eq("equipment_id", equipmentId)
-      .order("sort_order", { ascending: true });
-    if (error) throw new Error(error.message);
-    return data ?? [];
-  } catch {
-    return getSeedEquipmentImages(equipmentId);
   }
 }
 
@@ -255,28 +222,22 @@ export async function uploadEquipmentImage(
   const user = await requireAdmin();
   IdParamSchema.parse(equipmentId);
 
-  const file = formData.get("file");
-  if (!(file instanceof File)) throw new Error("No file provided");
+  const file = formData.get("file") as File;
+  if (!file) throw new Error("No file provided");
 
-  // Validate file type from magic bytes (not trusting client file.type)
-  const buffer = await file.arrayBuffer();
-  const header = new Uint8Array(buffer.slice(0, 8));
-  const hex = Array.from(header).map((b) => b.toString(16).padStart(2, "0")).join("");
+  // Validate file type
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error("Invalid file type. Accepted: JPEG, PNG, WebP");
+  }
 
-  let mime: string;
-  if (hex.startsWith("ffd8ff")) mime = "image/jpeg";
-  else if (hex.startsWith("89504e47")) mime = "image/png";
-  else if (hex.startsWith("52494646") || hex.startsWith("0000001c66747970") || hex.startsWith("0000001866747970")) mime = "image/webp";
-  else if (hex.startsWith("474946")) mime = "image/gif";
-  else throw new Error("Invalid file type. Accepted: JPEG, PNG, WebP");
-
-  const ext = mime.split("/")[1];
-  const fileName = `${equipmentId}/${Date.now()}.${ext}`;
-
-  // Validate file size (8 MB max) — checked AFTER MIME validation to avoid reading large files unnecessarily
+  // Validate file size (8 MB max)
   if (file.size > 8 * 1024 * 1024) {
     throw new Error("File too large. Max 8 MB");
   }
+
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const fileName = `${equipmentId}/${Date.now()}.${ext}`;
 
   const admin = createSupabaseAdminClient();
 
@@ -284,7 +245,7 @@ export async function uploadEquipmentImage(
   const { error: uploadError } = await admin.storage
     .from("equipment-images")
     .upload(fileName, file, {
-      contentType: mime,
+      contentType: file.type,
       upsert: false,
     });
 
@@ -319,26 +280,36 @@ export async function uploadEquipmentImage(
 
 // ─── Related equipment ─────────────────────────────────────────────────────
 
-export async function updateRelatedEquipment(equipmentId: string, relatedIds: string[]) {
-  await requireAdmin();
-  IdParamSchema.parse(equipmentId);
+export async function getRelatedEquipment(equipmentId: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("equipment_related")
+      .select("related_equipment:related_id(*)")
+      .eq("equipment_id", equipmentId)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data?.map((r) => r.related_equipment as unknown as Equipment) ?? [];
+  } catch {
+    return getSeedRelatedEquipment(equipmentId);
+  }
+}
 
-  const admin = createSupabaseAdminClient();
+// ─── Get equipment images ───────────────────────────────────────────────────
 
-  // Remove existing relations
-  await admin.from("equipment_related").delete().eq("equipment_id", equipmentId);
-
-  if (relatedIds.length === 0) return;
-
-  // Insert new relations
-  const rows = relatedIds.map((relatedId, i) => ({
-    equipment_id: equipmentId,
-    related_id: relatedId,
-    sort_order: i,
-  }));
-  const { error } = await admin.from("equipment_related").insert(rows);
-  if (error) throw new Error(error.message);
-  revalidatePath("/admin/equipment");
+export async function getEquipmentImages(equipmentId: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("equipment_images")
+      .select("*")
+      .eq("equipment_id", equipmentId)
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  } catch {
+    return getSeedEquipmentImages(equipmentId);
+  }
 }
 
 // ─── Delete image ───────────────────────────────────────────────────────────
