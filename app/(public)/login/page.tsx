@@ -15,7 +15,8 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createSupabaseBrowserClient();
-  const redirectTo = searchParams.get("redirectTo") || "/";
+  const rawRedirect = searchParams.get("redirectTo") || "/";
+  const redirectTo = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/";
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +46,7 @@ function LoginForm() {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+          skipBrowserRedirect: false,
         },
       });
       if (error) throw error;

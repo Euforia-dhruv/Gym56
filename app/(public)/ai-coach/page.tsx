@@ -99,6 +99,9 @@ export default function AiCoachPage() {
   const abortRef = useRef<AbortController | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
+  const messagesRef = useRef<Message[]>([]);
+  messagesRef.current = messages;
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -161,9 +164,10 @@ export default function AiCoachPage() {
     abortRef.current = controller;
 
     try {
+      const current = messagesRef.current;
       const history = (retryId
-        ? messages.slice(0, -1)
-        : messages
+        ? current.slice(0, -1)
+        : current
       ).concat(userMessage).map((m) => ({
         role: m.role,
         content: m.content,
@@ -236,7 +240,7 @@ export default function AiCoachPage() {
       setIsLoading(false);
       abortRef.current = null;
     }
-  }, [messages, isLoading]);
+  }, [messages]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -264,7 +268,8 @@ export default function AiCoachPage() {
   };
 
   const handleRegenerate = (msgId: string) => {
-    const userMsg = messages.findLast((m) => m.role === "user");
+    const msgs = messagesRef.current;
+    const userMsg = [...msgs].reverse().find((m) => m.role === "user");
     if (userMsg) {
       sendMessage(userMsg.content, msgId);
     }

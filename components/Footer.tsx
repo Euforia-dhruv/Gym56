@@ -120,7 +120,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Gym 56. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-gray-500">
-            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>

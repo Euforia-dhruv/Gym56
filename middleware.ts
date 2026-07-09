@@ -1,35 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-// Routes that require the user to be logged OUT (auth pages)
-const authOnlyRoutes = [
-  "/login",
-  "/signup",
-  "/forgot-password",
-  "/reset-password",
-];
-
-// Routes that require the user to be logged IN (protected pages)
+const authOnlyRoutes = ["/login", "/signup", "/forgot-password", "/reset-password"];
 const protectedRoutes = ["/admin", "/dashboard"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Read the Supabase session cookie.
-  // @supabase/ssr ^0.12 uses chunked cookies with .0/.1 suffixes
-  const hasSession = Array.from(request.cookies.getAll()).some(
-    (cookie) =>
-      cookie.name.startsWith("sb-") && cookie.name.includes("-auth-token")
+  // Skip auth check for static assets and API routes
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/auth") ||
+    pathname === "/favicon.ico"
+  ) {
+    return NextResponse.next();
+  }
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll() {
+          // Read-only in middleware
+        },
+      },
+    }
   );
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isAuthenticated = !!user;
+
   // Redirect authenticated users away from auth pages
-  if (authOnlyRoutes.includes(pathname) && hasSession) {
+  if (authOnlyRoutes.includes(pathname) && isAuthenticated) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Redirect unauthenticated users away from protected pages
   if (
     protectedRoutes.some((route) => pathname.startsWith(route)) &&
-    !hasSession
+    !isAuthenticated
   ) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirectTo", pathname);

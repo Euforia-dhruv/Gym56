@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 import {
   Plus,
@@ -357,8 +358,7 @@ export default function GalleryPage() {
                   style={{ background: formImage.startsWith("linear-gradient") ? formImage : undefined }}
                 >
                   {(formImage.startsWith("data:") || formImage.startsWith("http")) && (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img src={formImage} alt="Preview" className="w-full h-full object-cover" />
+                    <Image src={formImage} alt="Preview" width={400} height={200} className="w-full h-full object-cover" />
                   )}
                 </div>
                 <button

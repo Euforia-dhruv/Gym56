@@ -43,6 +43,7 @@ export async function getExercises() {
 }
 
 export async function getExerciseById(id: string) {
+  IdParamSchema.parse(id);
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("exercises")
@@ -204,27 +205,34 @@ export async function uploadExerciseImage(
   await requireAdmin();
   IdParamSchema.parse(exerciseId);
 
-  const file = formData.get("file") as File;
-  if (!file) throw new Error("No file provided");
+  const file = formData.get("file");
+  if (!(file instanceof File)) throw new Error("No file provided");
 
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-  if (!allowedTypes.includes(file.type)) {
-    throw new Error("Invalid file type. Accepted: JPEG, PNG, WebP");
-  }
+  // Validate file type from magic bytes (not trusting client file.type)
+  const buffer = await file.arrayBuffer();
+  const header = new Uint8Array(buffer.slice(0, 8));
+  const hex = Array.from(header).map((b) => b.toString(16).padStart(2, "0")).join("");
+
+  let mime: string;
+  if (hex.startsWith("ffd8ff")) mime = "image/jpeg";
+  else if (hex.startsWith("89504e47")) mime = "image/png";
+  else if (hex.startsWith("52494646") || hex.startsWith("0000001c66747970") || hex.startsWith("0000001866747970")) mime = "image/webp";
+  else if (hex.startsWith("474946")) mime = "image/gif";
+  else throw new Error("Invalid file type. Accepted: JPEG, PNG, WebP");
+
+  const ext = mime.split("/")[1];
+  const fileName = `${exerciseId}/${Date.now()}.${ext}`;
 
   if (file.size > 8 * 1024 * 1024) {
     throw new Error("File too large. Max 8 MB");
   }
-
-  const ext = file.name.split(".").pop() ?? "jpg";
-  const fileName = `${exerciseId}/${Date.now()}.${ext}`;
 
   const admin = createSupabaseAdminClient();
 
   const { error: uploadError } = await admin.storage
     .from("exercise-media")
     .upload(fileName, file, {
-      contentType: file.type,
+      contentType: mime,
       upsert: false,
     });
 
@@ -255,6 +263,7 @@ export async function getExerciseBySlug(slug: string) {
 // ─── Related exercises ────────────────────────────────────────────────────
 
 export async function getRelatedExercises(exerciseId: string) {
+  IdParamSchema.parse(exerciseId);
   try {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
@@ -269,9 +278,8 @@ export async function getRelatedExercises(exerciseId: string) {
   }
 }
 
-// ─── Exercise Steps ─────────────────────────────────────────────────────────
-
 export async function getExerciseSteps(exerciseId: string) {
+  IdParamSchema.parse(exerciseId);
   try {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase

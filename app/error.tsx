@@ -33,14 +33,9 @@ export default function Error({
           <AlertTriangle className="w-10 h-10 text-red-400" aria-hidden="true" />
         </motion.div>
         <h1 className="text-3xl font-bold text-white mb-4">Something Went Wrong</h1>
-        <p className="text-gray-400 mb-2">
-          An unexpected error occurred.
+        <p className="text-gray-400 mb-8">
+          An unexpected error occurred. Please try again or go back to the homepage.
         </p>
-        {error.message && (
-          <p className="text-sm text-gray-600 mb-8 bg-white/5 rounded-lg p-3 break-all">
-            {error.message}
-          </p>
-        )}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={reset}

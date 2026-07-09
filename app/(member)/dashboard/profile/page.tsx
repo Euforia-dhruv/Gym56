@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/Input";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useToast } from "@/components/ui/Toast";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+import { ProfileUpdateSchema } from "@/types/api";
 import type { Profile } from "@/types";
 
 type ProfileWithEmail = Profile & { email?: string };
@@ -34,12 +35,12 @@ export default function ProfilePage() {
       }
       return supabase
         .from("profiles")
-        .select("*")
+.select("*")
         .eq("id", user.id)
         .single()
         .then(({ data, error }) => {
           if (error || !data) {
-            router.push("/login?redirectTo=/dashboard/profile");
+            toast({ title: "Error", description: "Failed to load profile", variant: "error" });
             return;
           }
           setProfile(data);
@@ -53,20 +54,19 @@ export default function ProfilePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      const parsed = ProfileUpdateSchema.parse({ full_name: fullName.trim() || undefined, phone: phone.trim() || undefined });
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
       await supabase
         .from("profiles")
-        .update({
-          full_name: fullName.trim() || null,
-          phone: phone.trim() || null,
-        })
+        .update(parsed)
         .eq("id", user.id);
       toast({ title: "Profile updated!", variant: "success" });
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
-        description: err instanceof Error ? err.message : "Failed to update",
+        description: "Failed to update profile. Please try again.",
         variant: "error",
       });
     } finally {
@@ -77,9 +77,21 @@ export default function ProfilePage() {
   const handleImageUpload = async (formData: FormData) => {
     const file = formData.get("file") as File;
     if (!file) throw new Error("No file provided");
+
+    // Server-side MIME validation from magic bytes
+    const buffer = await file.arrayBuffer();
+    const header = new Uint8Array(buffer.slice(0, 8));
+    const hex = Array.from(header).map((b) => b.toString(16).padStart(2, "0")).join("");
+    let ext: string;
+    if (hex.startsWith("ffd8ff")) ext = "jpeg";
+    else if (hex.startsWith("89504e47")) ext = "png";
+    else if (hex.startsWith("52494646") || hex.startsWith("0000001c66747970") || hex.startsWith("0000001866747970")) ext = "webp";
+    else throw new Error("Invalid file type. Accepted: JPEG, PNG, WebP");
+
+    if (file.size > 2 * 1024 * 1024) throw new Error("File too large. Max 2 MB");
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
-    const ext = file.name.split(".").pop();
     const path = `avatars/${user.id}.${ext}`;
     await supabase.storage.from("avatars").upload(path, file, { upsert: true });
     const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
